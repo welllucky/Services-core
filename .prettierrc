@@ -1,4 +1,17 @@
 {
-  "singleQuote": true,
-  "trailingComma": "all"
+  "bracketSameLine": true,
+  "arrowParens": "always",
+  "bracketSpacing": true,
+  "embeddedLanguageFormatting": "auto",
+  "endOfLine": "crlf",
+  "insertPragma": false,
+  "printWidth": 80,
+  "proseWrap": "preserve",
+  "quoteProps": "as-needed",
+  "requirePragma": false,
+  "semi": true,
+  "singleQuote": false,
+  "trailingComma": "all",
+  "useTabs": false,
+  "singleAttributePerLine": true
 }
