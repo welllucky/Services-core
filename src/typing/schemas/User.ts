@@ -36,6 +36,4 @@ export const UserTableSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date().nullish(),
   deletedAt: z.date().nullish(),
-
-
 });
