@@ -1,7 +1,7 @@
+import packageJson from "./package.json";
+
 const Sentry = require("@sentry/nestjs");
 const { nodeProfilingIntegration } = require("@sentry/profiling-node");
-
-import packageJson from "./package.json";
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
