@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { SentryModule } from "@sentry/nestjs/setup";
 import { AppController } from "src/controllers";
 import { AppService } from "src/services";
 import { modules } from "..";
@@ -8,6 +9,7 @@ import { configLoads } from "./configs";
 
 @Module({
   imports: [
+    SentryModule.forRoot(),
     ConfigModule.forRoot({
       envFilePath: [
         ".env.local",
