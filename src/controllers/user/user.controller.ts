@@ -6,11 +6,14 @@ import {
   Injectable,
   Param,
   Post,
+  Put,
 } from "@nestjs/common";
-import { UserService } from "src/services";
-import { CreateUserDto } from "src/typing";
 
-@Controller("user")
+import { UserService } from "src/services";
+
+import { CreateUserDto, UpdateUser } from "src/typing";
+
+@Controller("users")
 @Injectable()
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -20,19 +23,28 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Get(":email")
-  getUserByEmail(@Param("email") email: string) {
-    return this.userService.findByEmail(email);
-  }
-
   @Get(":register")
   getUserByRegister(@Param("register") register: string) {
     return this.userService.findOne(register);
   }
 
+  @Get("/email/:email")
+  getUserByEmail(@Param("email") email: string) {
+    return this.userService.findByEmail(email);
+  }
+
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     this.userService.create(createUserDto);
+  }
+
+  @Put(":register")
+  update(
+    @Param("register") register: string,
+
+    @Body() updateUserDto: UpdateUser,
+  ) {
+    this.userService.update(register, updateUserDto);
   }
 
   @Delete(":register")

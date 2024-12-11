@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { SystemRolesSchema } from "./SystemRoles";
 
 export const UserSchema = z.object({
   register: z.string().min(3).max(10),
@@ -13,6 +14,7 @@ export const UserSchema = z.object({
   canResolveTicket: z.boolean().default(true),
   role: z.string(),
   sector: z.string(),
+  systemRole: SystemRolesSchema,
 });
 
 export const UserTableSchema = z.object({
@@ -34,5 +36,6 @@ export const UserTableSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date().nullish(),
   deletedAt: z.date().nullish(),
+
 
 });

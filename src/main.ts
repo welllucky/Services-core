@@ -11,9 +11,7 @@ import { LoggerMiddleware } from "src/utils/middleware";
 async function startTheService() {
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule,
-    new ExpressAdapter({
-      logger: true,
-    }),
+    new ExpressAdapter(),
   );
 
   app.enableVersioning({
@@ -22,7 +20,7 @@ async function startTheService() {
 
   const configService = app.get(ConfigService);
 
-  app.use(LoggerMiddleware);
+  app.use([LoggerMiddleware]);
 
   const port = configService.get("PORT");
 
