@@ -1,7 +1,7 @@
-import { encryptPassword } from "src/utils";
+// import { encryptPassword } from "src/utils";
 import {
-  BeforeInsert,
-  BeforeUpdate,
+  // BeforeInsert,
+  // BeforeUpdate,
   Column,
   Entity,
   PrimaryGeneratedColumn,
@@ -51,17 +51,17 @@ export class User {
   @Column({ length: 80 })
   role!: string;
 
-  @Column({ length: 40 })
-  systemRole!: string;
+  @Column({ length: 6, default: "user" })
+  systemRole!: "admin" | "user" | "manager" | "guest" | "viewer";
 
   @Column({ length: 80 })
   sector!: string;
 
-  @BeforeUpdate()
-  @BeforeInsert()
-  private async encryptPasswordInDB(password: string) {
-    const { hashedPassword, salt } = await encryptPassword(password);
-    this.hash = hashedPassword;
-    this.salt = salt;
-  }
+  // @BeforeUpdate()
+  // @BeforeInsert()
+  // private async encryptPasswordInDB(password: string) {
+  //   const { hashedPassword, salt } = await encryptPassword(password);
+  //   this.hash = hashedPassword;
+  //   this.salt = salt;
+  // }
 }

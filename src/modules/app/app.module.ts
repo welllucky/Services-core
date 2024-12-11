@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AppController } from "src/controllers";
 import { AppService } from "src/services";
-import { UserModule } from "../user.module";
+import { modules } from "..";
 import { configLoads } from "./configs";
 
 @Module({
@@ -28,7 +28,7 @@ import { configLoads } from "./configs";
         password: configService.get("DB_PASSWORD"),
         database: configService.get("DB_NAME"),
         autoLoadEntities: true,
-        synchronize: false,
+        synchronize: true,
         entities: ["@/entities/*.entity.ts"],
         ssl: {
           ca: configService.get("DB_CA"),
@@ -36,7 +36,7 @@ import { configLoads } from "./configs";
       }),
       inject: [ConfigService],
     }),
-    UserModule,
+    ...modules,
   ],
   controllers: [AppController],
   providers: [AppService],

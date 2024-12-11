@@ -30,4 +30,13 @@ export class UserService {
   create(data: CreateUserDto) {
     return this.userRepository.create(data);
   }
+
+  update(id: string, data: CreateUserDto) {
+    return this.userRepository.update(
+      {
+        register: id,
+      },
+      data,
+    );
+  }
 }
