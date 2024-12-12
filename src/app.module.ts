@@ -2,9 +2,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { SentryModule } from "@sentry/nestjs/setup";
-import { AppController } from "src/controllers";
-import { AppService } from "src/services";
-import { modules } from "..";
+import { modules } from "./modules";
 import { configLoads } from "./configs";
 
 @Module({
@@ -40,7 +38,5 @@ import { configLoads } from "./configs";
     }),
     ...modules,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
