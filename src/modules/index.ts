@@ -1,5 +1,3 @@
-import { UserModule } from "./user.module";
+import { UserModule } from "./user/user.module";
 
 export const modules = [UserModule];
-
-export * from "./app/app.module";

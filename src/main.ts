@@ -7,8 +7,8 @@ import {
   ExpressAdapter,
   NestExpressApplication,
 } from "@nestjs/platform-express";
-import { AppModule } from "src/modules/app/app.module";
-import { LoggerMiddleware } from "src/utils/middleware";
+import { AppModule } from "./app.module.js";
+import { LoggerMiddleware } from "./middleware/logger.middleware.js";
 
 async function startTheService() {
   const app = await NestFactory.create<NestExpressApplication>(

@@ -8,13 +8,20 @@ module.exports = {
     project: "tsconfig.json",
     tsconfigRootDir: __dirname,
     sourceType: "module",
+    ecmaVersion: "latest",
   },
-  plugins: ["@typescript-eslint/eslint-plugin"],
-  extends: ["plugin:@typescript-eslint/recommended"],
+  plugins: ["@typescript-eslint/eslint-plugin", "simple-import-sort", "import"],
+  extends: [
+    "plugin:@typescript-eslint/recommended",
+    "eslint:recommended",
+    "plugin:security/recommended-legacy",
+    "airbnb",
+  ],
   root: true,
   env: {
     node: true,
     jest: true,
+    es2021: true,
   },
   ignorePatterns: [".eslintrc.js"],
   rules: {

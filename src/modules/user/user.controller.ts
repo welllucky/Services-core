@@ -3,18 +3,14 @@ import {
   Controller,
   Delete,
   Get,
-  Injectable,
   Param,
   Post,
   Put,
 } from "@nestjs/common";
-
-import { UserService } from "src/services";
-
 import { CreateUserDto, UpdateUser } from "src/typing";
+import { UserService } from "./user.service";
 
 @Controller("users")
-@Injectable()
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
