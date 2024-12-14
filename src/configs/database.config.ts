@@ -16,7 +16,3 @@ export default registerAs("database", () => ({
   migrationStorageTableName: `${process.env.DB_DIALECT ?? "sqlite"}-migrations-${process.env.NODE_ENV ?? "development"}`,
   synchronize: process.env.NODE_ENV === "development",
 }));
-
-export const getDBConfig = async () => {
-  return {};
-};

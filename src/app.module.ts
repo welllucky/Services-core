@@ -28,7 +28,7 @@ import { configLoads } from "./configs";
         password: configService.get("DB_PASSWORD"),
         database: configService.get("DB_NAME"),
         autoLoadEntities: true,
-        synchronize: true,
+        synchronize: false,
         entities: ["@/entities/*.entity.ts"],
         ssl: {
           ca: configService.get("DB_CA"),
