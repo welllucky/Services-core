@@ -4,6 +4,6 @@ import { ISessionSchema } from "../schemas";
 export type ISession = z.infer<typeof ISessionSchema>;
 
 export type ISessionResponse = {
-  accessToken: string,
-  expiresAt: Date | string,
+  accessToken: string;
+  expiresAt: Date | string;
 };
