@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { SystemRolesSchema } from "./SystemRoles";
+import { RegisterUserSchema } from "./Register";
 
 export const UserSchema = z.object({
   register: z.string().min(3).max(10),
@@ -36,6 +37,7 @@ export const UserTableSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date().nullish(),
   deletedAt: z.date().nullish(),
-
-
 });
+
+
+export const CreateUserSchema = z.union([RegisterUserSchema, UserSchema]);
