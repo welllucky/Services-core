@@ -58,7 +58,6 @@ export class SessionRepository {
       {
         ...session,
       },
-
     );
   }
 }
