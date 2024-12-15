@@ -32,7 +32,7 @@ class SessionModel {
   }) {
     this.session = new Session();
     try {
-      const isPasswordValid = this.user.authUser(password);
+      const isPasswordValid = await this.user.authUser(password);
 
       if (!isPasswordValid) {
         throw new Error("Invalid password");
@@ -60,7 +60,6 @@ class SessionModel {
         expiresIn: `${daysToExpire}d`,
       }) as string;
 
-      this.session.createdAt = new Date();
       this.session.expiresAt = expiresAt;
       this.session.isActive = true;
       this.session.user = this.user.getEntity();

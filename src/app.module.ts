@@ -4,7 +4,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { SentryModule } from "@sentry/nestjs/setup";
 import { configLoads } from "./configs";
 import { modules } from "./modules";
-import { UserSubscriber } from "./subscribers";
+import { SessionSubscriber, UserSubscriber } from "./subscribers";
 
 @Module({
   imports: [
@@ -31,7 +31,7 @@ import { UserSubscriber } from "./subscribers";
         autoLoadEntities: true,
         synchronize: configService.get("HOST_ENV") === "development",
         entities: ["@/entities/*.entity.ts"],
-        subscribers: [UserSubscriber],
+        subscribers: [UserSubscriber, SessionSubscriber],
         ssl: {
           ca: configService.get("DB_CA"),
         },

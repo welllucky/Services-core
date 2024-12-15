@@ -1,8 +1,9 @@
-import { SessionStatus } from "@/typing";
+import { GetSessionDTO, SessionStatus } from "@/typing";
 import {
   Body,
   Controller,
   Get,
+  HttpCode,
   Post,
   // Headers,
   Query,
@@ -25,8 +26,20 @@ export class SessionController {
   }
 
   @Post()
-  create(@Body() credentials: Record<string, string>) {
+  create(@Body() credentials: GetSessionDTO) {
     return this.sessionService.create(credentials);
   }
-}
 
+  @Post("refresh")
+  @HttpCode(501)
+  refresh(@Body() credentials: GetSessionDTO) {
+    return "Not implemented";
+  }
+
+  @Post("close")
+  @HttpCode(501)
+  close() {
+    // @Headers("Authorization") token: string,
+    return "Not implemented";
+  }
+}

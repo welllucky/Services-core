@@ -16,7 +16,7 @@ import { User } from "./user.entity";
 })
 class Ticket extends BaseEntity {
   @PrimaryGeneratedColumn()
-  public id!: string;
+  public readonly id!: string;
 
   @Column({
     length: 80,
@@ -30,7 +30,7 @@ class Ticket extends BaseEntity {
   })
   public description!: string;
 
-  @Column("datetime")
+  @Column("timestamp")
   public date!: Date;
 
   @Column({
@@ -63,30 +63,30 @@ class Ticket extends BaseEntity {
   })
   public events!: Relation<Event[]> | null | undefined;
 
-  @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
-  createdAt!: Date;
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  public readonly createdAt!: Date;
 
-  @Column("datetime", {
+  @Column("timestamp", {
     nullable: true,
   })
   public readonly updatedAt!: Date | null;
 
-  @Column("datetime", {
+  @Column("timestamp", {
     nullable: true,
   })
   public readonly closedAt!: Date | null;
 
   @ManyToOne(() => User, (user) => user.register)
   @JoinColumn()
-  public createdBy!: Relation<User>;
+  public readonly createdBy!: Relation<User>;
 
   @ManyToOne(() => User, (user) => user.register)
   @JoinColumn()
-  public updatedBy!: Relation<User> | null | undefined;
+  public readonly updatedBy!: Relation<User> | null | undefined;
 
   @ManyToOne(() => User, (user) => user.register)
   @JoinColumn()
-  public closedBy!: Relation<User> | null | undefined;
+  public readonly closedBy!: Relation<User> | null | undefined;
 }
 
 export { Ticket };

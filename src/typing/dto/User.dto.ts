@@ -1,4 +1,6 @@
 import { SystemRoles } from "@/typing";
+import { UniqueEmail, UniqueRegister } from "@/utils";
+import { OmitType, PartialType } from "@nestjs/mapped-types";
 import {
   IsBoolean,
   IsDate,
@@ -21,6 +23,7 @@ export class CreateUserDTO {
   @IsNotEmpty({
     message: "Register is required",
   })
+  @UniqueRegister()
   register: string;
 
   @IsString({
@@ -38,9 +41,7 @@ export class CreateUserDTO {
   name: string;
 
   @IsEmail()
-  @IsNotEmpty({
-    message: "Email is required",
-  })
+  @UniqueEmail()
   email: string;
 
   @IsStrongPassword({
@@ -49,9 +50,6 @@ export class CreateUserDTO {
     minSymbols: 1,
     minUppercase: 1,
     minLowercase: 1,
-  })
-  @IsNotEmpty({
-    message: "Password is required",
   })
   password: string;
 
@@ -103,3 +101,14 @@ export class CreateUserDTO {
   })
   systemRole: SystemRoles;
 }
+
+export class UpdateUserDTO extends PartialType(
+  OmitType(CreateUserDTO, [
+    "register",
+    "lastConnection",
+    //   "isBanned",
+    //   "canCreateTicket",
+    //   "canResolveTicket",
+    //   "systemRole",
+  ]),
+) {}

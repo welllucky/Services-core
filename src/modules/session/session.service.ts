@@ -1,4 +1,5 @@
-import { ISignIn, SessionDTo, SessionStatus } from "@/typing";
+import { GetSessionDTO, SessionDTO, SessionStatus } from "@/typing";
+import { getUserByToken } from "@/utils";
 import { Injectable } from "@nestjs/common";
 import { addBreadcrumb } from "@sentry/nestjs";
 import { UserModel } from "../user/user.model";
@@ -13,7 +14,7 @@ export class SessionService {
     private readonly userModel: UserModel,
   ) {}
 
-  async create(credentials: ISignIn) {
+  async create(credentials: GetSessionDTO) {
     try {
       if (!credentials.email || !credentials.password) {
         addBreadcrumb({
@@ -92,7 +93,7 @@ export class SessionService {
   }
 
   async update(
-    session: Partial<SessionDTo>,
+    session: Partial<SessionDTO>,
     sessionId: string,
     register: string,
   ) {
@@ -127,20 +128,15 @@ export class SessionService {
     return this.sessionRepository.find(userId, sessionId, status);
   }
 
-  async findAll(
-    // token: string,
-    status: SessionStatus = "active",
-  ) {
-    // const { userData } = await getUserByToken(token);
-    // const actualSession = await this.find(userData.register);
+  async findAll(token: string, status: SessionStatus = "active") {
+    const { userData } = await getUserByToken(token);
+    const actualSession = await this.find(userData.register);
 
-    // const { register } = userData;
+    const { register } = userData;
 
-    // if (!actualSession || !actualSession.isActive) {
-    //   throw new Error("User could not access this resource");
-    // }
-
-    const register = "242424";
+    if (!actualSession || !actualSession.isActive) {
+      throw new Error("User could not access this resource");
+    }
 
     return this.sessionRepository.findAll(register, status);
   }

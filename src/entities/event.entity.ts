@@ -15,7 +15,7 @@ import { User } from "./user.entity";
 })
 export class Event extends BaseEntity {
   @PrimaryGeneratedColumn()
-  public id!: string;
+  public readonly id!: string;
 
   @ManyToOne(() => Ticket, (ticket) => ticket.id)
   @JoinColumn()
@@ -49,6 +49,6 @@ export class Event extends BaseEntity {
   @JoinColumn()
   public readonly createdBy!: Relation<User>;
 
-  @Column("datetime")
+  @Column("timestamp")
   public readonly createdAt!: Date;
 }

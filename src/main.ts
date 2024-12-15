@@ -8,7 +8,8 @@ import {
   NestExpressApplication,
 } from "@nestjs/platform-express";
 import { AppModule } from "./app.module.js";
-import { LoggerMiddleware } from "./middleware/logger.middleware.js";
+import { LoggerMiddleware } from "./utils/middleware/logger.middleware.js";
+import { useContainer } from "class-validator";
 
 async function startTheService() {
   const app = await NestFactory.create<NestExpressApplication>(
@@ -31,6 +32,8 @@ async function startTheService() {
       forbidNonWhitelisted: true,
     }),
   );
+
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   app.use([LoggerMiddleware]);
 

@@ -20,10 +20,10 @@ class Session extends BaseEntity {
   @JoinColumn()
   public user!: Relation<User>;
 
-  @Column("datetime")
+  @Column("timestamp")
   public expiresAt!: Date;
 
-  @Column("datetime")
+  @Column("timestamp")
   public createdAt!: Date;
 
   @Column("boolean", {
