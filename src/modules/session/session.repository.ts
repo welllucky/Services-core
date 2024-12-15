@@ -12,11 +12,14 @@ export class SessionRepository {
     private readonly repository: Repository<Session>,
   ) {}
 
-  async findAll(register: string, status: SessionStatus): Promise<Session[]> {
+  async findAll(
+    userRegister: string,
+    status: SessionStatus,
+  ): Promise<Session[]> {
     return this.repository.find({
       where: {
         user: {
-          register,
+          register: userRegister,
         },
         isActive: status === "all" ? undefined : status === "active",
       },
@@ -28,14 +31,14 @@ export class SessionRepository {
   }
 
   async find(
-    userId: string,
+    userRegister: string,
     sessionId?: string,
     status: SessionStatus = "active",
   ): Promise<Session | null> {
     return this.repository.findOne({
       where: {
         user: {
-          register: userId,
+          register: userRegister,
         },
         ...(sessionId && { id: sessionId }),
         isActive: status === "all" ? undefined : status === "active",
@@ -58,7 +61,6 @@ export class SessionRepository {
       {
         ...session,
       },
-
     );
   }
 }

@@ -1,53 +1,66 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { Session } from "./session.entity";
+import { SystemRoles } from "@/typing";
 
 @Entity({ name: "Users" })
 export class User {
   @PrimaryGeneratedColumn()
-  id!: string;
+  public readonly id!: string;
 
-  @Column({ length: 20, unique: true })
-  register!: string;
+  @Index({
+    unique: true,
+  })
+  @Column({ length: 10 })
+  public register!: string;
 
   @Column({ length: 100 })
-  name!: string;
+  public name!: string;
 
-  @Column({ length: 256, unique: true })
-  email!: string;
-
+  @Index({
+    unique: true,
+  })
   @Column({ length: 256 })
-  hash!: string;
+  public email!: string;
 
-  @Column({ type: "datetime", nullable: true })
-  lastConnection!: Date | null;
+  @Column({ length: 256, nullable: false })
+  public hash!: string;
+
+  @Column({ type: "timestamp", nullable: true })
+  public lastConnection!: Date | null;
 
   @Column({ default: false })
-  isBanned!: boolean;
+  public isBanned!: boolean;
 
   @Column({ default: true })
-  canCreateTicket!: boolean;
+  public canCreateTicket!: boolean;
 
   @Column({ default: true })
-  canResolveTicket!: boolean;
+  public canResolveTicket!: boolean;
 
-  @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
-  createdAt!: Date;
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  public createdAt!: Date;
 
-  @Column({ type: "datetime", nullable: true })
-  updatedAt!: Date | null;
+  @Column({ type: "timestamp", nullable: true })
+  public updatedAt!: Date | null;
 
-  @Column({ type: "datetime", nullable: true })
-  deletedAt!: Date | null;
+  @Column({ type: "timestamp", nullable: true })
+  public deletedAt!: Date | null;
 
-  @Column({ length: 80 })
-  role!: string;
+  @Column({ type: "varchar", default: "user" })
+  public role!: string;
 
-  @Column({ length: 6, default: "user" })
-  systemRole!: "admin" | "user" | "manager" | "guest" | "viewer";
+  @Column({ type: "varchar", default: "user" })
+  public systemRole!: SystemRoles;
 
-  @Column({ length: 80 })
-  sector!: string;
+  @Column({ type: "varchar" })
+  public sector!: string;
 
   @OneToMany(() => Session, (session) => session.user)
-  public sessions!: Session[];
+  public readonly sessions!: Session[];
 }

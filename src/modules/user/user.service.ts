@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { User } from "src/entities";
-import { CreateUserDTO, UpdateUserDTO } from "./dto";
+import { User } from "@/entities";
+import { CreateUserDTO, UpdateUserDTO } from "@/typing";
 import { UserRepository } from "./user.repository";
 
 @Injectable()
@@ -11,9 +11,9 @@ export class UserService {
     return await this.userRepository.findAll();
   }
 
-  async findOne(id: string) {
+  async findOne(register: string) {
     try {
-      return await this.userRepository.findById(id);
+      return await this.userRepository.findByRegister(register);
     } catch (error) {
       console.error("Error finding user:", error);
       throw new Error("Could not find user");
