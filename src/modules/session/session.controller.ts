@@ -1,7 +1,9 @@
 import { SessionStatus } from "@/typing";
 import {
+  Body,
   Controller,
   Get,
+  Post,
   // Headers,
   Query,
 } from "@nestjs/common";
@@ -21,4 +23,10 @@ export class SessionController {
       status,
     );
   }
+
+  @Post()
+  create(@Body() credentials: Record<string, string>) {
+    return this.sessionService.create(credentials);
+  }
 }
+

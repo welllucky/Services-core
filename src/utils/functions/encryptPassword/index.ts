@@ -1,10 +1,8 @@
-import crypto from "crypto";
+import { genSaltSync, hashSync } from "bcrypt";
 
-export const encryptPassword = async (password: string) => {
-  const salt = crypto.randomBytes(16).toString("hex");
-  const hash = crypto.createHmac("sha256", salt);
-  hash.update(password);
-  const hashedPassword = hash.digest("hex");
+export const encryptPassword = (password: string) => {
+  const salt = genSaltSync(10);
+  const hashedPassword = hashSync(password, salt);
 
   return { hashedPassword, salt };
 };

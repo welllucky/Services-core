@@ -1,6 +1,6 @@
 import "./instrument.js";
 
-import { VersioningType } from "@nestjs/common";
+import { ValidationPipe, VersioningType } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
 import {
@@ -16,17 +16,25 @@ async function startTheService() {
     new ExpressAdapter(),
   );
 
+  const configService = app.get(ConfigService);
+
   app.enableVersioning({
     type: VersioningType.URI,
+    defaultVersion: "1",
   });
 
-  const configService = app.get(ConfigService);
+  app.useGlobalPipes(
+    new ValidationPipe({
+      enableDebugMessages: configService.get("HOST_ENV") === "development",
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
 
   app.use([LoggerMiddleware]);
 
-  const port = configService.get("PORT");
-
-  await app.listen(port ?? 4000);
+  await app.listen(configService.get("PORT") ?? 4000);
 
   console.log(`Server is running on: ${await app.getUrl()}`);
 }
