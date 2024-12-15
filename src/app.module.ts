@@ -2,8 +2,9 @@ import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { SentryModule } from "@sentry/nestjs/setup";
-import { modules } from "./modules";
 import { configLoads } from "./configs";
+import { modules } from "./modules";
+import { UserSubscriber } from "./subscribers";
 
 @Module({
   imports: [
@@ -28,8 +29,9 @@ import { configLoads } from "./configs";
         password: configService.get("DB_PASSWORD"),
         database: configService.get("DB_NAME"),
         autoLoadEntities: true,
-        synchronize: false,
+        synchronize: configService.get("HOST_ENV") === "development",
         entities: ["@/entities/*.entity.ts"],
+        subscribers: [UserSubscriber],
         ssl: {
           ca: configService.get("DB_CA"),
         },

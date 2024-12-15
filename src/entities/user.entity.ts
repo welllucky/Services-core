@@ -1,11 +1,4 @@
-import { encryptPassword } from "src/utils";
-import {
-  BeforeInsert,
-  BeforeUpdate,
-  Column,
-  Entity,
-  PrimaryGeneratedColumn,
-} from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: "Users" })
 export class User {
@@ -56,12 +49,4 @@ export class User {
 
   @Column({ length: 80 })
   sector!: string;
-
-  @BeforeUpdate()
-  @BeforeInsert()
-  async encryptPasswordInDB(password: string) {
-    const { hashedPassword, salt } = await encryptPassword(password);
-    this.hash = hashedPassword;
-    this.salt = salt;
-  }
 }
