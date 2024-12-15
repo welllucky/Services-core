@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Session } from "./session.entity";
 
 @Entity({ name: "Users" })
 export class User {
@@ -16,9 +17,6 @@ export class User {
 
   @Column({ length: 256 })
   hash!: string;
-
-  @Column({ length: 256 })
-  salt!: string;
 
   @Column({ type: "datetime", nullable: true })
   lastConnection!: Date | null;
@@ -49,4 +47,7 @@ export class User {
 
   @Column({ length: 80 })
   sector!: string;
+
+  @OneToMany(() => Session, (session) => session.user)
+  public sessions!: Session[];
 }

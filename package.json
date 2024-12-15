@@ -58,6 +58,7 @@
     "@nestjs/cli": "^10.4.9",
     "@nestjs/schematics": "^10.2.3",
     "@nestjs/testing": "^10.4.15",
+    "@types/bcrypt": "^5.0.2",
     "@types/eslint": "9.6.1",
     "@types/eslint-scope": "3.7.7",
     "@types/express": "^5.0.0",

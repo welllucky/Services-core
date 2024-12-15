@@ -1,58 +1,46 @@
 import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-// import { genSalt, hash } from "bcrypt";
 import { User } from "src/entities";
-import { Repository } from "typeorm";
 import { CreateUserDTO, UpdateUserDTO } from "./dto";
+import { UserRepository } from "./user.repository";
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-  ) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
   async findAll(): Promise<User[]> {
-    return await this.userRepository.find();
+    return await this.userRepository.findAll();
   }
 
-  async findOne(id: string): Promise<User | null> {
+  async findOne(id: string) {
     try {
-      return await this.userRepository.findOneBy({ register: id });
+      return await this.userRepository.findById(id);
     } catch (error) {
       console.error("Error finding user:", error);
       throw new Error("Could not find user");
     }
   }
 
-  async remove(id: string): Promise<void> {
-    try {
-      await this.userRepository.delete(id);
-    } catch (error) {
-      console.error("Error deleting user:", error);
-      throw new Error("Could not delete user");
-    }
-  }
+  // async remove(id: string): Promise<void> {
+  //   try {
+  //     await this.userRepository.delete(id);
+  //   } catch (error) {
+  //     console.error("Error deleting user:", error);
+  //     throw new Error("Could not delete user");
+  //   }
+  // }
 
-  async findByEmail(email: string): Promise<User | null> {
+  async findByEmail(email: string) {
     try {
-      return await this.userRepository.findOneBy({ email });
+      return await this.userRepository.findByEmail(email);
     } catch (error) {
       console.error("Error finding user by email:", error);
       throw new Error("Could not find user by email");
     }
   }
 
-  async create(data: CreateUserDTO): Promise<User | null> {
-    const newUser = this.userRepository.create(data);
+  async create(data: CreateUserDTO) {
     try {
-      await this.userRepository.save(newUser, {
-        data: {
-          rootPassword: data.password,
-        },
-      });
-
-      return newUser;
+      return await this.userRepository.create(data, data.password);
     } catch (error) {
       console.error("Error saving new user:", error);
       throw new Error("Could not save new user");
@@ -61,7 +49,7 @@ export class UserService {
 
   async update(id: string, data: UpdateUserDTO) {
     try {
-      return await this.userRepository.update({ register: id }, data);
+      return await this.userRepository.update(id, data);
     } catch (error) {
       console.error("Error updating user:", error);
       throw new Error("Could not update user");

@@ -1,19 +1,16 @@
-import { Session } from "@/entities";
 import { ISignIn, SessionDTo, SessionStatus } from "@/typing";
 import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
 import { addBreadcrumb } from "@sentry/nestjs";
-import { Repository } from "typeorm";
-// import { SessionModel } from "./session.model";
-// import { UserModel } from "../user/user.model";
+import { UserModel } from "../user/user.model";
+import { SessionModel } from "./session.model";
+import { SessionRepository } from "./session.repository";
 
 @Injectable()
 export class SessionService {
   constructor(
-    @InjectRepository(Session)
-    private readonly sessionRepository: Repository<Session>,
-    // private readonly sessionModel: SessionModel,
-    // private readonly userModel: UserModel,
+    private readonly sessionRepository: SessionRepository,
+    private readonly sessionModel: SessionModel,
+    private readonly userModel: UserModel,
   ) {}
 
   async create(credentials: ISignIn) {
@@ -42,21 +39,21 @@ export class SessionService {
         },
       });
 
-      // this.userModel.init({
-      //   email: credentials.email,
-      // });
+      await this.userModel.init({
+        email: credentials.email,
+      });
 
-      // if (!this.userModel.exists({ safe: true })) {
-      //   addBreadcrumb({
-      //     category: "api",
-      //     level: "log",
-      //     message: "User not exist",
-      //     data: {
-      //       email: credentials.email,
-      //     },
-      //   });
-      //   throw new Error("User not found");
-      // }
+      if (!this.userModel.exists({ safe: true })) {
+        addBreadcrumb({
+          category: "api",
+          level: "log",
+          message: "User not exist",
+          data: {
+            email: credentials.email,
+          },
+        });
+        throw new Error("User not found");
+      }
 
       addBreadcrumb({
         category: "api",
@@ -67,55 +64,48 @@ export class SessionService {
         },
       });
 
-      // const actualSession = await this.find(this.userModel.getRegister());
+      const actualSession = await this.find(this.userModel.getRegister());
 
-      // if (actualSession && actualSession.isActive) {
-      //   await this.update(
-      //     {
-      //       isActive: false,
-      //     },
-      //     actualSession.id,
-      //     this.userModel.getRegister(),
-      //   );
-      // }
+      if (actualSession && actualSession.isActive) {
+        await this.update(
+          {
+            isActive: false,
+          },
+          actualSession.id,
+          this.userModel.getRegister(),
+        );
+      }
 
-      // const { accessToken, expiresAt } =
-      //   await this.sessionModel.createAccessToken({
-      //     password: credentials.password,
-      //   });
+      const { accessToken, expiresAt } =
+        await this.sessionModel.createAccessToken({
+          password: credentials.password,
+        });
 
-      // return {
-      //   accessToken,
-      //   expiresAt,
-      // };
-    } catch (error) {}
+      return {
+        accessToken,
+        expiresAt,
+      };
+    } catch (error) {
+      console.log(error);
+      throw new Error(`Access Token is not created out: ${error}`);
+    }
   }
 
   async update(
     session: Partial<SessionDTo>,
     sessionId: string,
-    userId: string,
+    register: string,
   ) {
-    // this.userModel.init({
-    //   register: userId,
-    // });
+    await this.sessionModel.init(sessionId, register);
 
-    // await this.sessionModel.init(sessionId, userId);
+    const isSessionValid = await this.sessionModel.isValid();
 
-    // const isSessionValid = await this.sessionModel.isValid();
+    if (!isSessionValid) throw new Error("Session is not valid");
 
-    // if (!isSessionValid) throw new Error("Session is not valid");
-
-    await this.sessionRepository.update(
-      {
-        id: sessionId,
-        user: {
-          register: userId,
-        },
-      },
-      {
-        ...session,
-      },
+    return await this.sessionRepository.update(
+      session,
+      sessionId,
+      this.sessionModel.session.user.id,
     );
   }
 
@@ -134,18 +124,7 @@ export class SessionService {
     sessionId?: string,
     status: SessionStatus = "active",
   ) {
-    return this.sessionRepository.findOne({
-      where: {
-        user: {
-          register: userId,
-        },
-        ...(sessionId && { id: sessionId }),
-        isActive: status === "all" ? undefined : status === "active",
-      },
-      order: {
-        createdAt: "ASC",
-      },
-    });
+    return this.sessionRepository.find(userId, sessionId, status);
   }
 
   async findAll(
@@ -163,16 +142,6 @@ export class SessionService {
 
     const register = "242424";
 
-    return this.sessionRepository.find({
-      where: {
-        user: {
-          register,
-        },
-        isActive: status === "all" ? undefined : status === "active",
-      },
-      order: {
-        createdAt: "ASC",
-      },
-    });
+    return this.sessionRepository.findAll(register, status);
   }
 }

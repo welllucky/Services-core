@@ -1,3 +1,3 @@
-export * from "../middleware";
+export * from "./alias";
 export * from "./exceptions";
 export * from "./functions";

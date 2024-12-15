@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { SystemRolesSchema } from "./SystemRoles";
 
 export const RegisterUserSchema = z.object({
   email: z
@@ -9,5 +10,6 @@ export const RegisterUserSchema = z.object({
   name: z.string().min(5).max(80),
   password: z.string().min(8),
   role: z.string(),
+  systemRole: SystemRolesSchema,
   sector: z.string(),
 });
