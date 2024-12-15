@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-} from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Put } from "@nestjs/common";
 import { CreateUserDTO, UpdateUserDTO } from "./dto";
 import { UserService } from "./user.service";
 
@@ -43,8 +35,8 @@ export class UserController {
     this.userService.update(register, updateUserDto);
   }
 
-  @Delete(":register")
-  remove(@Param("register") register: string) {
-    this.userService.remove(register);
-  }
+  // @Delete(":register")
+  // remove(@Param("register") register: string) {
+  //   this.userService.remove(register);
+  // }
 }

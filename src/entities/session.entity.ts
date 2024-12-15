@@ -16,15 +16,15 @@ class Session extends BaseEntity {
   @PrimaryGeneratedColumn()
   public readonly id!: string;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, (user) => user.sessions)
   @JoinColumn()
-  public readonly user!: Relation<User>;
+  public user!: Relation<User>;
 
   @Column("datetime")
-  public readonly expiresAt!: Date;
+  public expiresAt!: Date;
 
   @Column("datetime")
-  public readonly createdAt!: Date;
+  public createdAt!: Date;
 
   @Column("boolean", {
     default: true,

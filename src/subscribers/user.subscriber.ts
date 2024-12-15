@@ -15,9 +15,8 @@ export class UserSubscriber implements EntitySubscriberInterface<User> {
   beforeInsert(event: InsertEvent<User>) {
     const rootPassword = event.queryRunner.data?.rootPassword;
 
-    const { hashedPassword, salt } = encryptPassword(rootPassword);
+    const { hashedPassword } = encryptPassword(rootPassword);
 
     event.entity.hash = hashedPassword;
-    event.entity.salt = salt;
   }
 }

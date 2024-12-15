@@ -5,12 +5,12 @@ export const ISessionSchema = z.object({
   userId: z.string(),
   token: z.string(),
   isActive: z.boolean(),
-  expiresAt: z.string().or(z.date()),
-  createdAt: z.string().or(z.date()),
-  updatedAt: z.string().or(z.date()),
+  expiresAt: z.date(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
 });
 
 export const SessionResponseSchema = z.object({
   accessToken: z.string(),
-  expiresAt: z.string().or(z.date()),
+  expiresAt: z.date(),
 });
