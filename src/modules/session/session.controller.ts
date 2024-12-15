@@ -29,4 +29,3 @@ export class SessionController {
     return this.sessionService.create(credentials);
   }
 }
-
