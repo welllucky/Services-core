@@ -10,6 +10,8 @@ import {
 } from "@nestjs/platform-express";
 import { useContainer } from "class-validator";
 import { AppModule } from "./app.module.js";
+import { join } from "path";
+import * as express from "express";
 
 async function startTheService() {
   const app = await NestFactory.create<NestExpressApplication>(
@@ -18,6 +20,8 @@ async function startTheService() {
   );
 
   const configService = app.get(ConfigService);
+
+  app.use("/public", express.static(join(__dirname, "..", "public")));
 
   app.enableVersioning({
     type: VersioningType.URI,

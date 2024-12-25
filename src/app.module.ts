@@ -2,12 +2,14 @@ import { MiddlewareConsumer, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { SentryModule } from "@sentry/nestjs/setup";
+import { AppController } from "./app.controller";
 import { configLoads } from "./configs";
 import { modules } from "./modules";
 import { SessionSubscriber, UserSubscriber } from "./subscribers";
 import { FormatResponseMiddleware } from "./utils/middlewares";
 
 @Module({
+  controllers: [AppController],
   imports: [
     SentryModule.forRoot(),
     ConfigModule.forRoot({
