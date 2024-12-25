@@ -18,29 +18,28 @@ class UserModel {
   }
 
   async init({ register, email }: UserModelConstructorModel) {
-    this.user = null;
-    const userByRegister = register
-      ? await this.repository.findByRegister(register)
-      : null;
+    try {
+      this.user = null;
+      const userByRegister = register
+        ? await this.repository.findByRegister(register)
+        : null;
 
-    const userByEmail = email ? await this.repository.findByEmail(email) : null;
+      const userByEmail = email
+        ? await this.repository.findByEmail(email)
+        : null;
 
-    if (!userByEmail && !userByRegister) {
-      throw new Error("Usuário não encontrado");
+      if (!userByEmail && !userByRegister) {
+        throw new Error("Usuário não encontrado");
+      }
+
+      this.user = register ? userByRegister : userByEmail;
+    } catch (error) {
+      console.error(error);
     }
-
-    this.user = register ? userByRegister : userByEmail;
-
-    console.log({ actual: register ? userByRegister : userByEmail });
   }
 
-  exists({ safe = false }: { safe?: boolean }) {
-    if (!this.user) {
-      if (!safe) throw new Error("Usuário não encontrado");
-      return false;
-    }
-
-    return true;
+  exists() {
+    return this.user !== null;
   }
 
   getData() {
@@ -49,7 +48,8 @@ class UserModel {
 
   getEntity() {
     if (this.user) return this.user;
-    throw new Error("Não existe entidade para o usuário");
+
+    return null;
   }
 
   getFullName() {
@@ -110,7 +110,6 @@ class UserModel {
         email: data.email,
         name: data.name,
         role: data.role,
-        systemRole: data.systemRole,
         sector: data.sector,
       },
       data.password,

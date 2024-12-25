@@ -1,10 +1,11 @@
-import { Module } from "@nestjs/common";
+import { MiddlewareConsumer, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { SentryModule } from "@sentry/nestjs/setup";
 import { configLoads } from "./configs";
 import { modules } from "./modules";
 import { SessionSubscriber, UserSubscriber } from "./subscribers";
+import { FormatResponseMiddleware } from "./utils/middlewares";
 
 @Module({
   imports: [
@@ -41,4 +42,8 @@ import { SessionSubscriber, UserSubscriber } from "./subscribers";
     ...modules,
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(FormatResponseMiddleware).forRoutes("*");
+  }
+}

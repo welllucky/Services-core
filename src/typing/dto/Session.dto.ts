@@ -2,16 +2,17 @@ import { PickType } from "@nestjs/mapped-types";
 import {
   IsBoolean,
   IsDate,
+  IsEmail,
   IsJWT,
   IsNotEmpty,
   IsString,
 } from "class-validator";
 import { CreateUserDTO } from "./User.dto";
 
-export class GetSessionDTO extends PickType(CreateUserDTO, [
-  "email",
-  "password",
-]) {}
+export class GetSessionDTO extends PickType(CreateUserDTO, ["password"]) {
+  @IsEmail({}, { message: "Email must be a valid email" })
+  email: string;
+}
 
 export class SessionDTO {
   @IsJWT({
@@ -37,6 +38,8 @@ export class SessionDTO {
   })
   userId: string;
 }
+
+export class AccessTokenDTO extends PickType(SessionDTO, ["token"]) {}
 
 export class SessionInfoDTO extends PickType(SessionDTO, [
   "token",

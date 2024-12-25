@@ -40,6 +40,7 @@ export class UserRepository {
       | "hash"
       | "salt"
       | "sessions"
+      | "systemRole"
     >,
     password: string,
   ) {
