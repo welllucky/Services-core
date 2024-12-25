@@ -1,4 +1,4 @@
 export * from "./alias";
-export * from "./exceptions";
+export * from "./filters";
 export * from "./functions";
 export * from "./validators";

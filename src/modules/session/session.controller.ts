@@ -1,8 +1,9 @@
-import { GetSessionDTO, SessionStatus } from "@/typing";
+import { AccessTokenDTO, GetSessionDTO, SessionStatus } from "@/typing";
 import {
   Body,
   Controller,
   Get,
+  Headers,
   HttpCode,
   Post,
   // Headers,
@@ -37,9 +38,8 @@ export class SessionController {
   }
 
   @Post("close")
-  @HttpCode(501)
-  close() {
-    // @Headers("Authorization") token: string,
-    return "Not implemented";
+  @HttpCode(204)
+  close(@Headers("Authorization") token: AccessTokenDTO) {
+    return this.sessionService.close(token);
   }
 }

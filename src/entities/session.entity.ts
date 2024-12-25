@@ -13,7 +13,7 @@ import { User } from "./user.entity";
   name: "Sessions",
 })
 class Session extends BaseEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn("increment")
   public readonly id!: string;
 
   @ManyToOne(() => User, (user) => user.sessions)

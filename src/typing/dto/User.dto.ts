@@ -1,6 +1,6 @@
 import { SystemRoles } from "@/typing";
 import { UniqueEmail, UniqueRegister } from "@/utils";
-import { OmitType, PartialType } from "@nestjs/mapped-types";
+import { OmitType, PartialType, PickType } from "@nestjs/mapped-types";
 import {
   IsBoolean,
   IsDate,
@@ -13,7 +13,7 @@ import {
   MinLength,
 } from "class-validator";
 
-export class CreateUserDTO {
+export class UserDTO {
   @IsString({
     message: "Register must be a string",
   })
@@ -52,6 +52,9 @@ export class CreateUserDTO {
     minLowercase: 1,
   })
   password: string;
+
+  @IsString()
+  hash: string;
 
   @IsDate({
     message: "Last connection must be a date",
@@ -102,13 +105,63 @@ export class CreateUserDTO {
   systemRole: SystemRoles;
 }
 
-export class UpdateUserDTO extends PartialType(
-  OmitType(CreateUserDTO, [
-    "register",
-    "lastConnection",
-    //   "isBanned",
-    //   "canCreateTicket",
-    //   "canResolveTicket",
-    //   "systemRole",
-  ]),
-) {}
+export class CreateUserDTO extends OmitType(UserDTO, [
+  "isBanned",
+  "canCreateTicket",
+  "lastConnection",
+  "canResolveTicket",
+  "hash",
+  "systemRole",
+]) {}
+
+export class UpdateUserDTO extends PartialType(CreateUserDTO) {}
+
+export class UserPublicDTO extends PickType(UserDTO, [
+  "name",
+  "email",
+  "role",
+  "sector",
+  "canCreateTicket",
+  "canResolveTicket",
+  "isBanned",
+  "register",
+]) {
+  constructor(
+    readonly name: string,
+    readonly email: string,
+    readonly role: string,
+    readonly sector: string,
+    readonly canCreateTicket: boolean,
+    readonly canResolveTicket: boolean,
+    readonly isBanned: boolean,
+    readonly register: string,
+  ) {
+    super();
+  }
+}
+
+export class UserRestrictDTO extends PickType(UserDTO, [
+  "name",
+  "email",
+  "role",
+  "sector",
+  "isBanned",
+  "canCreateTicket",
+  "canResolveTicket",
+  "systemRole",
+  "register",
+]) {
+  constructor(
+    readonly name: string,
+    readonly email: string,
+    readonly role: string,
+    readonly sector: string,
+    readonly isBanned: boolean,
+    readonly canCreateTicket: boolean,
+    readonly canResolveTicket: boolean,
+    readonly systemRole: SystemRoles,
+    readonly register: string,
+  ) {
+    super();
+  }
+}

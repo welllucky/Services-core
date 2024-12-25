@@ -1,3 +1,2 @@
-export * from "./User.dto";
 export * from "./Session.dto";
-export * from "./UserTable";
+export * from "./User.dto";

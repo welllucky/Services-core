@@ -1,14 +1,14 @@
 import { IUser } from "@/typing";
-import jwt from "jsonwebtoken";
+import { verify } from "jsonwebtoken";
 
 export const getUserByToken = async (token: string) => {
-  const accessToken = token?.replace("Bearer ", "");
+  const accessToken = token?.replace("Bearer", "").trimStart().trimEnd();
 
   if (!accessToken) {
-    throw new Error("No access token found");
+    return { userData: null, accessToken: null };
   }
 
-  const userData = jwt.verify(accessToken, process.env.AUTH_SECRET ?? "", {
+  const userData = verify(accessToken, process.env.AUTH_SECRET ?? "", {
     algorithms: ["HS256"],
   }) as unknown as IUser;
 

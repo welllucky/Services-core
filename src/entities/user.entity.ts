@@ -52,7 +52,7 @@ export class User {
   @Column({ type: "timestamp", nullable: true })
   public deletedAt!: Date | null;
 
-  @Column({ type: "varchar", default: "user" })
+  @Column({ type: "varchar"})
   public role!: string;
 
   @Column({ type: "varchar", default: "user" })
