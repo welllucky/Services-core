@@ -38,6 +38,9 @@ importers:
       '@sentry/profiling-node':
         specifier: ^8.43.0
         version: 8.43.0
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.10.2
       bcrypt:
         specifier: ^5.1.1
         version: 5.1.1
@@ -47,6 +50,9 @@ importers:
       class-validator:
         specifier: ^0.14.1
         version: 0.14.1
+      express:
+        specifier: ^4.21.2
+        version: 4.21.2
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
@@ -96,9 +102,6 @@ importers:
       '@types/morgan':
         specifier: ^1.9.9
         version: 1.9.9
-      '@types/node':
-        specifier: ^22.10.2
-        version: 22.10.2
       '@types/supertest':
         specifier: ^6.0.2
         version: 6.0.2
