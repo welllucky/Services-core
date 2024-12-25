@@ -1,99 +1,123 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+![Logo](https://firebasestorage.googleapis.com/v0/b/runnerdois.appspot.com/o/ServicesProject%2FImages%2FServices%20-%20Capa.png?alt=media&token=a5131cc4-2b48-4500-b90f-a22d55352242)
+![](https://api.checklyhq.com/v1/badges/checks/dd6528e6-fac1-4d85-8295-5b0697e16d86?style=flat&theme=dark)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# ⛓️‍💥Desburocratizador do gerenciamento de chamados
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Se você já algum dia precisou abrir um chamado sabe o quão chato e burocratico esse processo é. E formulários e mais formulários, sistemas tão antigos que fazem o windows 7 parecer uma arte minimalista.
 
-## Description
+Pensando em trazer algo mais moderno para esse tipo de sistema surgiu o Services, um aplicativo Helpdesk/Service Desk que tem como objetivo resolver o problema de resolver problemas.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Chega de formulários gigantes ou mal diagramados, chega de adicionar informações duvidosas, não é como você sempre coloque seu chamado com a prioridade alta, não é?
 
-## Project setup
+## 🎉 Bem vindo ao Services!
 
-```bash
-$ pnpm install
-```
+O Services vem para trazer uma experiência um pouco diferente na hora de registar o seu problema, são três etapas:
 
-## Compile and run the project
+- Você diz o que aconteceu
+- Adiciona, ou não, as evidências
+- E verifica se tá tudo ok para registrar, simples.
 
-```bash
-# development
-$ pnpm run start
+Você não precisa saber para quem enviar, qual o setor responsável, qual é a urgência do seu chamado ou algo do tipo. O Services se encarrega por isso, e não é só isso, o Services:
 
-# watch mode
-$ pnpm run start:dev
+![Logo](https://firebasestorage.googleapis.com/v0/b/runnerdois.appspot.com/o/ServicesProject%2FImages%2FFuncionalidades.png?alt=media&token=063796b2-ebec-4970-992d-247c6e637048)
 
-# production mode
-$ pnpm run start:prod
-```
+## 📃 Licença
 
-## Run tests
+Para isso o Services possui a licença [GNU General Public License v3.0](https://choosealicense.com/licenses/gpl-3.0/), isso significa que:
 
-```bash
-# unit tests
-$ pnpm run test
+- Liberdade de Uso: Você pode usar este software para qualquer finalidade.
 
-# e2e tests
-$ pnpm run test:e2e
+- Liberdade de Distribuição: Você pode redistribuir cópias deste software.
+- Liberdade de Modificação: Você pode modificar o software e distribuir essas modificações, desde que também estejam sob a GNU GPLv3.
 
-# test coverage
-$ pnpm run test:cov
-```
+- Distribuição de Código-Fonte: Ao distribuir o software, seja de forma modificada ou não, você deve disponibilizar o código-fonte completo.
 
-## Deployment
+- Uso em Rede: Se você modificar este software e permitir que outros o utilizem através de uma rede (por exemplo, um aplicativo web), você deve disponibilizar o código-fonte da sua versão modificada para esses usuários.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+Saiba mais clicando no link ao lado: [GNU GPLv3](https://choosealicense.com/licenses/gpl-3.0/)
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## 🛠 Stack utilizada
+
+**Front-end:** Next 14, Styled Components, Zustand, Typescript
+
+**Back-end:** Node, TypeOrm, Nest, MySql
+
+**Testes:** Playwright, React Testing Library, Jest
+
+## 💾 Rodando localmente
+
+Clone o projeto
 
 ```bash
-$ pnpm install -g mau
-$ mau deploy
+  git clone https://github.com/welllucky/Services-core
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Entre no diretório do projeto
 
-## Resources
+```bash
+  cd Services
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+Instale as dependências
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```bash
+  pnpm i # ou rode npm install
+```
 
-## Support
+Inicie o servidor
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+  pnpm dev # ou rode npm run dev
+```
 
-## Stay in touch
+## Variáveis de Ambiente
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Para rodar esse projeto, você vai precisar adicionar as seguintes variáveis de ambiente no seu .env
 
-## License
+### Obrigatórias
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+`NODE_ENV` - development | production
+
+`HOST_ENV` - development | qas | pre-stage | production
+
+`APPLICATION_PORT` - Porta onde a aplicação está rodando
+
+`BASE_URL` - Url da aplicação
+
+`DB_HOST` - Host do banco de dados, não necessário ao usar o SQlite
+
+`DB_PORT` - Porta do banco de dados, não necessário ao usar o SQlite
+
+`DB_USER` - Usuário do banco de dados, não necessário ao usar o SQlite
+
+`DB_PASSWORD` - Usuário do banco de dados, não necessário ao usar o SQlite
+
+`DB_NAME` - Nome do banco de dados, não necessário ao usar o SQlite
+
+`DB_DIALECT` - mysql | postgres | sqlite | db2 | mariadb | mssql
+
+`DB_STORAGE` - Nome do arquivo utilizado para armazenar os dados, exlusivo do SQlite
+
+`DB_CA`
+
+`AUTH_SECRET`
+
+### Opcionais
+
+`SENTRY_PROJECT`
+
+`SENTRY_ORG`
+
+`SENTRY_DSN`
+
+`SENTRY_AUTH_TOKEN`
+
+`CRON_SECRET`
+
+`PORT`
+
+`CI`
+
+## Autores
+
+- [@welllucky](https://github.com/welllucky)
