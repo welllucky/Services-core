@@ -1,10 +1,10 @@
 {
   "name": "services-core",
-  "version": "0.1.0",
+  "version": "0.2.4",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/welllucky/services.git"
+    "url": "git+https://github.com/welllucky/services-core.git"
   },
   "author": {
     "name": "Wellington Braga",
@@ -15,9 +15,9 @@
     "build": "nest build && pnpm sentry:sourcemaps",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
+    "start:prod": "node dist/main",
     "dev": "nest start --watch",
     "debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -51,10 +51,10 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.20",
-    "zod": "^3.24.1"
+    "zod": "^3.24.1",
+    "@nestjs/cli": "^10.4.9"
   },
   "devDependencies": {
-    "@nestjs/cli": "^10.4.9",
     "@nestjs/schematics": "^10.2.3",
     "@nestjs/testing": "^10.4.15",
     "@types/bcrypt": "^5.0.2",
