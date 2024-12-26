@@ -1,12 +1,12 @@
 import { UserModel } from "@/modules/user/user.model";
 import { HttpStatus, Injectable, NestMiddleware } from "@nestjs/common";
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { getUserByToken } from "../functions";
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
   constructor(readonly userModel: UserModel) {}
-  async use(req: Request, res: Response, next: NextFunction) {
+  async use(req: Request, res: Response) {
     const accessToken = req.headers.authorization.replace("Bearer ", "");
     const { userData } = await getUserByToken(accessToken);
     await this.userModel.init({ register: userData.register });

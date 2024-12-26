@@ -7,7 +7,7 @@ export class FormatResponseMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     const originalSend = res.send;
 
-    res.send = function (body: any) {
+    res.send = function (body: unknown) {
       const parsedBody: IResponseFormat<
         Record<string, unknown> | Record<string, unknown>[]
       > = JSON.parse(body as unknown as string);
@@ -15,13 +15,6 @@ export class FormatResponseMiddleware implements NestMiddleware {
       const hasError = res.statusCode >= 400;
 
       const hasData = res.statusCode !== 204 && !hasError && !!parsedBody.data;
-
-      console.log({
-        body: parsedBody,
-        error: parsedBody.error,
-        hasError,
-        hasData,
-      });
 
       const resMessage = parsedBody?.message
         ? parsedBody.message

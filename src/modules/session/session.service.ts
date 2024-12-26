@@ -31,18 +31,23 @@ export class SessionService {
     credentials: GetSessionDTO,
   ): Promise<IResponseFormat<SessionInfoDTO>> {
     if (!credentials.email || !credentials.password) {
+      const fieldsEmptyMessage = `${!credentials.email ? "Email" : ""}${!credentials.email && !credentials.password ? " and " : ""}${!credentials.password ? "Password" : ""} is empty.`;
+
       addBreadcrumb({
         category: "api",
         level: "warning",
-        message: "Email or Password is empty.",
+        message: fieldsEmptyMessage,
         data: {
-          isEmailEmpty: credentials.email === "",
-          isPasswordEmpty: credentials.password === "",
+          isEmailEmpty: !credentials.email,
+          isPasswordEmpty: !credentials.password,
         },
       });
 
       throw new HttpException(
-        "Email or Password is empty.",
+        {
+          title: fieldsEmptyMessage,
+          message: `${fieldsEmptyMessage}. Please fill all fields.`,
+        },
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -72,9 +77,18 @@ export class SessionService {
           email: credentials.email,
         },
       });
-      throw new NotFoundException("User not found", {
-        description: "User not found. Maybe the email is wrong or not exists.",
-      });
+
+      throw new NotFoundException(
+        {
+          title: "User not found",
+          message:
+            "User not found. Maybe the email is wrong or not was registered.",
+        },
+        {
+          description:
+            "User not found. Maybe the email is wrong or not exists.",
+        },
+      );
     }
 
     const actualSession = await this.sessionRepository.find(userId);
@@ -113,7 +127,13 @@ export class SessionService {
     const isSessionValid = await this.sessionModel.isValid();
 
     if (!isSessionValid)
-      throw new HttpException("Session is not valid", HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        {
+          title: "Session not found",
+          message: "Session not found or is not valid",
+        },
+        HttpStatus.BAD_REQUEST,
+      );
 
     await this.sessionRepository.update(
       session,
@@ -131,14 +151,24 @@ export class SessionService {
     const userId = userData?.register;
 
     if (!userId) {
-      throw new HttpException("User not found", HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        {
+          title: "User provided is not valid",
+          message:
+            "User not found or not exists, please check the credentials.",
+        },
+        HttpStatus.NOT_FOUND,
+      );
     }
 
     const actualSession = await this.find(userId);
 
     if (!actualSession) {
       throw new HttpException(
-        "Don't exist an active session",
+        {
+          title: "Session not found",
+          message: "Active session not found",
+        },
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -149,7 +179,7 @@ export class SessionService {
     const sessionId = this.sessionModel.session.id;
 
     if (!isSessionValid) {
-      throw new HttpException("Session is not valid", HttpStatus.BAD_REQUEST);
+      return response.status(204);
     }
 
     await this.update(
@@ -167,20 +197,27 @@ export class SessionService {
     userId: string,
     sessionId?: string,
     status: SessionStatus = "active",
+    safe = false,
   ) {
     const session = await this.sessionRepository.find(
       userId,
       sessionId,
       status,
     );
-    if (session) {
-      return session;
-    } else {
-      throw new HttpException("Session not found", HttpStatus.NOT_FOUND);
+    if (!session && !safe) {
+      throw new HttpException(
+        {
+          title: "Session not found",
+          message: "Session not found",
+        },
+        HttpStatus.NOT_FOUND,
+      );
     }
+
+    return session;
   }
 
-  async findAll(token: string, status: SessionStatus = "active") {
+  async findAll(token: string, status: SessionStatus = "active", safe = false) {
     const { userData } = await getUserByToken(token);
     const actualSession = await this.find(userData.register);
 
@@ -193,6 +230,18 @@ export class SessionService {
       );
     }
 
-    return this.sessionRepository.findAll(register, status);
+    const sessions = this.sessionRepository.findAll(register, status);
+
+    if (!sessions && !safe) {
+      throw new HttpException(
+        {
+          title: "Sessions not found",
+          message: "Sessions not found",
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return sessions;
   }
 }

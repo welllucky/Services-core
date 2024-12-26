@@ -12,130 +12,146 @@ import { UserRepository } from "./user.repository";
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async findAll(): Promise<IResponseFormat<UserPublicDTO[]>> {
-    try {
-      const users = await this.userRepository.findAll();
+  async findAll(
+    safe: boolean = false,
+  ): Promise<IResponseFormat<UserPublicDTO[]>> {
+    const users = await this.userRepository.findAll();
+    if (!users && !safe) {
+      throw new HttpException(
+        {
+          title: "Users not found",
+          message: "No users actives in the system",
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
 
-      if (users) {
-        return {
-          title: "Users was found",
-          message: "All users actives in the system",
-          data: users.map(
-            (user) =>
-              new UserPublicDTO(
-                user.name,
-                user.email,
-                user.role,
-                user.sector,
-                user.canCreateTicket,
-                user.canResolveTicket,
-                user.isBanned,
-                user.register,
-              ),
+    return {
+      title: "Users was found",
+      message: "All users actives in the system",
+      data: users.map(
+        (user) =>
+          new UserPublicDTO(
+            user.name,
+            user.email,
+            user.role,
+            user.sector,
+            user.canCreateTicket,
+            user.canResolveTicket,
+            user.isBanned,
+            user.register,
           ),
-        };
-      } else {
-        throw new HttpException(
-          {
-            title: "Users not found",
-            message: "No users actives in the system",
-          },
-          HttpStatus.NOT_FOUND,
-        );
-      }
-    } catch (error) {
-      console.error("Error finding users:", error);
-      throw new HttpException(
-        "Could not find users",
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+      ),
+    };
   }
 
-  async findOne(register: string) {
-    try {
-      const user = await this.userRepository.findByRegister(register);
-      if (user) {
-        return user;
-      } else {
-        throw new HttpException("User not found", HttpStatus.NOT_FOUND);
-      }
-    } catch (error) {
-      console.error("Error finding user:", error);
+  async findOne(
+    register: string,
+    safe: boolean = false,
+  ): Promise<IResponseFormat<UserRestrictDTO>> {
+    const user = await this.userRepository.findByRegister(register);
+    if (!user && !safe) {
       throw new HttpException(
-        "Could not find user",
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        {
+          title: "User not found",
+          message: "User was not found, please check if user exist.",
+        },
+        HttpStatus.NOT_FOUND,
       );
     }
+
+    return {
+      message: "User was found",
+      data: new UserRestrictDTO(
+        user.name,
+        user.email,
+        user.role,
+        user.sector,
+        user.canCreateTicket,
+        user.canResolveTicket,
+        user.isBanned,
+        user.systemRole,
+        user.register,
+      ),
+    };
   }
 
-  async findByEmail(email: string) {
-    try {
-      const user = await this.userRepository.findByEmail(email);
-      if (user) {
-        return user;
-      } else {
-        throw new HttpException("User not found", HttpStatus.NOT_FOUND);
-      }
-    } catch (error) {
-      console.error("Error finding user by email:", error);
+  async findByEmail(
+    email: string,
+    safe: boolean = false,
+  ): Promise<IResponseFormat<UserRestrictDTO>> {
+    const user = await this.userRepository.findByEmail(email);
+    if (!user && !safe) {
       throw new HttpException(
-        "Could not find user by email",
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        {
+          title: "User not found",
+          message: "User not found by email, please check the email.",
+        },
+        HttpStatus.NOT_FOUND,
       );
     }
+
+    return {
+      message: "User was found",
+      data: new UserRestrictDTO(
+        user.name,
+        user.email,
+        user.role,
+        user.sector,
+        user.canCreateTicket,
+        user.canResolveTicket,
+        user.isBanned,
+        user.systemRole,
+        user.register,
+      ),
+    };
   }
 
   async create(data: CreateUserDTO): Promise<IResponseFormat<UserRestrictDTO>> {
-    try {
-      const createdUser = await this.userRepository.create(data, data.password);
+    const createdUser = await this.userRepository.create(data, data.password);
 
-      if (createdUser) {
-        return {
-          title: "User created",
-          message: "User was created successfully",
-          data: new UserRestrictDTO(
-            createdUser.name,
-            createdUser.email,
-            createdUser.role,
-            createdUser.sector,
-            createdUser.isBanned,
-            createdUser.canCreateTicket,
-            createdUser.canResolveTicket,
-            createdUser.systemRole,
-            createdUser.register,
-          ),
-        };
-      } else {
-        throw new HttpException(
-          {
-            title: "User not created",
-            message: "User was not created, please try again later",
-          },
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-    } catch (error) {
-      console.error("Error saving new user:", error);
+    if (!createdUser) {
       throw new HttpException(
-        "Could not save new user",
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        {
+          title: "User not created",
+          message: "User was not created, please try again later",
+        },
+        HttpStatus.BAD_REQUEST,
       );
     }
+
+    return {
+      title: "User created",
+      message: "User was created successfully",
+      data: new UserRestrictDTO(
+        createdUser.name,
+        createdUser.email,
+        createdUser.role,
+        createdUser.sector,
+        createdUser.isBanned,
+        createdUser.canCreateTicket,
+        createdUser.canResolveTicket,
+        createdUser.systemRole,
+        createdUser.register,
+      ),
+    };
   }
 
   async update(id: string, data: UpdateUserDTO) {
-    try {
-      await this.userRepository.update(id, data);
-      return {
-        message: "User updated successfully",
-      };
-    } catch (error) {
-      console.error("Error updating user:", error);
+    const updatedUser = await this.userRepository.update(id, data);
+
+    if (!updatedUser) {
       throw new HttpException(
-        "Could not update user",
+        {
+          title: "User not updated",
+          message: "User was not updated, please try again later",
+        },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+
+    return {
+      message: "User updated successfully",
+    };
   }
 }
