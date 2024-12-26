@@ -33,8 +33,8 @@ export class SessionController {
 
   @Post("refresh")
   @HttpCode(501)
-  refresh() // @Body() credentials: GetSessionDTO
-  {
+  refresh() {
+    // @Body() credentials: GetSessionDTO
     return "Not implemented";
   }
 
