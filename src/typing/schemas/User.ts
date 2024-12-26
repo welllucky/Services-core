@@ -39,5 +39,4 @@ export const UserTableSchema = z.object({
   deletedAt: z.date().nullish(),
 });
 
-
 export const CreateUserSchema = z.union([RegisterUserSchema, UserSchema]);
