@@ -41,6 +41,6 @@ export class SessionController {
   @Post("close")
   @HttpCode(204)
   close(@Headers("Authorization") token: AccessTokenDTO) {
-    return this.sessionService.close(token);
+    return this.sessionService.close(String(token));
   }
 }
