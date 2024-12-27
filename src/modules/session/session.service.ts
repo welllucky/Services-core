@@ -1,5 +1,4 @@
 import {
-  AccessTokenDTO,
   GetSessionDTO,
   IResponseFormat,
   SessionDTO,
@@ -46,7 +45,7 @@ export class SessionService {
       throw new HttpException(
         {
           title: fieldsEmptyMessage,
-          message: `${fieldsEmptyMessage}. Please fill all fields.`,
+          message: `${fieldsEmptyMessage} Please fill all fields.`,
         },
         HttpStatus.BAD_REQUEST,
       );
@@ -68,7 +67,7 @@ export class SessionService {
 
     const userId = this.userModel.getData()?.register;
 
-    if (!this.userModel.exists()) {
+    if (!userId) {
       addBreadcrumb({
         category: "api",
         level: "log",
@@ -93,14 +92,26 @@ export class SessionService {
 
     const actualSession = await this.sessionRepository.find(userId);
 
-    if (actualSession && actualSession.isActive) {
-      await this.update(
+    if (actualSession?.isActive) {
+      const closedSession = await this.update(
         {
           isActive: false,
         },
         actualSession.id,
         userId,
+        true,
       );
+
+      if (!closedSession?.message) {
+        throw new HttpException(
+          {
+            title: "Active Session not closed",
+            message:
+              "Exist a session already active and could not be closed. Please try again later",
+          },
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
     }
 
     const { accessToken, expiresAt } =
@@ -121,7 +132,8 @@ export class SessionService {
     session: Partial<SessionDTO>,
     sessionId: string,
     register: string,
-  ) {
+    safe = false,
+  ): Promise<IResponseFormat<SessionDTO>> {
     await this.sessionModel.init(sessionId, register);
 
     const isSessionValid = await this.sessionModel.isValid();
@@ -135,19 +147,41 @@ export class SessionService {
         HttpStatus.BAD_REQUEST,
       );
 
-    await this.sessionRepository.update(
+    const updatedSession = await this.sessionRepository.update(
       session,
       sessionId,
       this.sessionModel.session.user.id,
     );
+
+    if (!updatedSession?.affected) {
+      if (!safe) {
+        throw new HttpException(
+          {
+            title: "Session not updated",
+            message:
+              "Occurred an error while updating the session, please try again later",
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      return {
+        message: "",
+        error: {
+          title: "Session not updated",
+          message:
+            "Occurred an error while updating the session, please try again later",
+        },
+      };
+    }
 
     return {
       message: "Session updated successfully",
     };
   }
 
-  async close(token: AccessTokenDTO) {
-    const { userData } = await getUserByToken(String(token));
+  async close(token: string) {
+    const { userData } = await getUserByToken(token);
     const userId = userData?.register;
 
     if (!userId) {
@@ -161,7 +195,7 @@ export class SessionService {
       );
     }
 
-    const actualSession = await this.find(userId);
+    const actualSession = await this.find(userId, undefined, "active", true);
 
     if (!actualSession) {
       throw new HttpException(
@@ -182,13 +216,24 @@ export class SessionService {
       return response.status(204);
     }
 
-    await this.update(
+    const updatedSession = await this.update(
       {
         isActive: false,
       },
       sessionId,
       userId,
     );
+
+    if (!updatedSession?.message) {
+      throw new HttpException(
+        {
+          title: "Session not updated",
+          message:
+            "Occurred an error while updating the session, please try again later",
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     return response.status(204);
   }
@@ -199,11 +244,22 @@ export class SessionService {
     status: SessionStatus = "active",
     safe = false,
   ) {
+    if (!userId) {
+      throw new HttpException(
+        {
+          title: "UserId was not provided",
+          message: "UserId was not provided, please inform the user id.",
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     const session = await this.sessionRepository.find(
       userId,
       sessionId,
       status,
     );
+
     if (!session && !safe) {
       throw new HttpException(
         {
