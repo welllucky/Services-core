@@ -1,7 +1,7 @@
+import { User } from "@/entities";
 import { UniqueEmailValidator, UniqueRegisterValidator } from "@/utils";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { User } from "src/entities";
 import { UserController } from "./user.controller";
 import { UserModel } from "./user.model";
 import { UserRepository } from "./user.repository";
