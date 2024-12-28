@@ -4,7 +4,11 @@ import { UserRepository } from "../../user/user.repository";
 import { SessionModel } from "../session.model";
 import { SessionRepository } from "../session.repository";
 import { SessionService } from "../session.service";
-import { AUTH_SECRET_MOCK, mockedAccessToken, mockedAccessTokenWithoutRegister } from "@/utils";
+import {
+  AUTH_SECRET_MOCK,
+  mockedAccessToken,
+  mockedAccessTokenWithoutRegister,
+} from "@/utils";
 import { credentials, mockedSessionData, mockedUser } from "./utils";
 
 describe("Session Service - Unit Test - Suite", () => {
@@ -169,9 +173,9 @@ describe("Session Service - Unit Test - Suite", () => {
     it("Should throw error if sessions are not found and safe property is false", async () => {
       jest.spyOn(service, "find").mockResolvedValue(mockedSessionData());
 
-      await expect(service.findAll(mockedAccessToken, undefined)).rejects.toThrow(
-        "Sessions not found",
-      );
+      await expect(
+        service.findAll(mockedAccessToken, undefined),
+      ).rejects.toThrow("Sessions not found");
     });
 
     it("Should return undefined if sessions are not found and safe property is true", async () => {
@@ -187,7 +191,9 @@ describe("Session Service - Unit Test - Suite", () => {
       jest.spyOn(service, "find").mockResolvedValue(mockedSessionData());
       jest.spyOn(service, "findAll").mockResolvedValue(sessionList);
 
-      expect(await service.findAll(mockedAccessToken, undefined)).toBe(sessionList);
+      expect(await service.findAll(mockedAccessToken, undefined)).toBe(
+        sessionList,
+      );
     });
   });
 
@@ -365,7 +371,7 @@ describe("Session Service - Unit Test - Suite", () => {
         .mockImplementation(() => null);
       jest.spyOn(userModel, "getData").mockImplementation(() => mockedUser);
       jest.spyOn(sessionModel, "createAccessToken").mockResolvedValue({
-       accessToken: mockedAccessToken,
+        accessToken: mockedAccessToken,
         expiresAt: new Date(),
       });
 
