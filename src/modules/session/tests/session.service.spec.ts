@@ -4,13 +4,8 @@ import { UserRepository } from "../../user/user.repository";
 import { SessionModel } from "../session.model";
 import { SessionRepository } from "../session.repository";
 import { SessionService } from "../session.service";
-import {
-  accessToken,
-  credentials,
-  mockedSessionData,
-  mockedUser,
-  tokenWithoutRegister,
-} from "./utils";
+import { AUTH_SECRET_MOCK, mockedAccessToken, mockedAccessTokenWithoutRegister } from "@/utils";
+import { credentials, mockedSessionData, mockedUser } from "./utils";
 
 describe("Session Service - Unit Test - Suite", () => {
   let repository: SessionRepository;
@@ -21,7 +16,7 @@ describe("Session Service - Unit Test - Suite", () => {
 
   beforeEach(async () => {
     jest.replaceProperty(process, "env", {
-      AUTH_SECRET: "hNba/EHWP6wl7U5CNc1sgKZbdLJgCDU6bDq4dZaQWkc=",
+      AUTH_SECRET: AUTH_SECRET_MOCK,
     });
 
     jest.mock("bcrypt", () => {
@@ -150,7 +145,7 @@ describe("Session Service - Unit Test - Suite", () => {
         .spyOn(service, "find")
         .mockResolvedValue(mockedSessionData());
 
-      await service.findAll(accessToken, undefined, true);
+      await service.findAll(mockedAccessToken, undefined, true);
 
       expect(findMethod).toHaveBeenCalledTimes(1);
     });
@@ -159,7 +154,7 @@ describe("Session Service - Unit Test - Suite", () => {
       jest.spyOn(service, "find").mockResolvedValue(null);
 
       await expect(
-        service.findAll(accessToken, undefined, true),
+        service.findAll(mockedAccessToken, undefined, true),
       ).rejects.toThrow("User could not access this resource");
     });
 
@@ -167,14 +162,14 @@ describe("Session Service - Unit Test - Suite", () => {
       jest.spyOn(service, "find").mockResolvedValue(mockedSessionData(false));
 
       await expect(
-        service.findAll(accessToken, undefined, true),
+        service.findAll(mockedAccessToken, undefined, true),
       ).rejects.toThrow("User could not access this resource");
     });
 
     it("Should throw error if sessions are not found and safe property is false", async () => {
       jest.spyOn(service, "find").mockResolvedValue(mockedSessionData());
 
-      await expect(service.findAll(accessToken, undefined)).rejects.toThrow(
+      await expect(service.findAll(mockedAccessToken, undefined)).rejects.toThrow(
         "Sessions not found",
       );
     });
@@ -182,7 +177,7 @@ describe("Session Service - Unit Test - Suite", () => {
     it("Should return undefined if sessions are not found and safe property is true", async () => {
       jest.spyOn(service, "find").mockResolvedValue(mockedSessionData());
 
-      expect(await service.findAll(accessToken, undefined, true)).toBe(
+      expect(await service.findAll(mockedAccessToken, undefined, true)).toBe(
         undefined,
       );
     });
@@ -192,7 +187,7 @@ describe("Session Service - Unit Test - Suite", () => {
       jest.spyOn(service, "find").mockResolvedValue(mockedSessionData());
       jest.spyOn(service, "findAll").mockResolvedValue(sessionList);
 
-      expect(await service.findAll(accessToken, undefined)).toBe(sessionList);
+      expect(await service.findAll(mockedAccessToken, undefined)).toBe(sessionList);
     });
   });
 
@@ -272,7 +267,9 @@ describe("Session Service - Unit Test - Suite", () => {
     it("Should throw error if user id is not provided", async () => {
       jest.spyOn(repository, "find").mockResolvedValue(null);
 
-      await expect(service.close(tokenWithoutRegister)).rejects.toThrow(
+      await expect(
+        service.close(mockedAccessTokenWithoutRegister),
+      ).rejects.toThrow(
         "User not found or not exists, please check the credentials.",
       );
     });
@@ -280,7 +277,7 @@ describe("Session Service - Unit Test - Suite", () => {
     it("Should throw error if actual session is not found", async () => {
       jest.spyOn(repository, "find").mockResolvedValue(null);
 
-      await expect(service.close(accessToken)).rejects.toThrow(
+      await expect(service.close(mockedAccessToken)).rejects.toThrow(
         "Active session not found",
       );
     });
@@ -293,7 +290,7 @@ describe("Session Service - Unit Test - Suite", () => {
         message: "Session updated successfully",
       });
 
-      await service.close(accessToken);
+      await service.close(mockedAccessToken);
 
       expect(initFunction).toHaveBeenCalledTimes(1);
     });
@@ -305,7 +302,7 @@ describe("Session Service - Unit Test - Suite", () => {
         message: "Session updated successfully",
       });
 
-      expect((await service.close(accessToken)).statusCode).toBe(204);
+      expect((await service.close(mockedAccessToken)).statusCode).toBe(204);
     });
 
     it("Should call session repository update method", async () => {
@@ -317,7 +314,7 @@ describe("Session Service - Unit Test - Suite", () => {
           message: "Session updated successfully",
         });
 
-      await service.close(accessToken);
+      await service.close(mockedAccessToken);
 
       expect(updateServiceMethod).toHaveBeenCalledTimes(1);
     });
@@ -327,7 +324,7 @@ describe("Session Service - Unit Test - Suite", () => {
       jest.spyOn(repository, "find").mockResolvedValue(session);
       jest.spyOn(service, "update").mockResolvedValue(null);
 
-      await expect(service.close(accessToken)).rejects.toThrow(
+      await expect(service.close(mockedAccessToken)).rejects.toThrow(
         "Occurred an error while updating the session, please try again later",
       );
     });
@@ -339,7 +336,7 @@ describe("Session Service - Unit Test - Suite", () => {
         message: "Session updated successfully",
       });
 
-      expect((await service.close(accessToken)).statusCode).toBe(204);
+      expect((await service.close(mockedAccessToken)).statusCode).toBe(204);
     });
   });
 
@@ -368,7 +365,7 @@ describe("Session Service - Unit Test - Suite", () => {
         .mockImplementation(() => null);
       jest.spyOn(userModel, "getData").mockImplementation(() => mockedUser);
       jest.spyOn(sessionModel, "createAccessToken").mockResolvedValue({
-        accessToken: accessToken,
+       accessToken: mockedAccessToken,
         expiresAt: new Date(),
       });
 
@@ -380,7 +377,7 @@ describe("Session Service - Unit Test - Suite", () => {
     it("Should throw error if user not exists", async () => {
       jest.spyOn(userModel, "getData").mockImplementation(() => null);
       jest.spyOn(sessionModel, "createAccessToken").mockResolvedValue({
-        accessToken: accessToken,
+        accessToken: mockedAccessToken,
         expiresAt: new Date(),
       });
 
@@ -393,7 +390,7 @@ describe("Session Service - Unit Test - Suite", () => {
       const session = mockedSessionData();
       jest.spyOn(userModel, "getData").mockImplementation(() => mockedUser);
       jest.spyOn(sessionModel, "createAccessToken").mockResolvedValue({
-        accessToken: accessToken,
+        accessToken: mockedAccessToken,
         expiresAt: new Date(),
       });
       jest.spyOn(repository, "update").mockResolvedValue({
@@ -415,7 +412,7 @@ describe("Session Service - Unit Test - Suite", () => {
       const session = mockedSessionData();
       jest.spyOn(userModel, "getData").mockImplementation(() => mockedUser);
       jest.spyOn(sessionModel, "createAccessToken").mockResolvedValue({
-        accessToken: accessToken,
+        accessToken: mockedAccessToken,
         expiresAt: new Date(),
       });
       const updateSessionMethod = jest
@@ -442,7 +439,7 @@ describe("Session Service - Unit Test - Suite", () => {
       const session = mockedSessionData();
       jest.spyOn(userModel, "getData").mockImplementation(() => mockedUser);
       jest.spyOn(sessionModel, "createAccessToken").mockResolvedValue({
-        accessToken: accessToken,
+        accessToken: mockedAccessToken,
         expiresAt: new Date(),
       });
       jest.spyOn(repository, "update").mockResolvedValue(null);
@@ -457,7 +454,7 @@ describe("Session Service - Unit Test - Suite", () => {
       const session = mockedSessionData();
       jest.spyOn(userModel, "getData").mockImplementation(() => mockedUser);
       jest.spyOn(sessionModel, "createAccessToken").mockResolvedValue({
-        accessToken: accessToken,
+        accessToken: mockedAccessToken,
         expiresAt: new Date(),
       });
       jest.spyOn(repository, "update").mockResolvedValue({
@@ -470,7 +467,7 @@ describe("Session Service - Unit Test - Suite", () => {
       const result = await service.create(credentials);
 
       expect(JSON.stringify(result)).toBe(
-        `{"message":"Session created","data":{"token":"${accessToken}","expiresAt":"${new Date().toISOString()}"}}`,
+        `{"message":"Session created","data":{"token":"${mockedAccessToken}","expiresAt":"${new Date().toISOString()}"}}`,
       );
     });
   });

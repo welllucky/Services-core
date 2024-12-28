@@ -33,8 +33,8 @@ class UserModel {
       }
 
       this.user = register ? userByRegister : userByEmail;
-    } catch (error) {
-      console.error(error);
+    } catch {
+      return null;
     }
   }
 

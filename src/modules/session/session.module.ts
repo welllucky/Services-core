@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { Session } from "src/entities";
+import { Session } from "@/entities";
 import { SessionController } from "./session.controller";
 import { SessionModel } from "./session.model";
 import { SessionRepository } from "./session.repository";
