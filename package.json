@@ -61,6 +61,7 @@
     "@eslint/js": "^9.17.0",
     "@nestjs/schematics": "^10.2.3",
     "@nestjs/testing": "^10.4.15",
+    "@ngneat/falso": "^7.2.0",
     "@types/bcrypt": "^5.0.2",
     "@types/eslint": "9.6.1",
     "@types/eslint-scope": "3.7.7",

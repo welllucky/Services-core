@@ -1,6 +1,6 @@
 import { Session } from "@/entities";
+import { createAccessToken } from "@/utils";
 import { Injectable } from "@nestjs/common";
-import { sign } from "jsonwebtoken";
 import { UserModel } from "../user/user.model";
 import { SessionRepository } from "./session.repository";
 
@@ -55,10 +55,11 @@ class SessionModel {
       const expiresAt = new Date();
       expiresAt.setDate(expiresAt.getDate() + daysToExpire);
 
-      const accessToken = sign({ ...tokenInfo }, process.env.AUTH_SECRET, {
-        algorithm: "HS256",
-        expiresIn: `${daysToExpire}d`,
-      }) as string;
+      const accessToken = createAccessToken(
+        tokenInfo,
+        process.env.AUTH_SECRET,
+        3,
+      );
 
       this.session.expiresAt = expiresAt;
       this.session.isActive = true;
