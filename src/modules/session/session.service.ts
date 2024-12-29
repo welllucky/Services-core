@@ -114,10 +114,9 @@ export class SessionService {
       }
     }
 
-    const { accessToken, expiresAt } =
-      await this.model.createAccessToken({
-        password: credentials.password,
-      });
+    const { accessToken, expiresAt } = await this.model.createAccessToken({
+      password: credentials.password,
+    });
 
     return {
       message: "Session created",
@@ -254,11 +253,7 @@ export class SessionService {
       );
     }
 
-    const session = await this.repository.find(
-      userId,
-      sessionId,
-      status,
-    );
+    const session = await this.repository.find(userId, sessionId, status);
 
     if (!session && !safe) {
       throw new HttpException(

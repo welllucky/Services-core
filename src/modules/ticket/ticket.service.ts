@@ -9,7 +9,7 @@ class TicketServices {
   constructor(
     private readonly repository: TicketRepository,
     private readonly userModel: UserModel,
-  ) { }
+  ) {}
 
   async create(
     userId: string,
@@ -136,9 +136,7 @@ class TicketServices {
     return response.status(HttpStatus.NO_CONTENT);
   }
 
-  async findInProgress(
-    userId: string,
-  ): Promise<IResponseFormat<unknown>> {
+  async findInProgress(userId: string): Promise<IResponseFormat<unknown>> {
     await this.userModel.init({
       register: userId,
     });
