@@ -21,8 +21,8 @@ import { SessionRepository } from "./session.repository";
 @Injectable()
 export class SessionService {
   constructor(
-    private readonly sessionRepository: SessionRepository,
-    private readonly sessionModel: SessionModel,
+    private readonly repository: SessionRepository,
+    private readonly model: SessionModel,
     private readonly userModel: UserModel,
   ) {}
 
@@ -90,7 +90,7 @@ export class SessionService {
       );
     }
 
-    const actualSession = await this.sessionRepository.find(userId);
+    const actualSession = await this.repository.find(userId);
 
     if (actualSession?.isActive) {
       const closedSession = await this.update(
@@ -115,7 +115,7 @@ export class SessionService {
     }
 
     const { accessToken, expiresAt } =
-      await this.sessionModel.createAccessToken({
+      await this.model.createAccessToken({
         password: credentials.password,
       });
 
@@ -134,9 +134,9 @@ export class SessionService {
     register: string,
     safe = false,
   ): Promise<IResponseFormat<SessionDTO>> {
-    await this.sessionModel.init(sessionId, register);
+    await this.model.init(sessionId, register);
 
-    const isSessionValid = await this.sessionModel.isValid();
+    const isSessionValid = await this.model.isValid();
 
     if (!isSessionValid)
       throw new HttpException(
@@ -147,10 +147,10 @@ export class SessionService {
         HttpStatus.BAD_REQUEST,
       );
 
-    const updatedSession = await this.sessionRepository.update(
+    const updatedSession = await this.repository.update(
       session,
       sessionId,
-      this.sessionModel.session.user.id,
+      this.model.session.user.id,
     );
 
     if (!updatedSession?.affected) {
@@ -191,7 +191,7 @@ export class SessionService {
           message:
             "User not found or not exists, please check the credentials.",
         },
-        HttpStatus.NOT_FOUND,
+        HttpStatus.UNAUTHORIZED,
       );
     }
 
@@ -207,10 +207,10 @@ export class SessionService {
       );
     }
 
-    await this.sessionModel.init(actualSession.id, userId);
+    await this.model.init(actualSession.id, userId);
 
-    const isSessionValid = await this.sessionModel.isValid();
-    const sessionId = this.sessionModel.session.id;
+    const isSessionValid = await this.model.isValid();
+    const sessionId = this.model.session.id;
 
     if (!isSessionValid) {
       return response.status(204);
@@ -254,7 +254,7 @@ export class SessionService {
       );
     }
 
-    const session = await this.sessionRepository.find(
+    const session = await this.repository.find(
       userId,
       sessionId,
       status,
@@ -286,7 +286,7 @@ export class SessionService {
       );
     }
 
-    const sessions = this.sessionRepository.findAll(register, status);
+    const sessions = this.repository.findAll(register, status);
 
     if (!sessions && !safe) {
       throw new HttpException(
