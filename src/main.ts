@@ -1,6 +1,6 @@
 import "./instrument.js";
 
-import { HttpExceptionFilter } from "@/utils";
+// import { HttpExceptionFilter } from "@/utils";
 import { ValidationPipe, VersioningType } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
@@ -40,7 +40,7 @@ async function startTheService() {
     }),
   );
 
-  app.useGlobalFilters(new HttpExceptionFilter());
+  // app.useGlobalFilters(new HttpExceptionFilter());
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 

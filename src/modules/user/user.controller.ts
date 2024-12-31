@@ -4,26 +4,26 @@ import { UserService } from "./user.service";
 
 @Controller("users")
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly service: UserService) {}
 
   @Get()
   getAll() {
-    return this.userService.findAll();
+    return this.service.findAll();
   }
 
   @Get(":register")
   getUserByRegister(@Param("register") register: string) {
-    return this.userService.findOne(register);
+    return this.service.findOne(register);
   }
 
   @Get("/email/:email")
   getUserByEmail(@Param("email") email: string) {
-    return this.userService.findByEmail(email);
+    return this.service.findByEmail(email);
   }
 
   @Post()
   create(@Body() createUserDto: CreateUserDTO) {
-    return this.userService.create(createUserDto);
+    return this.service.create(createUserDto);
   }
 
   @Put(":register")
@@ -32,11 +32,11 @@ export class UserController {
 
     @Body() updateUserDto: UpdateUserDTO,
   ) {
-    this.userService.update(register, updateUserDto);
+    this.service.update(register, updateUserDto);
   }
 
   // @Delete(":register")
   // remove(@Param("register") register: string) {
-  //   this.userService.remove(register);
+  //   this.service.remove(register);
   // }
 }

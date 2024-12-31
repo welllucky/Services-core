@@ -41,6 +41,7 @@ class SessionModel {
       const userData = this.user.getData();
 
       const tokenInfo = {
+        id: userData?.id,
         register: userData?.register,
         email: userData?.email,
         name: userData?.name,

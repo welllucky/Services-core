@@ -5,10 +5,10 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
+  // OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Event } from "./event.entity";
+// import { Event } from "./event.entity";
 import { User } from "./user.entity";
 
 @Entity({
@@ -58,35 +58,37 @@ class Ticket extends BaseEntity {
   @JoinColumn()
   public resolver!: User | null | undefined;
 
-  @OneToMany(() => Event, (event) => event.ticket, {
-    cascade: true,
-  })
-  public events!: Relation<Event[]> | null | undefined;
+  // @OneToMany(() => Event, (event) => event.ticket, {
+  //   cascade: true,
+  //   nullable: true,
+  // })
+  // @JoinColumn()
+  // public events!: Relation<Event[]> | null | undefined;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
-  public readonly createdAt!: Date;
+  public createdAt!: Date;
 
   @Column("timestamp", {
     nullable: true,
   })
-  public readonly updatedAt!: Date | null;
+  public updatedAt!: Date | null;
 
   @Column("timestamp", {
     nullable: true,
   })
-  public readonly closedAt!: Date | null;
+  public closedAt!: Date | null;
 
   @ManyToOne(() => User, (user) => user.register)
   @JoinColumn()
-  public readonly createdBy!: Relation<User>;
+  public createdBy!: Relation<User>;
 
   @ManyToOne(() => User, (user) => user.register)
   @JoinColumn()
-  public readonly updatedBy!: Relation<User> | null | undefined;
+  public updatedBy!: Relation<User> | null | undefined;
 
   @ManyToOne(() => User, (user) => user.register)
   @JoinColumn()
-  public readonly closedBy!: Relation<User> | null | undefined;
+  public closedBy!: Relation<User> | null | undefined;
 }
 
 export { Ticket };

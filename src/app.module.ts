@@ -4,8 +4,9 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { SentryModule } from "@sentry/nestjs/setup";
 import { AppController } from "./app.controller";
 import { configLoads } from "./configs";
+import { entities } from "./entities";
 import { modules } from "./modules";
-import { SessionSubscriber, UserSubscriber } from "./subscribers";
+import { subscribers } from "./subscribers";
 import { FormatResponseMiddleware } from "./utils/middlewares";
 
 @Module({
@@ -33,8 +34,8 @@ import { FormatResponseMiddleware } from "./utils/middlewares";
         database: configService.get("DB_NAME"),
         autoLoadEntities: true,
         synchronize: configService.get("HOST_ENV") === "development",
-        entities: ["@/entities/*.entity.ts"],
-        subscribers: [UserSubscriber, SessionSubscriber],
+        entities: entities,
+        subscribers: subscribers,
         ssl: {
           ca: configService.get("DB_CA"),
         },

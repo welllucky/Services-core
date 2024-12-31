@@ -1,4 +1,4 @@
-import { Ticket } from "@/entities";
+import { Ticket, User } from "@/entities";
 import { ITicket } from "@/typing";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -7,22 +7,26 @@ import { FindOptionsWhere, Repository } from "typeorm";
 @Injectable()
 class TicketRepository {
   constructor(
-    @InjectRepository(Ticket)
-    private readonly repository: Repository<Ticket>,
+    @InjectRepository(Ticket) private readonly repository: Repository<Ticket>,
   ) {}
 
   async create(
-    userId: string,
+    user: User,
     data: Omit<
       ITicket,
-      "id" | "createdAt" | "updatedAt" | "closedAt" | "updatedBy" | "closedBy"
+      | "id"
+      | "createdAt"
+      | "updatedAt"
+      | "closedAt"
+      | "updatedBy"
+      | "closedBy"
+      | "status"
     >,
   ) {
-    return await this.repository.save({
+    console.log({ data });
+    return this.repository.save({
       ...data,
-      createdBy: {
-        register: userId,
-      },
+      createdBy: user,
     });
   }
 
@@ -80,10 +84,14 @@ class TicketRepository {
       >
     >,
   ) {
+    if (Object.keys(data).length === 0) {
+      throw new Error("No update values provided");
+    }
+
     const result = await this.repository.update(
       {
         id: ticketId,
-        createdBy: {
+        updatedBy: {
           register: userId,
         },
       },
@@ -113,10 +121,14 @@ class TicketRepository {
       >
     >,
   ) {
+    if (Object.keys(data).length === 0) {
+      throw new Error("No update values provided");
+    }
+
     const result = await this.repository.update(
       {
         id: ticketId,
-        resolver: {
+        updatedBy: {
           register: userId,
         },
       },
