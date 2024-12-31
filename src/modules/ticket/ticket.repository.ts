@@ -11,7 +11,6 @@ class TicketRepository {
   ) {}
 
   async create(
-    user: User,
     data: Omit<
       ITicket,
       | "id"
@@ -22,55 +21,67 @@ class TicketRepository {
       | "closedBy"
       | "status"
     >,
+    user: User,
   ) {
-    console.log({ data });
     return this.repository.save({
       ...data,
       createdBy: user,
     });
   }
 
-  async findAll(userId: string, filters?: Partial<Omit<ITicket, "id">>) {
+  async findAll(
+    userId: string,
+    filters?: Partial<Omit<ITicket, "id">>,
+    resolve?: boolean,
+    pagination?: { page?: number; index?: number },
+  ) {
+    const pageIndex =
+      !pagination?.index || pagination?.index === 1 ? 0 : pagination?.index;
+    const page = pagination?.page || 10;
+
     return this.repository.find({
-      where: [
-        {
-          resolver: {
-            register: userId,
+      where: resolve
+        ? {
+            resolver: {
+              register: userId,
+            },
+            ...(filters as FindOptionsWhere<Ticket>),
+          }
+        : {
+            createdBy: {
+              register: userId,
+            },
+            ...(filters as FindOptionsWhere<Ticket>),
           },
-          ...(filters as FindOptionsWhere<Ticket>),
-        },
-        {
-          createdBy: {
-            register: userId,
-          },
-          ...(filters as FindOptionsWhere<Ticket>),
-        },
-      ],
+      relations: ["user"],
+      order: {
+        createdAt: "DESC",
+      },
+      take: page,
+      skip: pageIndex * page,
     });
   }
 
-  async findById(userId: string, ticketId: string) {
+  async findById(userId: string, ticketId: string, resolve?: boolean) {
     return this.repository.findOne({
-      where: [
-        {
-          resolver: {
-            register: userId,
+      where: resolve
+        ? {
+            resolver: {
+              register: userId,
+            },
+            id: ticketId,
+          }
+        : {
+            createdBy: {
+              register: userId,
+            },
+            id: ticketId,
           },
-          id: ticketId,
-        },
-        {
-          createdBy: {
-            register: userId,
-          },
-          id: ticketId,
-        },
-      ],
+      relations: ["user"],
     });
   }
 
   async update(
-    userId: string,
-    ticketId: string,
     data: Partial<
       Omit<
         ITicket,
@@ -83,11 +94,9 @@ class TicketRepository {
         | "id"
       >
     >,
+    ticketId: string,
+    userId: string,
   ) {
-    if (Object.keys(data).length === 0) {
-      throw new Error("No update values provided");
-    }
-
     const result = await this.repository.update(
       {
         id: ticketId,
@@ -106,8 +115,6 @@ class TicketRepository {
   }
 
   async updateByResolver(
-    userId: string,
-    ticketId: string,
     data: Partial<
       Omit<
         ITicket,
@@ -120,6 +127,8 @@ class TicketRepository {
         | "id"
       >
     >,
+    ticketId: string,
+    userId: string,
   ) {
     if (Object.keys(data).length === 0) {
       throw new Error("No update values provided");

@@ -1,4 +1,4 @@
-import { AccessTokenDTO, GetSessionDTO, SessionStatus } from "@/typing";
+import { GetSessionDTO, SessionStatus } from "@/typing";
 import {
   Body,
   Controller,
@@ -6,24 +6,25 @@ import {
   Headers,
   HttpCode,
   Post,
-  // Headers,
   Query,
 } from "@nestjs/common";
 import { SessionService } from "./session.service";
 
-@Controller("session")
+@Controller("sessions")
 export class SessionController {
   constructor(private readonly sessionService: SessionService) {}
 
   @Get()
   getAll(
-    // @Headers("Authorization") token: string,
+    @Headers("Authorization") accessToken: string,
     @Query("status") status?: SessionStatus,
+    @Query("page") page?: number,
+    @Query("index") index?: number,
   ) {
-    return this.sessionService.findAll(
-      //   token,
-      status,
-    );
+    return this.sessionService.findAll(status, accessToken, {
+      page,
+      index,
+    });
   }
 
   @Post()
@@ -40,7 +41,7 @@ export class SessionController {
 
   @Post("close")
   @HttpCode(204)
-  close(@Headers("Authorization") access: AccessTokenDTO) {
-    return this.sessionService.close(access.token);
+  close(@Headers("Authorization") accessToken: string) {
+    return this.sessionService.close(accessToken);
   }
 }

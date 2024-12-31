@@ -39,3 +39,12 @@ export const mockedSessionData = (isActive?: boolean) => ({
   recover: async () => mockedSessionData(),
   reload: async () => undefined,
 });
+
+export const clearMockedSessionData = {
+  id: "1",
+  userId: "1",
+  isActive: true,
+  createdAt: new Date(),
+  expiresAt: new Date(),
+  user: mockedUser.register,
+};

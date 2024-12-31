@@ -1,4 +1,8 @@
-import { Event, Ticket, User } from "@/entities";
+import {
+  Event,
+  // Ticket,
+  User
+} from "@/entities";
 import { IEvent } from "@/typing";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -16,7 +20,7 @@ class EventRepository {
     });
   }
 
-  findEventsByUserId(userId: string) {
+  findAllByUserId(userId: string) {
     return this.repository.findBy({
       createdBy: {
         register: userId,
@@ -27,30 +31,39 @@ class EventRepository {
   async createEvent(
     eventData: Omit<IEvent, "id" | "createdBy">,
     user: User,
-    ticket?: Ticket,
+    ticketId?: string,
+    // ticket?: Ticket,
   ) {
     return this.repository.create({
       ...eventData,
-      ...(ticket && { ticket }),
+      ...(ticketId && {
+        ticket: {
+          id: ticketId,
+        },
+      }),
       createdBy: user,
       createdAt: new Date(),
     });
   }
 
-  findPublicEventsByTicketId(ticketId: string) {
+  findAllByTicketId(
+    ticketId: string,
+    visibility: "public" | "private" | "all" = "public",
+  ) {
     return this.repository.find({
-      where: { ticket: { id: ticketId }, visibility: "public" },
+      where: {
+        ticket: { id: ticketId },
+        visibility:
+          visibility === "all"
+            ? undefined
+            : visibility === "private"
+              ? "private"
+              : "public",
+      },
+      order: {
+        createdAt: "ASC",
+      },
     });
-  }
-
-  findAllEventsByTicketId(ticketId: string) {
-    return this.repository.find({
-      where: { ticket: { id: ticketId } },
-    });
-  }
-
-  countEventsByTicketId(ticketId: string) {
-    return this.repository.count({ where: { createdBy: { id: ticketId } } });
   }
 }
 
