@@ -1,6 +1,6 @@
 // user.repository.ts
 import { Session } from "@/entities";
-import { SessionStatus } from "@/typing";
+import { Pagination, SessionStatus } from "@/typing";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -15,7 +15,12 @@ export class SessionRepository {
   async findAll(
     userRegister: string,
     status: SessionStatus,
+    pagination?: Pagination,
   ): Promise<Session[]> {
+    const pageIndex =
+      !pagination?.index || pagination?.index === 1 ? 0 : pagination?.index;
+    const page = pagination?.page || 10;
+
     return this.repository.find({
       where: {
         user: {
@@ -25,8 +30,10 @@ export class SessionRepository {
       },
       relations: ["user"],
       order: {
-        createdAt: "ASC",
+        createdAt: "DESC",
       },
+      take: page,
+      skip: pageIndex * page,
     });
   }
 

@@ -1,7 +1,8 @@
 import {
   IResponseFormat,
   ITicket,
-  PublicTicket,
+  Pagination,
+  PublicTicketDto,
   UpdateTicketDto,
 } from "@/typing";
 import { getUserByToken } from "@/utils";
@@ -20,7 +21,7 @@ export class TicketService {
   async create(
     token: string,
     ticketData: Omit<ITicket, "id" | "createdAt" | "updatedAt" | "closedAt">,
-  ): Promise<IResponseFormat<PublicTicket>> {
+  ): Promise<IResponseFormat<PublicTicketDto>> {
     const { userData } = await getUserByToken(token);
     const userId = userData?.register;
 
@@ -49,9 +50,10 @@ export class TicketService {
       );
     }
 
-    const ticket = await this.repository.create(this.userModel.getEntity(), {
-      ...ticketData,
-    });
+    const ticket = await this.repository.create(
+      ticketData,
+      this.userModel.getEntity(),
+    );
 
     if (!ticket) {
       throw new HttpException(
@@ -62,9 +64,9 @@ export class TicketService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    console.log({ ticket });
+
     return {
-      data: new PublicTicket(
+      data: new PublicTicketDto(
         ticket.id,
         ticket.resume,
         ticket.description,
@@ -82,7 +84,10 @@ export class TicketService {
     };
   }
 
-  async getAll(token: string): Promise<IResponseFormat<PublicTicket[]>> {
+  async getAll(
+    token: string,
+    pagination?: Pagination,
+  ): Promise<IResponseFormat<PublicTicketDto[]>> {
     const { userData } = await getUserByToken(token);
     const userId = userData?.register;
 
@@ -111,7 +116,12 @@ export class TicketService {
       );
     }
 
-    const tickets = await this.repository.findAll(userId);
+    const tickets = await this.repository.findAll(
+      userId,
+      undefined,
+      undefined,
+      pagination,
+    );
 
     if (!tickets) {
       throw new HttpException(
@@ -126,19 +136,19 @@ export class TicketService {
     return {
       data: tickets.map(
         (ticket) =>
-          new PublicTicket(
+          new PublicTicketDto(
             ticket.id,
             ticket.resume,
             ticket.description,
             ticket.priority,
             ticket.type,
             ticket.status,
-            ticket.resolver.register,
+            ticket.resolver?.register,
             // ticket.events,
             ticket.createdAt,
             ticket.closedAt,
-            ticket.createdBy.register,
-            ticket.closedBy.register,
+            ticket.createdBy?.register,
+            ticket.closedBy?.register,
           ),
       ),
       message: "Tickets found successfully",
@@ -148,7 +158,7 @@ export class TicketService {
   async getById(
     token: string,
     ticketId: string,
-  ): Promise<IResponseFormat<PublicTicket>> {
+  ): Promise<IResponseFormat<PublicTicketDto>> {
     const { userData } = await getUserByToken(token);
     const userId = userData?.register;
 
@@ -190,25 +200,35 @@ export class TicketService {
     }
 
     return {
-      data: new PublicTicket(
+      data: new PublicTicketDto(
         ticket.id,
         ticket.resume,
         ticket.description,
         ticket.priority,
         ticket.type,
         ticket.status,
-        ticket.resolver.register,
+        ticket.resolver?.register,
         // ticket.events,
         ticket.createdAt,
         ticket.closedAt,
-        ticket.createdBy.register,
-        ticket.closedBy.register,
+        ticket.createdBy?.register,
+        ticket.closedBy?.register,
       ),
       message: `Ticket ${ticketId} was found`,
     };
   }
 
   async update(token: string, ticketId: string, data: UpdateTicketDto) {
+    if (Object.keys(data).length === 0) {
+      throw new HttpException(
+        {
+          title: "No update values provided",
+          message: "No values provided to update the ticket",
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const { userData } = await getUserByToken(token);
     const userId = userData?.register;
 
@@ -237,7 +257,7 @@ export class TicketService {
       );
     }
 
-    const { isUpdated } = await this.repository.update(userId, ticketId, data);
+    const { isUpdated } = await this.repository.update(data, ticketId, userId);
 
     if (!isUpdated) {
       throw new HttpException(
@@ -252,7 +272,10 @@ export class TicketService {
     return response.status(HttpStatus.NO_CONTENT);
   }
 
-  async findInProgress(token: string): Promise<IResponseFormat<unknown>> {
+  async findInProgress(
+    token: string,
+    pagination?: Pagination,
+  ): Promise<IResponseFormat<unknown>> {
     const { userData } = await getUserByToken(token);
     const userId = userData?.register;
 
@@ -281,9 +304,14 @@ export class TicketService {
       );
     }
 
-    const tickets = await this.repository.findAll(userId, {
-      status: "inProgress",
-    });
+    const tickets = await this.repository.findAll(
+      userId,
+      {
+        status: "inProgress",
+      },
+      undefined,
+      pagination,
+    );
 
     if (!tickets) {
       throw new HttpException(
@@ -298,7 +326,7 @@ export class TicketService {
     return {
       data: tickets.map(
         (ticket) =>
-          new PublicTicket(
+          new PublicTicketDto(
             ticket.id,
             ticket.resume,
             ticket.description,
@@ -349,10 +377,14 @@ export class TicketService {
       );
     }
 
-    const startedTicket = this.repository.update(userId, ticketId, {
-      status: "inProgress",
-      updatedAt: new Date(),
-    });
+    const startedTicket = this.repository.update(
+      {
+        status: "inProgress",
+        updatedAt: new Date(),
+      },
+      ticketId,
+      userId,
+    );
 
     if (!startedTicket) {
       throw new HttpException(
@@ -403,11 +435,11 @@ export class TicketService {
     }
 
     const updatedTicket = await this.repository.updateByResolver(
-      userId,
-      ticketId,
       {
         status: "closed",
       },
+      ticketId,
+      userId,
     );
 
     if (!updatedTicket) {
@@ -459,11 +491,11 @@ export class TicketService {
     }
 
     const updatedTicket = await this.repository.updateByResolver(
-      userId,
-      ticketId,
       {
         status: "closed",
       },
+      ticketId,
+      userId,
     );
 
     if (!updatedTicket) {
@@ -514,11 +546,11 @@ export class TicketService {
       );
     }
     const updatedTicket = await this.repository.updateByResolver(
-      userId,
-      ticketId,
       {
         status: "closed",
       },
+      ticketId,
+      userId,
     );
     if (!updatedTicket) {
       throw new HttpException(
