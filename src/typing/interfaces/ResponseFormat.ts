@@ -1,3 +1,5 @@
+import { Pagination } from "../types";
+
 export interface IResponseFormat<T> {
   data?: T;
   message: string;
@@ -6,4 +8,5 @@ export interface IResponseFormat<T> {
     title: string;
     message: string;
   };
+  pagination?: Pagination;
 }

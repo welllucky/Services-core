@@ -9,7 +9,15 @@ class SearchRepository {
     @InjectRepository(Ticket) private readonly repository: Repository<Ticket>,
   ) {}
 
-  searchTickets(userId: string, searchTerm: string) {
+  searchTickets(
+    userId: string,
+    searchTerm: string,
+    pagination?: { page?: number; index?: number },
+  ) {
+    const pageIndex =
+      !pagination?.index || pagination?.index === 1 ? 0 : pagination?.index;
+    const page = pagination?.page || 10;
+
     return this.repository.find({
       where: [
         {
@@ -37,6 +45,11 @@ class SearchRepository {
           resolver: { register: userId },
         },
       ],
+      order: {
+        createdAt: "DESC",
+      },
+      take: page,
+      skip: pageIndex * page,
     });
   }
 }

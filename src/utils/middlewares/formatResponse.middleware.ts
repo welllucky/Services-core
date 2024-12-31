@@ -10,27 +10,25 @@ export class FormatResponseMiddleware implements NestMiddleware {
     res.send = function (body: unknown) {
       const parsedBody: IResponseFormat<
         Record<string, unknown> | Record<string, unknown>[]
-      > = JSON.parse(body as unknown as string);
+      > = body ? JSON.parse(body as unknown as string) : null;
 
       const hasError = res.statusCode >= 400;
 
-      const hasData = res.statusCode !== 204 && !hasError && !!parsedBody.data;
+      const hasData =
+        res.statusCode !== 204 &&
+        !hasError &&
+        (parsedBody?.data || Array.isArray(parsedBody));
 
-      const resMessage = parsedBody?.message
-        ? parsedBody.message
-        : hasError
-          ? parsedBody.error?.message
-          : hasError
-            ? "Success"
-            : "Error";
+      const resMessage =
+        parsedBody?.message ||
+        parsedBody?.error?.message ||
+        (!hasError ? "Success" : "Error");
 
-      const resTitle = parsedBody?.title
-        ? parsedBody.title
-        : parsedBody?.error?.title;
+      const resTitle = parsedBody?.title || parsedBody?.error?.title;
 
       const formattedResponse = {
         ...(!hasError && { message: resMessage }),
-        ...(hasData && { data: parsedBody.data }),
+        ...(hasData && { data: parsedBody?.data || parsedBody }),
         ...(hasError && {
           error: {
             title: resTitle,
