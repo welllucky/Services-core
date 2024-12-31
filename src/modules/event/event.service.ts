@@ -17,8 +17,8 @@ export class EventServices {
     ticketId: string,
     eventData: Omit<IEvent, "id" | "order" | "emitterId" | "createdBy">,
   ) {
-    const eventsQuantity =
-      await this.repository.countEventsByTicketId(ticketId);
+    const eventsQuantity = (await this.repository.findAllByTicketId(ticketId))
+      ?.length || 0;
 
     await this.userModel.init({
       register: userId,
@@ -42,6 +42,7 @@ export class EventServices {
         order: eventsQuantity + 1,
       },
       this.userModel.getEntity(),
+      ticketId,
     );
   }
 
@@ -50,14 +51,14 @@ export class EventServices {
   }
 
   async getEventsByUserId(userId: string) {
-    return this.repository.findEventsByUserId(userId);
+    return this.repository.findAllByUserId(userId);
   }
 
   async getEventsByTicketId(ticketId: string) {
-    return this.repository.findAllEventsByTicketId(ticketId);
+    return this.repository.findAllByTicketId(ticketId, "all");
   }
 
   async getPublicEventsByTicketId(ticketId: string) {
-    return this.repository.findPublicEventsByTicketId(ticketId);
+    return this.repository.findAllByTicketId(ticketId, "public");
   }
 }

@@ -15,6 +15,11 @@ export class GetSessionDTO extends PickType(CreateUserDTO, ["password"]) {
 }
 
 export class SessionDTO {
+  @IsString({
+    message: "Id must be a string",
+  })
+  id: string;
+
   @IsJWT({
     message: "Token must be a valid JWT",
   })
@@ -24,6 +29,11 @@ export class SessionDTO {
     message: "ExpiresAt must be a valid Date",
   })
   expiresAt: Date;
+
+  @IsDate({
+    message: "CreatedAt must be a valid Date",
+  })
+  createdAt: Date;
 
   @IsBoolean({
     message: "IsActive must be a boolean",
@@ -41,7 +51,23 @@ export class SessionDTO {
 
 export class AccessTokenDTO extends PickType(SessionDTO, ["token"]) {}
 
-export class SessionInfoDTO extends PickType(SessionDTO, [
+export class SessionCredentialDTO extends PickType(SessionDTO, [
   "token",
   "expiresAt",
 ]) {}
+
+export class SessionInfoDto extends PickType(SessionDTO, [
+  "expiresAt",
+  "isActive",
+  "createdAt",
+  "id",
+]) {
+  constructor(
+    readonly id: string,
+    readonly expiresAt: Date,
+    readonly createdAt: Date,
+    readonly isActive: boolean,
+  ) {
+    super();
+  }
+}
