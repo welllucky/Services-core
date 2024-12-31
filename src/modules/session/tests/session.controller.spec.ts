@@ -30,14 +30,17 @@ describe("Session Controller - Unit Test - Suite", () => {
   describe("Get all sessions", () => {
     it("should call session service findAll method", async () => {
       const serviceMock = jest.spyOn(service, "findAll");
-      await controller.getAll();
+      await controller.getAll(mockedAccessToken);
       expect(serviceMock).toHaveBeenCalled();
     });
 
     it("should call session service findAll method with status", async () => {
       const serviceMock = jest.spyOn(service, "findAll");
-      await controller.getAll("inactive");
-      expect(serviceMock).toHaveBeenCalledWith("inactive");
+      await controller.getAll(mockedAccessToken, "inactive");
+      expect(serviceMock).toHaveBeenCalledWith("inactive", mockedAccessToken, {
+        index: undefined,
+        page: undefined,
+      });
     });
   });
 
@@ -58,17 +61,13 @@ describe("Session Controller - Unit Test - Suite", () => {
   describe("Post - close session", () => {
     it("should call session service close method", async () => {
       const serviceMock = jest.spyOn(service, "close");
-      await controller.close({
-        token: mockedAccessToken,
-      });
+      await controller.close(mockedAccessToken);
       expect(serviceMock).toHaveBeenCalled();
     });
 
     it("should call session service close method with token", async () => {
       const serviceMock = jest.spyOn(service, "close");
-      await controller.close({
-        token: mockedAccessToken,
-      });
+      await controller.close(mockedAccessToken);
       expect(serviceMock).toHaveBeenCalledWith(mockedAccessToken);
     });
   });
