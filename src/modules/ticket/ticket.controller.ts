@@ -2,12 +2,12 @@ import { CreateTicketDto, UpdateTicketDto } from "@/typing";
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Headers,
   Param,
   Post,
   Put,
+  Query,
 } from "@nestjs/common";
 import { TicketService } from "./ticket.service";
 
@@ -16,15 +16,16 @@ export class TicketController {
   constructor(private readonly service: TicketService) {}
 
   @Get()
-  getAll(@Headers("Authorization") token: string) {
-    return this.service.getAll(token);
+  getAll(
+    @Headers("Authorization") token: string,
+    @Query("page") page: number,
+    @Query("index") index: number,
+  ) {
+    return this.service.getAll(token, { page, index });
   }
 
   @Get(":id")
-  getByRegister(
-    @Headers("Authorization") token: string,
-    @Param("id") id: string,
-  ) {
+  getById(@Headers("Authorization") token: string, @Param("id") id: string) {
     return this.service.getById(token, id);
   }
 
@@ -45,7 +46,7 @@ export class TicketController {
     return this.service.update(token, id, data);
   }
 
-  @Delete(":id")
+  @Put(":id/close")
   close(@Headers("Authorization") token: string, @Param("id") id: string) {
     return this.service.close(token, id);
   }

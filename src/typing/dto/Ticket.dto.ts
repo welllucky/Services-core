@@ -92,7 +92,7 @@ export class CreateTicketDto extends PickType(TicketDto, [
 
 export class UpdateTicketDto extends PartialType(CreateTicketDto) {}
 
-export class PublicTicket extends OmitType(TicketDto, [
+export class PublicTicketDto extends OmitType(TicketDto, [
   "updatedAt",
   "updatedBy",
 ]) {

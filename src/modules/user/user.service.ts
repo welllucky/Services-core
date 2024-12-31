@@ -1,6 +1,7 @@
 import {
   CreateUserDTO,
   IResponseFormat,
+  Pagination,
   UpdateUserDTO,
   UserPublicDTO,
   UserRestrictDTO,
@@ -13,9 +14,10 @@ export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
   async findAll(
+    pagination?: Pagination,
     safe: boolean = false,
   ): Promise<IResponseFormat<UserPublicDTO[]>> {
-    const users = await this.userRepository.findAll();
+    const users = await this.userRepository.findAll(pagination);
     if (!users && !safe) {
       throw new HttpException(
         {

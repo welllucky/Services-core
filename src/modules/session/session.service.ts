@@ -1,8 +1,10 @@
 import {
   GetSessionDTO,
   IResponseFormat,
+  Pagination,
+  SessionCredentialDTO,
   SessionDTO,
-  SessionInfoDTO,
+  SessionInfoDto,
   SessionStatus,
 } from "@/typing";
 import { getUserByToken } from "@/utils";
@@ -28,7 +30,7 @@ export class SessionService {
 
   async create(
     credentials: GetSessionDTO,
-  ): Promise<IResponseFormat<SessionInfoDTO>> {
+  ): Promise<IResponseFormat<SessionCredentialDTO>> {
     if (!credentials.email || !credentials.password) {
       const fieldsEmptyMessage = `${!credentials.email ? "Email" : ""}${!credentials.email && !credentials.password ? " and " : ""}${!credentials.password ? "Password" : ""} is empty.`;
 
@@ -90,7 +92,11 @@ export class SessionService {
       );
     }
 
-    const actualSession = await this.repository.find(userId);
+    const actualSession = await this.repository.find(
+      userId,
+      undefined,
+      "active",
+    );
 
     if (actualSession?.isActive) {
       const closedSession = await this.update(
@@ -114,10 +120,9 @@ export class SessionService {
       }
     }
 
-    const { accessToken, expiresAt } =
-      await this.model.createAccessToken({
-        password: credentials.password,
-      });
+    const { accessToken, expiresAt } = await this.model.createAccessToken({
+      password: credentials.password,
+    });
 
     return {
       message: "Session created",
@@ -195,7 +200,11 @@ export class SessionService {
       );
     }
 
-    const actualSession = await this.find(userId, undefined, "active", true);
+    const actualSession = await this.repository.find(
+      userId,
+      undefined,
+      "active",
+    );
 
     if (!actualSession) {
       throw new HttpException(
@@ -243,7 +252,7 @@ export class SessionService {
     sessionId?: string,
     status: SessionStatus = "active",
     safe = false,
-  ) {
+  ): Promise<Omit<SessionDTO, "token">> {
     if (!userId) {
       throw new HttpException(
         {
@@ -254,11 +263,7 @@ export class SessionService {
       );
     }
 
-    const session = await this.repository.find(
-      userId,
-      sessionId,
-      status,
-    );
+    const session = await this.repository.find(userId, sessionId, status);
 
     if (!session && !safe) {
       throw new HttpException(
@@ -270,25 +275,47 @@ export class SessionService {
       );
     }
 
-    return session;
+    return {
+      createdAt: session?.createdAt,
+      expiresAt: session?.expiresAt,
+      id: session?.id,
+      isActive: session?.isActive,
+      userId: session?.user?.register,
+    };
   }
 
-  async findAll(token: string, status: SessionStatus = "active", safe = false) {
+  async findAll(
+    status: SessionStatus = "active",
+    token: string,
+    pagination?: Pagination,
+    safe = false,
+  ): Promise<IResponseFormat<SessionInfoDto[]>> {
     const { userData } = await getUserByToken(token);
-    const actualSession = await this.find(userData.register);
+    const actualSession = await this.find(
+      userData?.register,
+      undefined,
+      "active",
+      true,
+    );
 
     const { register } = userData;
 
-    if (!actualSession || !actualSession.isActive) {
+    if (!actualSession || !actualSession?.isActive) {
       throw new HttpException(
         "User could not access this resource",
-        HttpStatus.FORBIDDEN,
+        !actualSession?.isActive
+          ? HttpStatus.FORBIDDEN
+          : HttpStatus.UNAUTHORIZED,
       );
     }
 
-    const sessions = this.repository.findAll(register, status);
+    const sessions = await this.repository.findAll(
+      register,
+      status,
+      pagination,
+    );
 
-    if (!sessions && !safe) {
+    if (!sessions?.length && !safe) {
       throw new HttpException(
         {
           title: "Sessions not found",
@@ -298,6 +325,17 @@ export class SessionService {
       );
     }
 
-    return sessions;
+    return {
+      data: sessions?.map(
+        (session) =>
+          new SessionInfoDto(
+            session?.id,
+            session?.expiresAt,
+            session?.createdAt,
+            session?.isActive,
+          ),
+      ),
+      message: `${sessions?.length || 0} session(s) found`,
+    };
   }
 }
