@@ -38,14 +38,14 @@ export class SessionRepository {
   }
 
   async find(
-    userRegister: string,
+    userId: string,
     sessionId?: string,
     status: SessionStatus = "active",
   ): Promise<Session | null> {
     return this.repository.findOne({
       where: {
         user: {
-          register: userRegister,
+          id: userId,
         },
         ...(sessionId && { id: sessionId }),
         isActive: status === "all" ? undefined : status === "active",

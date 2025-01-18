@@ -67,7 +67,7 @@ export class SessionService {
       email: credentials.email,
     });
 
-    const userId = this.userModel.getData()?.register;
+    const userId = this.userModel.getData()?.id;
 
     if (!userId) {
       addBreadcrumb({
@@ -98,17 +98,16 @@ export class SessionService {
       "active",
     );
 
-    if (actualSession?.isActive) {
-      const closedSession = await this.update(
+    if (actualSession && actualSession?.isActive) {
+      const closedSession = await this.repository.update(
         {
           isActive: false,
         },
         actualSession.id,
         userId,
-        true,
       );
 
-      if (!closedSession?.message) {
+      if (!closedSession?.affected) {
         throw new HttpException(
           {
             title: "Active Session not closed",
