@@ -18,7 +18,7 @@ export class UserService {
     safe: boolean = false,
   ): Promise<IResponseFormat<UserPublicDTO[]>> {
     const users = await this.userRepository.findAll(pagination);
-    if (!users && !safe) {
+    if (!users.length && !safe) {
       throw new HttpException(
         {
           title: "Users not found",
