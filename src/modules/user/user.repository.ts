@@ -1,5 +1,5 @@
 import { User } from "@/entities";
-import { Pagination } from "@/typing";
+import { CreateUserDTO, Pagination, UpdateUserDTO } from "@/typing";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -21,53 +21,72 @@ export class UserRepository {
       },
       take: page,
       skip: pageIndex * page,
+      relations: {
+        role: true,
+        sector: true,
+      },
     });
   }
 
   async findById(id: string) {
-    return this.repository.findOne({ where: { id } });
-  }
-
-  async findByRegister(register: string) {
-    return this.repository.findOne({ where: { register } });
-  }
-
-  async findByEmail(email: string) {
-    return this.repository.findOne({ where: { email } });
-  }
-
-  async create(
-    user: Omit<
-      User,
-      | "id"
-      | "createdAt"
-      | "updatedAt"
-      | "deletedAt"
-      | "lastConnection"
-      | "isBanned"
-      | "canCreateTicket"
-      | "canResolveTicket"
-      | "encryptPasswordInDB"
-      | "hash"
-      | "salt"
-      | "sessions"
-      | "systemRole"
-    >,
-    password: string,
-  ) {
-    return this.repository.save(user, {
-      data: {
-        rootPassword: password,
+    return this.repository.findOne({
+      where: { id },
+      relations: {
+        role: true,
+        sector: true,
       },
     });
   }
 
-  async update(userId: string, user: Partial<User>) {
+  async findByRegister(register: string) {
+    return this.repository.findOne({
+      where: { register },
+      relations: {
+        role: true,
+        sector: true,
+      },
+    });
+  }
+
+  async findByEmail(email: string) {
+    return this.repository.findOne({
+      where: { email },
+      relations: {
+        role: true,
+        sector: true,
+      },
+    });
+  }
+
+  async create(user: Omit<CreateUserDTO, "password">, password: string) {
+    return this.repository.save(
+      {
+        ...user,
+        role: {
+          id: user.role,
+        },
+        sector: {
+          id: user.sector,
+        },
+      },
+      {
+        data: {
+          rootPassword: password,
+        },
+      },
+    );
+  }
+
+  async update(userId: string, user: UpdateUserDTO) {
     return this.repository.update(
       {
         register: userId,
       },
-      user,
+      {
+        ...user,
+        role: user.role ? { id: user.role } : undefined,
+        sector: user.sector ? { id: user.sector } : undefined,
+      },
     );
   }
 }

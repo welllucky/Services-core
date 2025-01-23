@@ -7,11 +7,17 @@ import {
   UserRestrictDTO,
 } from "@/typing";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { RoleService } from "../role/role.service";
+import { SectorService } from "../sector/sector.service";
 import { UserRepository } from "./user.repository";
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly roleService: RoleService,
+    private readonly sectorService: SectorService,
+  ) {}
 
   async findAll(
     pagination?: Pagination,
@@ -36,8 +42,8 @@ export class UserService {
           new UserPublicDTO(
             user.name,
             user.email,
-            user.role,
-            user.sector,
+            user.role.name,
+            user.sector.name,
             user.canCreateTicket,
             user.canResolveTicket,
             user.isBanned,
@@ -67,8 +73,8 @@ export class UserService {
       data: new UserRestrictDTO(
         user.name,
         user.email,
-        user.role,
-        user.sector,
+        user.role.name,
+        user.sector.name,
         user.canCreateTicket,
         user.canResolveTicket,
         user.isBanned,
@@ -98,8 +104,8 @@ export class UserService {
       data: new UserRestrictDTO(
         user.name,
         user.email,
-        user.role,
-        user.sector,
+        user.role.name,
+        user.sector.name,
         user.canCreateTicket,
         user.canResolveTicket,
         user.isBanned,
@@ -110,7 +116,25 @@ export class UserService {
   }
 
   async create(data: CreateUserDTO): Promise<IResponseFormat<UserRestrictDTO>> {
-    const createdUser = await this.userRepository.create(data, data.password);
+    const role = (await this.roleService.getRoleByName(data.role)).data;
+    const sector = (await this.sectorService.getSectorByName(data.sector)).data;
+    const existRoleInSector = sector.roles.find((r) => r.id === role.id);
+
+    if (!existRoleInSector) {
+      throw new HttpException(
+        {
+          title: "Role not found in sector",
+          message:
+            "Role not found in sector, please check the role and sector.",
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const createdUser = await this.userRepository.create(
+      { ...data, role: role.id, sector: sector.id},
+      data.password,
+    );
 
     if (!createdUser) {
       throw new HttpException(
@@ -128,8 +152,8 @@ export class UserService {
       data: new UserRestrictDTO(
         createdUser.name,
         createdUser.email,
-        createdUser.role,
-        createdUser.sector,
+        createdUser.role.name,
+        createdUser.sector.name,
         createdUser.isBanned,
         createdUser.canCreateTicket,
         createdUser.canResolveTicket,

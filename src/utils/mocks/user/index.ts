@@ -1,4 +1,3 @@
-import { User } from "@/entities";
 import { ADMIN_PASSWORD } from "@/utils/constants";
 import { encryptPassword } from "@/utils/functions";
 import * as mock from "@ngneat/falso";
@@ -28,16 +27,16 @@ export const user = {
 export const bannedUser = {
   ...user,
   isBanned: true,
-} as User;
+};
 
 export const canCreateTicketUser = {
   ...user,
   canCreateTicket: true,
-} as User;
+};
 
 export const canResolveTicketUser = {
   ...user,
   canResolveTicket: true,
-} as User;
+};
 
 export const users = Array(5).fill(user);
