@@ -1,3 +1,4 @@
+import { PartialType, PickType } from "@nestjs/mapped-types";
 import { IsString, MaxLength, MinLength } from "class-validator";
 
 export class RoleDto {
@@ -5,7 +6,7 @@ export class RoleDto {
   id: string;
 
   @IsString({ message: "Name must be a string" })
-  @MinLength(4, { message: "Name must have a minimum of 4 characters" })
+  @MinLength(3, { message: "Name must have a minimum of 3 characters" })
   @MaxLength(128, { message: "Name must have a maximum of 128 characters" })
   name: string;
 
@@ -15,3 +16,15 @@ export class RoleDto {
   })
   description: string;
 }
+
+export class CreateRoleDto extends PickType(RoleDto, ["name", "description"]) {
+  constructor(
+    readonly name: string,
+    readonly description: string,
+  ) {
+    super();
+  }
+}
+
+
+export class UpdateRoleDto extends PartialType(CreateRoleDto) {}
