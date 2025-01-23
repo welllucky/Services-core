@@ -1,4 +1,3 @@
-import { Role } from "@/entities";
 import {
   CreateSectorDto,
   IResponseFormat,
@@ -7,11 +6,15 @@ import {
   UpdateSectorDto,
 } from "@/typing";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { RoleRepository } from "../role/role.repository";
 import { SectorRepository } from "./sector.repository";
 
 @Injectable()
 export class SectorService {
-  constructor(private readonly repository: SectorRepository) {}
+  constructor(
+    private readonly repository: SectorRepository,
+    private readonly roleRepository: RoleRepository,
+  ) {}
 
   async create(
     data: CreateSectorDto,
@@ -191,21 +194,21 @@ export class SectorService {
   }
 
   async addRole(
-    data: RoleDto,
-    sectorId: string,
+    roleName: string,
+    sectorName: string,
   ): Promise<IResponseFormat<SectorDto>> {
     const errors = {
       role: {
         title: "Role not informed",
         message: "It's necessary to inform the role.",
       },
-      sectorId: {
+      sector: {
         title: "Sector id not informed",
         message: "It's necessary to inform the sector id.",
       },
     };
-    if (!data || !sectorId) {
-      const key = !data ? "role" : "sectorId";
+    if (!roleName || !sectorName) {
+      const key = !roleName ? "role" : "sector";
       throw new HttpException(
         {
           title: errors[key].title,
@@ -215,30 +218,26 @@ export class SectorService {
       );
     }
 
-    const sector = await this.getSector(sectorId);
+    const sector = await this.repository.findByName(sectorName);
 
-    if (!sector) {
+    const role = await this.roleRepository.findByName(roleName);
+
+    if (!sector || !role) {
+      const key = !sector ? "sector" : "role";
       throw new HttpException(
         {
-          title: "Sector not found",
-          message: "Sector not found.",
+          title: `${key} not found`,
+          message: `${key} not found, please check the name.`,
         },
         HttpStatus.NOT_FOUND,
       );
     }
 
-    const role = new Role();
-    role.name = data.name;
-    role.description = data.description;
-    role.createdAt = new Date();
+    sector.roles = [...sector.roles, role];
 
-    role.save();
+    const updatedSector = await sector.save();
 
-    const updatedSector = await this.repository.update(sectorId, {
-      roles: [...sector.data.roles, role],
-    });
-
-    if (updatedSector.affected === 0) {
+    if (!updatedSector) {
       throw new HttpException(
         {
           title: "Error",
@@ -250,7 +249,27 @@ export class SectorService {
 
     return {
       title: "Success",
-      message: `${role.name} added to ${sector.data.name} sector successfully.`,
+      message: `${role.name} added to ${sector.name} sector successfully.`,
+    };
+  }
+
+  async getRoles(sectorId: string): Promise<IResponseFormat<RoleDto[]>> {
+    if (!sectorId) {
+      throw new HttpException(
+        {
+          title: "Sector id not informed",
+          message: "It's necessary to inform the sector id.",
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const sector = await this.getSector(sectorId);
+
+    return {
+      data: sector.data.roles,
+      title: "Success",
+      message: "Roles founded with success.",
     };
   }
 }

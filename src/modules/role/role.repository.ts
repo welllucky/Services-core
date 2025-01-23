@@ -1,30 +1,24 @@
-import { Sector } from "@/entities";
-import { AlterSectorDto } from "@/typing";
+import { Role } from "@/entities";
+import { CreateRoleDto, UpdateRoleDto } from "@/typing";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
 @Injectable()
-export class SectorRepository {
+export class RoleRepository {
   constructor(
-    @InjectRepository(Sector) private readonly repository: Repository<Sector>,
+    @InjectRepository(Role) private readonly repository: Repository<Role>,
   ) {}
 
   async find(id: string) {
-    return this.repository.findOne({
-      where: {
-        id,
-      },
-      relations: ["roles"],
+    return this.repository.findOneBy({
+      id: id,
     });
   }
 
   async findByName(name: string) {
-    return this.repository.findOne({
-      where: {
-        name,
-      },
-      relations: ["roles"],
+    return this.repository.findOneBy({
+      name: name,
     });
   }
 
@@ -32,14 +26,14 @@ export class SectorRepository {
     return this.repository.find();
   }
 
-  async create(data: AlterSectorDto) {
+  async create(data: CreateRoleDto) {
     return this.repository.save({
       ...data,
       createdAt: new Date(),
     });
   }
 
-  async update(id: string, data: Partial<AlterSectorDto>) {
+  async update(id: string, data: Partial<UpdateRoleDto>) {
     return this.repository.update(
       {
         id: id,

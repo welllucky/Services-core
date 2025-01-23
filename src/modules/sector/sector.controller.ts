@@ -1,4 +1,4 @@
-import { CreateSectorDto, RoleDto, UpdateSectorDto } from "@/typing";
+import { CreateSectorDto, UpdateSectorDto } from "@/typing";
 import { Body, Controller, Get, Param, Patch, Post } from "@nestjs/common";
 import { SectorService } from "./sector.service";
 
@@ -32,8 +32,14 @@ export class SectorController {
     return this.sessionService.updateSector(id, data);
   }
 
-  @Post(":id/role")
-  async addRole(@Param("id") id: string, @Body() data: RoleDto) {
-    return this.sessionService.addRole(data, id);
+  @Post(":sector/addRole/:role")
+  async addRole(@Param("sector") sectorName: string, @Param("role") roleName: string) {
+    return this.sessionService.addRole(roleName, sectorName);
+  }
+
+  @Get(":id/roles")
+  async getRoles(@Param("id") sectorId: string) {
+    return this.sessionService.getRoles(sectorId);
   }
 }
+
