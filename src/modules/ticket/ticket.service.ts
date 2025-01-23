@@ -123,7 +123,7 @@ export class TicketService {
       pagination,
     );
 
-    if (!tickets) {
+    if (!tickets.length) {
       throw new HttpException(
         {
           title: "Tickets not found",
@@ -313,7 +313,7 @@ export class TicketService {
       pagination,
     );
 
-    if (!tickets) {
+    if (!tickets.length) {
       throw new HttpException(
         {
           title: "Tickets not found",

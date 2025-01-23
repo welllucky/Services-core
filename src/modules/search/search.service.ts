@@ -27,7 +27,7 @@ class SearchServices {
 
     const tickets = await this.repository.searchTickets(userId, searchTerm);
 
-    if (!tickets) {
+    if (!tickets.length) {
       throw new HttpException(
         {
           title: "Tickets not found",
