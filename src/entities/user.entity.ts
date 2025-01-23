@@ -1,12 +1,16 @@
+import { SystemRoles } from "@/typing";
 import {
   Column,
   Entity,
   Index,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import { Role } from "./role.entity";
+import { Sector } from "./sector.entity";
 import { Session } from "./session.entity";
-import { SystemRoles } from "@/typing";
 
 @Entity({ name: "Users" })
 export class User {
@@ -52,14 +56,16 @@ export class User {
   @Column({ type: "timestamp", nullable: true })
   public deletedAt!: Date | null;
 
-  @Column({ type: "varchar" })
-  public role!: string;
+  @ManyToOne(() => Role, (role) => role.id)
+  @JoinColumn()
+  public role!: Role;
 
   @Column({ type: "varchar", default: "user" })
   public systemRole!: SystemRoles;
 
-  @Column({ type: "varchar" })
-  public sector!: string;
+  @ManyToOne(() => Sector, (sector) => sector.id)
+  @JoinColumn()
+  public sector!: Sector;
 
   @OneToMany(() => Session, (session) => session.user)
   public readonly sessions!: Session[];
