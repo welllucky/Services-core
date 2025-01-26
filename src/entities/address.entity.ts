@@ -3,16 +3,13 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 @Entity({ name: "Address" })
 export class Address {
   @PrimaryGeneratedColumn()
-  Address_PK!: number;
+  id!: number;
 
   @Column({ length: 10 })
-  Zip_code!: string;
+  zipCode!: string;
 
   @Column({ length: 255 })
-  Address_Name!: string;
-
-  @Column({ length: 255, nullable: true })
-  complement!: string;
+  street!: string;
 
   @Column()
   number!: number;
@@ -21,13 +18,13 @@ export class Address {
   district!: string;
 
   @Column({ length: 255 })
-  City!: string;
+  city!: string;
 
   @Column({ length: 255 })
-  State!: string;
+  state!: string;
 
-  @Column({ length: 255, nullable: true })
-  cordinate!: string;
+  @Column({ nullable: true, type: "geography" })
+  coordinate!: string;
 
   @Column({ length: 255 })
   country!: string;

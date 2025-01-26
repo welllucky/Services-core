@@ -1,10 +1,19 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
-import { ColorScheme } from "./colorScheme.entity";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { Theme } from "./theme.entity";
 
 @Entity({ name: "Enterprise" })
 export class Enterprise {
-  @PrimaryColumn({ length: 14 })
-  cnpj!: string;
+  @PrimaryGeneratedColumn("uuid")
+  id!: string;
+
+  @Column({ unique: true, length: 64 })
+  register!: string;
 
   @Column({ length: 255 })
   name!: string;
@@ -13,7 +22,7 @@ export class Enterprise {
   nationality!: string;
 
   @Column({ type: "datetime", nullable: true })
-  registered_at!: Date;
+  createdAt!: Date;
 
   @Column({ type: "blob", nullable: true })
   logo!: Buffer;
@@ -21,7 +30,7 @@ export class Enterprise {
   @Column({ length: 100, nullable: true })
   type!: string;
 
-  @ManyToOne(() => ColorScheme)
+  @ManyToMany(() => Theme)
   @JoinColumn({ name: "fk_color_scheme_pk" })
-  colorScheme!: ColorScheme;
+  themes!: Theme;
 }

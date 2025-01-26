@@ -11,13 +11,13 @@ import { Address } from "./address.entity";
 @Entity({ name: "Subsidiary" })
 export class Subsidiary {
   @PrimaryGeneratedColumn()
-  subsidiary_id!: number;
+  id!: number;
 
   @Column({ length: 255 })
   name!: string;
 
   @Column({ default: false })
-  is_matriz!: boolean;
+  isMatriz!: boolean;
 
   @ManyToOne(() => Address, { nullable: true })
   @JoinColumn({ name: "fk_address_id" })
