@@ -45,7 +45,7 @@ async function startTheService() {
 
   app.enableCors({
     origin: isDevelopment ? "*" : clientApplicationUrl,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
     allowedHeaders: "Content-Type, Accept, Authorization",
     credentials: true,
     optionsSuccessStatus: 204,

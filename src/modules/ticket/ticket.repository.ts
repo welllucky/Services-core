@@ -53,7 +53,11 @@ class TicketRepository {
             },
             ...(filters as FindOptionsWhere<Ticket>),
           },
-      relations: ["user"],
+      relations: {
+        createdBy: true,
+        closedBy: true,
+        updatedBy: true,
+      },
       order: {
         createdAt: "DESC",
       },
@@ -77,7 +81,12 @@ class TicketRepository {
             },
             id: ticketId,
           },
-      relations: ["user"],
+      relations: {
+        closedBy: true,
+        createdBy: true,
+        resolver: true,
+        updatedBy: true,
+      },
     });
   }
 

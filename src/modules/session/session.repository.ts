@@ -28,7 +28,9 @@ export class SessionRepository {
         },
         isActive: status === "all" ? undefined : status === "active",
       },
-      relations: ["user"],
+      relations: {
+        user: true,
+      },
       order: {
         createdAt: "DESC",
       },
@@ -50,7 +52,9 @@ export class SessionRepository {
         ...(sessionId && { id: sessionId }),
         isActive: status === "all" ? undefined : status === "active",
       },
-      relations: ["user"],
+      relations: {
+        user: true,
+      },
       order: {
         createdAt: "ASC",
       },

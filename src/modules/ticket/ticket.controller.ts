@@ -18,8 +18,8 @@ export class TicketController {
   @Get()
   getAll(
     @Headers("Authorization") token: string,
-    @Query("page") page: number,
-    @Query("index") index: number,
+    @Query("page") page?: number,
+    @Query("index") index?: number,
   ) {
     return this.service.getAll(token, { page, index });
   }
