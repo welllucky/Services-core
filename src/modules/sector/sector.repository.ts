@@ -15,7 +15,9 @@ export class SectorRepository {
       where: {
         id,
       },
-      relations: ["roles"],
+      relations: {
+        roles: true,
+      },
     });
   }
 
@@ -24,7 +26,9 @@ export class SectorRepository {
       where: {
         name,
       },
-      relations: ["roles"],
+      relations: {
+        roles: true,
+      },
     });
   }
 
