@@ -17,12 +17,24 @@ async function startTheService() {
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule,
     new ExpressAdapter(),
+    {
+      logger: ["debug", "error", "log", "warn", "verbose"],
+    },
   );
+
+  app.enableCors({
+    // origin: isDevelopment ? "*" : clientApplicationUrl,
+    origin: "*",
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Accept", "Authorization"],
+    credentials: false,
+    optionsSuccessStatus: 204,
+  });
 
   const configService = app.get(ConfigService);
 
   const isDevelopment = configService.get("HOST_ENV") === "development";
-  const clientApplicationUrl = configService.get("CLIENT_URL");
+  // const clientApplicationUrl = configService.get("CLIENT_URL");
 
   app.use("/public", express.static(join(__dirname, "..", "public")));
 
@@ -42,14 +54,6 @@ async function startTheService() {
       forbidNonWhitelisted: true,
     }),
   );
-
-  app.enableCors({
-    origin: isDevelopment ? "*" : clientApplicationUrl,
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
-    allowedHeaders: "Content-Type, Accept, Authorization",
-    credentials: true,
-    optionsSuccessStatus: 204,
-  });
 
   // app.useGlobalFilters(new HttpExceptionFilter());
 
