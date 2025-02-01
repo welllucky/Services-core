@@ -17,6 +17,10 @@ async function startTheService() {
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule,
     new ExpressAdapter(),
+    {
+      logger: ["debug", "error", "log", "warn", "verbose"],
+      cors: true,
+    },
   );
 
   const configService = app.get(ConfigService);
