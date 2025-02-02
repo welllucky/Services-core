@@ -37,10 +37,14 @@ describe("Session Controller - Unit Test - Suite", () => {
     it("should call session service findAll method with status", async () => {
       const serviceMock = jest.spyOn(service, "findAll");
       await controller.getAll(mockedAccessToken, "inactive");
-      expect(serviceMock).toHaveBeenCalledWith("inactive", mockedAccessToken, {
-        index: undefined,
-        page: undefined,
-      });
+      expect(serviceMock).toHaveBeenCalledWith(
+        mockedAccessToken,
+        {
+          index: undefined,
+          page: undefined,
+        },
+        "inactive",
+      );
     });
   });
 

@@ -284,9 +284,9 @@ export class SessionService {
   }
 
   async findAll(
-    status: SessionStatus = "active",
     token: string,
     pagination?: Pagination,
+    status: SessionStatus = "active",
     safe = false,
   ): Promise<IResponseFormat<SessionInfoDto[]>> {
     const { userData } = await getUserByToken(token);

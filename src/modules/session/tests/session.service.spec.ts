@@ -166,9 +166,9 @@ describe("Session Service - Unit Test - Suite", () => {
         .mockResolvedValue(mockedSessionData());
 
       await service.findAll(
-        undefined,
         mockedAccessToken,
         { index: undefined, page: undefined },
+        undefined,
         true,
       );
 
@@ -180,9 +180,9 @@ describe("Session Service - Unit Test - Suite", () => {
 
       await expect(
         service.findAll(
-          undefined,
           mockedAccessToken,
           { index: undefined, page: undefined },
+          undefined,
           true,
         ),
       ).rejects.toThrow("User could not access this resource");
@@ -193,9 +193,9 @@ describe("Session Service - Unit Test - Suite", () => {
 
       await expect(
         service.findAll(
-          undefined,
           mockedAccessToken,
           { index: undefined, page: undefined },
+          undefined,
           true,
         ),
       ).rejects.toThrow("User could not access this resource");
@@ -204,9 +204,9 @@ describe("Session Service - Unit Test - Suite", () => {
     it("Should throw error if sessions are not found and safe property is false", async () => {
       jest.spyOn(service, "find").mockResolvedValue(mockedSessionData());
 
-      await expect(
-        service.findAll(undefined, mockedAccessToken),
-      ).rejects.toThrow("Sessions not found");
+      await expect(service.findAll(mockedAccessToken)).rejects.toThrow(
+        "Sessions not found",
+      );
     });
 
     it("Should return undefined if sessions are not found and safe property is true", async () => {
@@ -214,9 +214,9 @@ describe("Session Service - Unit Test - Suite", () => {
 
       expect(
         await service.findAll(
-          undefined,
           mockedAccessToken,
           { index: undefined, page: undefined },
+          undefined,
           true,
         ),
       ).toStrictEqual({ data: undefined, message: "0 session(s) found" });
@@ -230,12 +230,10 @@ describe("Session Service - Unit Test - Suite", () => {
         message: `${sessionList.length} sessions found`,
       });
 
-      expect(await service.findAll(undefined, mockedAccessToken)).toStrictEqual(
-        {
-          data: sessionList,
-          message: `${sessionList.length} sessions found`,
-        },
-      );
+      expect(await service.findAll(mockedAccessToken)).toStrictEqual({
+        data: sessionList,
+        message: `${sessionList.length} sessions found`,
+      });
     });
   });
 

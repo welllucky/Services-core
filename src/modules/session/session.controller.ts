@@ -21,10 +21,14 @@ export class SessionController {
     @Query("page") page?: number,
     @Query("index") index?: number,
   ) {
-    return this.sessionService.findAll(status, accessToken, {
-      page,
-      index,
-    });
+    return this.sessionService.findAll(
+      accessToken,
+      {
+        page,
+        index,
+      },
+      status,
+    );
   }
 
   @Post()
