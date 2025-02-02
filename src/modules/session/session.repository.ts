@@ -13,7 +13,7 @@ export class SessionRepository {
   ) {}
 
   async findAll(
-    userRegister: string,
+    userId: string,
     status: SessionStatus,
     pagination?: Pagination,
   ): Promise<Session[]> {
@@ -21,13 +21,25 @@ export class SessionRepository {
       !pagination?.index || pagination?.index === 1 ? 0 : pagination?.index;
     const page = pagination?.page || 10;
 
+    const whereConditions = {
+      isActive: status === "all" ? undefined : status === "active",
+    };
+
     return this.repository.find({
-      where: {
-        user: {
-          register: userRegister,
+      where: [
+        {
+          user: {
+            register: userId,
+          },
+          ...whereConditions,
         },
-        isActive: status === "all" ? undefined : status === "active",
-      },
+        {
+          user: {
+            id: userId,
+          },
+          ...whereConditions,
+        },
+      ],
       relations: {
         user: true,
       },
@@ -44,14 +56,25 @@ export class SessionRepository {
     sessionId?: string,
     status: SessionStatus = "active",
   ): Promise<Session | null> {
+    const whereConditions = {
+      ...(sessionId && { id: sessionId }),
+      isActive: status === "all" ? undefined : status === "active",
+    };
     return this.repository.findOne({
-      where: {
-        user: {
-          id: userId,
+      where: [
+        {
+          user: {
+            id: userId,
+          },
+          ...whereConditions,
         },
-        ...(sessionId && { id: sessionId }),
-        isActive: status === "all" ? undefined : status === "active",
-      },
+        {
+          user: {
+            register: userId,
+          },
+          ...whereConditions,
+        },
+      ],
       relations: {
         user: true,
       },
