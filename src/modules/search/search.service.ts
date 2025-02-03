@@ -40,7 +40,7 @@ class SearchServices {
     return {
       data: tickets,
       message: `${tickets.length} tickets found with the search term.`,
-    }
+    };
   }
 }
 

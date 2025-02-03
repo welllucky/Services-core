@@ -17,8 +17,8 @@ export class EventServices {
     ticketId: string,
     eventData: Omit<IEvent, "id" | "order" | "emitterId" | "createdBy">,
   ) {
-    const eventsQuantity = (await this.repository.findAllByTicketId(ticketId))
-      ?.length || 0;
+    const eventsQuantity =
+      (await this.repository.findAllByTicketId(ticketId))?.length || 0;
 
     await this.userModel.init({
       register: userId,

@@ -38,7 +38,10 @@ export class CreateSectorDto extends PickType(SectorDto, [
   "name",
   "description",
 ]) {
-  constructor(readonly name: string, readonly description: string) {
+  constructor(
+    readonly name: string,
+    readonly description: string,
+  ) {
     super();
   }
 }
