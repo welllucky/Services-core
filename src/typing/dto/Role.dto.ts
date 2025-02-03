@@ -26,5 +26,4 @@ export class CreateRoleDto extends PickType(RoleDto, ["name", "description"]) {
   }
 }
 
-
 export class UpdateRoleDto extends PartialType(CreateRoleDto) {}

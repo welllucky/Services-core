@@ -33,7 +33,10 @@ export class SectorController {
   }
 
   @Post(":sector/addRole/:role")
-  async addRole(@Param("sector") sectorName: string, @Param("role") roleName: string) {
+  async addRole(
+    @Param("sector") sectorName: string,
+    @Param("role") roleName: string,
+  ) {
     return this.sessionService.addRole(roleName, sectorName);
   }
 
@@ -42,4 +45,3 @@ export class SectorController {
     return this.sessionService.getRoles(sectorId);
   }
 }
-
