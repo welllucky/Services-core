@@ -132,7 +132,7 @@ export class UserService {
     }
 
     const createdUser = await this.userRepository.create(
-      { ...data, role: role.id, sector: sector.id},
+      { ...data, role: role.id, sector: sector.id },
       data.password,
     );
 
