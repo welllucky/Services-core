@@ -108,16 +108,19 @@ describe("Get User By Token - Unit Test - Suite", () => {
     });
   });
 
-  it("should throw an error when JWT signature is invalid", async () => {
+  it("should return null for userData and accessToken when token is invalid", async () => {
     const mockToken = "Bearer invalidToken";
 
     (verify as jest.Mock).mockImplementation(() => {
       throw new Error("invalid signature");
     });
 
-    await expect(getUserByToken(mockToken)).rejects.toThrow(
-      "invalid signature",
-    );
+    const result = await getUserByToken(mockToken);
+
+    expect(result).toEqual({
+      userData: null,
+      accessToken: null,
+    });
   });
 
   it("should return null for userData and accessToken when token is undefined", async () => {
@@ -135,9 +138,12 @@ describe("Get User By Token - Unit Test - Suite", () => {
       throw new Error("Token verification failed");
     });
 
-    await expect(getUserByToken(malformedToken)).rejects.toThrow(
-      "Token verification failed",
-    );
+    const result = await getUserByToken(malformedToken);
+
+    expect(result).toEqual({
+      userData: null,
+      accessToken: null,
+    });
   });
 
   it("should throw error when token algorithm is invalid", async () => {
@@ -147,12 +153,15 @@ describe("Get User By Token - Unit Test - Suite", () => {
       throw new Error("invalid algorithm");
     });
 
-    await expect(getUserByToken(mockToken)).rejects.toThrow(
-      "invalid algorithm",
-    );
+    const result = await getUserByToken(mockToken);
+
+    expect(result).toEqual({
+      userData: null,
+      accessToken: null,
+    });
   });
 
-  it.failing(
+  it(
     "should return null userData and accessToken when token is expired",
     async () => {
       const mockToken = "Bearer expiredToken";

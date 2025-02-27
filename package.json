@@ -94,6 +94,5 @@
   "bugs": {
     "url": "https://github.com/welllucky/services-core/issues"
   },
-  "homepage": "https://github.com/welllucky/services-core#readme",
-  "packageManager": "pnpm@9.12.3"
+  "homepage": "https://github.com/welllucky/services-core#readme"
 }

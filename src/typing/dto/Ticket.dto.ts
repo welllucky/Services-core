@@ -100,6 +100,7 @@ export class PublicTicketDto extends OmitType(TicketDto, [
     readonly id: string,
     readonly resume: string,
     readonly description: string,
+    readonly date: Date,
     readonly priority: PriorityLevels,
     readonly type: TicketType,
     readonly status: TicketStatus,
