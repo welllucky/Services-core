@@ -15,7 +15,7 @@ const getAuthToken = async (token: string, session: Session) => {
 
     const { accessToken, userData } = await getUserByToken(token);
 
-    if (!session) {
+    if (!session || !userData || !accessToken) {
       addBreadcrumb({
         category: "auth",
         level: "warning",
@@ -53,6 +53,8 @@ const getAuthToken = async (token: string, session: Session) => {
           actualData: Date.now(),
         },
       });
+
+      throw new Error("Session expired");
     }
 
     const isAuthenticated = session.isActive && isTokenValid;
@@ -60,8 +62,8 @@ const getAuthToken = async (token: string, session: Session) => {
     return {
       accessToken,
       isAuthenticated,
-      userId: String(userData.register),
-      sessionId: String(session.id),
+      userId: String(userData?.register || ""),
+      sessionId: String(session?.id),
     };
   } catch {
     return {
