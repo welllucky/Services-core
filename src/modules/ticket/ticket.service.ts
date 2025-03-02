@@ -570,4 +570,37 @@ export class TicketService {
       message: `The ticket ${ticketId} was closed successfully. The resolver will be notified!`,
     };
   }
+
+  async search(token: string, term: string): Promise<IResponseFormat<unknown>> {
+    const { userData } = await getUserByToken(token);
+    const userId = userData?.register;
+
+    if (!userId) {
+      throw new HttpException(
+        {
+          title: "User provided is not valid",
+          message:
+            "User not found or not exists, please check the credentials.",
+        },
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    const tickets = await this.repository.findAnyIssueByIdOrName(userId, term);
+
+    if (!tickets.length) {
+      throw new HttpException(
+        {
+          title: "Tickets not found",
+          message: `No tickets found with the provided search term: ${term}.`,
+        },
+        HttpStatus.NO_CONTENT,
+      );
+    }
+
+    return {
+      data: tickets,
+      message: `${tickets.length} tickets found with the term: ${term}.`,
+    };
+  }
 }

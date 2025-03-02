@@ -24,6 +24,11 @@ export class TicketController {
     return this.service.getAll(token, { page, index });
   }
 
+  @Get("search")
+  search(@Headers("Authorization") token: string, @Query("term") term: string) {
+    return this.service.search(token, term);
+  }
+
   @Get(":id")
   getById(@Headers("Authorization") token: string, @Param("id") id: string) {
     return this.service.getById(token, id);
