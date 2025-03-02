@@ -2,7 +2,7 @@ import { Ticket, User } from "@/entities";
 import { ITicket } from "@/typing";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FindOptionsWhere, Repository } from "typeorm";
+import { FindOptionsWhere, ILike, Repository } from "typeorm";
 
 @Injectable()
 class TicketRepository {
@@ -158,6 +158,38 @@ class TicketRepository {
     return {
       isUpdated: result.affected === 1,
     };
+  }
+
+  findAnyIssueByIdOrName(
+    userId: string,
+    searchTerm: string,
+    pagination?: { page?: number; index?: number },
+  ) {
+    const pageIndex =
+      !pagination?.index || pagination?.index === 1 ? 0 : pagination?.index;
+    const page = pagination?.page || 10;
+
+    return this.repository.find({
+      where: [
+        {
+          description: ILike(`%${searchTerm}%`),
+          createdBy: { register: userId },
+        },
+        { resume: ILike(`%${searchTerm}%`), createdBy: { register: userId } },
+        { id: ILike(`%${searchTerm}%`), createdBy: { register: userId } },
+        {
+          description: ILike(`%${searchTerm}%`),
+          resolver: { register: userId },
+        },
+        { resume: ILike(`%${searchTerm}%`), resolver: { register: userId } },
+        { id: ILike(`%${searchTerm}%`), resolver: { register: userId } },
+      ],
+      order: {
+        createdAt: "DESC",
+      },
+      take: page,
+      skip: pageIndex * page,
+    });
   }
 }
 
