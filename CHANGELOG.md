@@ -2,14 +2,13 @@
 
 ## [1.1.0](https://github.com/welllucky/Services-core/compare/v1.0.0...v1.1.0) (2025-03-15)
 
-
 ### Features
 
-* :sparkles: Adiciona endpoint para buscar tickets em progresso e refatora a função de busca para aceitar parâmetros de paginação ([cfc6cfa](https://github.com/welllucky/Services-core/commit/cfc6cfae6f1b9798253db06ac70732e02dd30687))
-* :sparkles: Adiciona o campo 'date' ao serviço de tickets e atualiza a função de recuperação de usuário para tratar erros ([49e8d8d](https://github.com/welllucky/Services-core/commit/49e8d8d28d781ef4f326bef29ef0c0296c3a0ea3))
-* :sparkles: Adiciona workflows do GitHub para build, rotulagem e gerenciamento de lançamentos ([193462d](https://github.com/welllucky/Services-core/commit/193462d471cc590499a06607282b1616b8c7c5db))
-* :sparkles: Atualiza DTOs de Role e Sector para incluir o campo 'id' e remover parametros desnecessários ([15719e4](https://github.com/welllucky/Services-core/commit/15719e4d3ba1e0ade4039f820d4db547aa464b80))
-* :sparkles: Mescla busca de tickets na feature de tickets ([1539cf6](https://github.com/welllucky/Services-core/commit/1539cf676ec03fc8dae40b077752380f6dafd9ea))
+- :sparkles: Adiciona endpoint para buscar tickets em progresso e refatora a função de busca para aceitar parâmetros de paginação ([cfc6cfa](https://github.com/welllucky/Services-core/commit/cfc6cfae6f1b9798253db06ac70732e02dd30687))
+- :sparkles: Adiciona o campo 'date' ao serviço de tickets e atualiza a função de recuperação de usuário para tratar erros ([49e8d8d](https://github.com/welllucky/Services-core/commit/49e8d8d28d781ef4f326bef29ef0c0296c3a0ea3))
+- :sparkles: Adiciona workflows do GitHub para build, rotulagem e gerenciamento de lançamentos ([193462d](https://github.com/welllucky/Services-core/commit/193462d471cc590499a06607282b1616b8c7c5db))
+- :sparkles: Atualiza DTOs de Role e Sector para incluir o campo 'id' e remover parametros desnecessários ([15719e4](https://github.com/welllucky/Services-core/commit/15719e4d3ba1e0ade4039f820d4db547aa464b80))
+- :sparkles: Mescla busca de tickets na feature de tickets ([1539cf6](https://github.com/welllucky/Services-core/commit/1539cf676ec03fc8dae40b077752380f6dafd9ea))
 
 ## 1.0.0 (2025-02-03)
 
