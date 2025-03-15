@@ -25,17 +25,6 @@ export class TicketService {
     const { userData } = await getUserByToken(token);
     const userId = userData?.register;
 
-    if (!userId) {
-      throw new HttpException(
-        {
-          title: "User provided is not valid",
-          message:
-            "User not found or not exists, please check the credentials.",
-        },
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
-
     await this.userModel.init({
       register: userId,
     });
@@ -92,17 +81,6 @@ export class TicketService {
     const { userData } = await getUserByToken(token);
     const userId = userData?.register;
 
-    if (!userId) {
-      throw new HttpException(
-        {
-          title: "User provided is not valid",
-          message:
-            "User not found or not exists, please check the credentials.",
-        },
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
-
     await this.userModel.init({
       register: userId,
     });
@@ -117,12 +95,10 @@ export class TicketService {
       );
     }
 
-    const tickets = await this.repository.findAll(
+    const tickets = await this.repository.findAll({
       userId,
-      undefined,
-      undefined,
       pagination,
-    );
+    });
 
     if (!tickets.length) {
       throw new HttpException(
@@ -164,17 +140,6 @@ export class TicketService {
     const { userData } = await getUserByToken(token);
     const userId = userData?.register;
 
-    if (!userId) {
-      throw new HttpException(
-        {
-          title: "User provided is not valid",
-          message:
-            "User not found or not exists, please check the credentials.",
-        },
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
-
     await this.userModel.init({
       register: userId,
     });
@@ -192,13 +157,7 @@ export class TicketService {
     const ticket = await this.repository.findById(userId, ticketId);
 
     if (!ticket) {
-      throw new HttpException(
-        {
-          title: "Ticket not found",
-          message: `No ticket ${ticketId} found for the user`,
-        },
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException("", HttpStatus.NO_CONTENT);
     }
 
     return {
@@ -235,17 +194,6 @@ export class TicketService {
     const { userData } = await getUserByToken(token);
     const userId = userData?.register;
 
-    if (!userId) {
-      throw new HttpException(
-        {
-          title: "User provided is not valid",
-          message:
-            "User not found or not exists, please check the credentials.",
-        },
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
-
     await this.userModel.init({
       register: userId,
     });
@@ -279,19 +227,9 @@ export class TicketService {
     token: string,
     pagination?: Pagination,
   ): Promise<IResponseFormat<unknown>> {
+    console.log("findInProgress");
     const { userData } = await getUserByToken(token);
     const userId = userData?.register;
-
-    if (!userId) {
-      throw new HttpException(
-        {
-          title: "User provided is not valid",
-          message:
-            "User not found or not exists, please check the credentials.",
-        },
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
 
     await this.userModel.init({
       register: userId,
@@ -307,14 +245,13 @@ export class TicketService {
       );
     }
 
-    const tickets = await this.repository.findAll(
+    const tickets = await this.repository.findAll({
       userId,
-      {
+      filters: {
         status: "inProgress",
       },
-      undefined,
       pagination,
-    );
+    });
 
     if (!tickets.length) {
       throw new HttpException(
@@ -356,17 +293,6 @@ export class TicketService {
     const { userData } = await getUserByToken(token);
     const userId = userData?.register;
 
-    if (!userId) {
-      throw new HttpException(
-        {
-          title: "User provided is not valid",
-          message:
-            "User not found or not exists, please check the credentials.",
-        },
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
-
     await this.userModel.init({
       register: userId,
     });
@@ -381,7 +307,7 @@ export class TicketService {
       );
     }
 
-    const startedTicket = this.repository.update(
+    const startedTicket = await this.repository.update(
       {
         status: "inProgress",
         updatedAt: new Date(),
@@ -412,17 +338,6 @@ export class TicketService {
   ): Promise<IResponseFormat<unknown>> {
     const { userData } = await getUserByToken(token);
     const userId = userData?.register;
-
-    if (!userId) {
-      throw new HttpException(
-        {
-          title: "User provided is not valid",
-          message:
-            "User not found or not exists, please check the credentials.",
-        },
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
 
     await this.userModel.init({
       register: userId,
@@ -469,17 +384,6 @@ export class TicketService {
     const { userData } = await getUserByToken(token);
     const userId = userData?.register;
 
-    if (!userId) {
-      throw new HttpException(
-        {
-          title: "User provided is not valid",
-          message:
-            "User not found or not exists, please check the credentials.",
-        },
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
-
     await this.userModel.init({
       register: userId,
     });
@@ -525,17 +429,6 @@ export class TicketService {
     const { userData } = await getUserByToken(token);
     const userId = userData?.register;
 
-    if (!userId) {
-      throw new HttpException(
-        {
-          title: "User provided is not valid",
-          message:
-            "User not found or not exists, please check the credentials.",
-        },
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
-
     await this.userModel.init({
       register: userId,
     });
@@ -575,7 +468,11 @@ export class TicketService {
     const { userData } = await getUserByToken(token);
     const userId = userData?.register;
 
-    if (!userId) {
+    await this.userModel.init({
+      register: userId,
+    });
+
+    if (!this.userModel.exists()) {
       throw new HttpException(
         {
           title: "User provided is not valid",

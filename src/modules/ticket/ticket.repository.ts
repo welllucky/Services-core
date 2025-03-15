@@ -29,12 +29,17 @@ class TicketRepository {
     });
   }
 
-  async findAll(
-    userId: string,
-    filters?: Partial<Omit<ITicket, "id">>,
-    resolve?: boolean,
-    pagination?: { page?: number; index?: number },
-  ) {
+  async findAll({
+    userId,
+    filters,
+    resolve,
+    pagination,
+  }: {
+    userId: string;
+    filters?: Partial<Omit<ITicket, "id">>;
+    resolve?: boolean;
+    pagination?: { page?: number; index?: number };
+  }) {
     const pageIndex =
       !pagination?.index || pagination?.index === 1 ? 0 : pagination?.index;
     const page = pagination?.page || 10;
