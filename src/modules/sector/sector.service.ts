@@ -1,7 +1,7 @@
 import {
+  CreateRoleDto,
   CreateSectorDto,
   IResponseFormat,
-  RoleDto,
   SectorDto,
   UpdateSectorDto,
 } from "@/typing";
@@ -56,11 +56,11 @@ export class SectorService {
     return {
       title: "Success",
       message: "Sector created with success.",
-      data: new CreateSectorDto(createdSector.name, createdSector.description),
+      data: new CreateSectorDto(createdSector.id, createdSector.name, createdSector.description),
     };
   }
 
-  async getSector(id: string): Promise<IResponseFormat<SectorDto>> {
+  async getSector(id: string): Promise<IResponseFormat<CreateSectorDto>> {
     if (!id) {
       throw new HttpException(
         {
@@ -82,8 +82,9 @@ export class SectorService {
         HttpStatus.NOT_FOUND,
       );
     }
+
     return {
-      data: sector,
+      data: new CreateSectorDto(sector.id, sector.name, sector.description),
       title: "Success",
       message: "Sector found with success.",
     };
@@ -119,7 +120,7 @@ export class SectorService {
     };
   }
 
-  async getSectors(): Promise<IResponseFormat<SectorDto[]>> {
+  async getSectors(): Promise<IResponseFormat<CreateSectorDto[]>> {
     const sectors = await this.repository.findAll();
 
     if (!sectors) {
@@ -133,7 +134,10 @@ export class SectorService {
     }
 
     return {
-      data: sectors,
+      data: sectors.map(
+        (sector) =>
+          new CreateSectorDto(sector.id, sector.name, sector.description),
+      ),
       title: "Success",
       message: "Sectors found with success.",
     };
@@ -253,7 +257,7 @@ export class SectorService {
     };
   }
 
-  async getRoles(sectorId: string): Promise<IResponseFormat<RoleDto[]>> {
+  async getRoles(sectorId: string): Promise<IResponseFormat<CreateRoleDto[]>> {
     if (!sectorId) {
       throw new HttpException(
         {
@@ -264,10 +268,12 @@ export class SectorService {
       );
     }
 
-    const sector = await this.getSector(sectorId);
+    const sector = await this.repository.find(sectorId);
 
     return {
-      data: sector.data.roles,
+      data: sector.roles.map(
+        (role) => new CreateRoleDto(role.id, role.name, role.description),
+      ),
       title: "Success",
       message: "Roles founded with success.",
     };
