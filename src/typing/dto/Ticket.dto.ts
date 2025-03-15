@@ -87,7 +87,7 @@ export class CreateTicketDto extends PickType(TicketDto, [
   "description",
   "priority",
   "date",
-  "type"
+  "type",
 ]) {}
 
 export class UpdateTicketDto extends PartialType(CreateTicketDto) {}
