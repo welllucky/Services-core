@@ -29,9 +29,13 @@ export class TicketController {
     return this.service.search(token, term);
   }
 
-  @Get(":id")
-  getById(@Headers("Authorization") token: string, @Param("id") id: string) {
-    return this.service.getById(token, id);
+  @Get("/inProgress")
+  getInProgress(
+    @Headers("Authorization") token: string,
+    @Query("page") page?: number,
+    @Query("index") index?: number,
+  ) {
+    return this.service.findInProgress(token, { page, index });
   }
 
   @Post()
@@ -40,6 +44,11 @@ export class TicketController {
     @Body() data: CreateTicketDto,
   ) {
     return this.service.create(token, data);
+  }
+
+  @Get(":id")
+  getById(@Headers("Authorization") token: string, @Param("id") id: string) {
+    return this.service.getById(token, id);
   }
 
   @Put(":id")

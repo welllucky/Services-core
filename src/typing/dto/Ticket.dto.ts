@@ -10,7 +10,7 @@ import {
 } from "class-validator";
 import { PriorityLevels } from "../interfaces";
 import { TicketType, TicketTypeArray } from "../types";
-import { TicketStatus, TicketStatusArray } from "../types/TicketStatus";
+import { TicketStatus, ticketStatusArray } from "../types/TicketStatus";
 
 export class TicketDto {
   @IsString({ message: "Id must be a string" })
@@ -43,7 +43,7 @@ export class TicketDto {
   type: TicketType;
 
   @IsString({ message: "Status must be a string" })
-  @IsIn(TicketStatusArray, {
+  @IsIn(ticketStatusArray, {
     message: "Status must be 'low', 'medium' or 'high'",
   })
   status: TicketStatus;
