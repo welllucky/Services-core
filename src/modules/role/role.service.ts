@@ -49,7 +49,11 @@ export class RoleService {
     return {
       title: "Success",
       message: "Role created with success.",
-      data: new CreateRoleDto(createdRole.name, createdRole.description),
+      data: new CreateRoleDto(
+        createdRole.id,
+        createdRole.name,
+        createdRole.description,
+      ),
     };
   }
 
@@ -76,7 +80,7 @@ export class RoleService {
       );
     }
     return {
-      data: role,
+      data: new CreateRoleDto(role.id, role.name, role.description),
       title: "Success",
       message: "Role found with success.",
     };
@@ -106,7 +110,7 @@ export class RoleService {
     }
 
     return {
-      data: role,
+      data: new CreateRoleDto(role.id, role.name, role.description),
       title: "Success",
       message: "Role found with success.",
     };
@@ -126,7 +130,9 @@ export class RoleService {
     }
 
     return {
-      data: roles,
+      data: roles.map(
+        (role) => new CreateRoleDto(role.id, role.name, role.description),
+      ),
       title: "Success",
       message: "Roles found with success.",
     };

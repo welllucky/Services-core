@@ -29,16 +29,22 @@ export class SectorDto {
 }
 
 export class AlterSectorDto extends PickType(SectorDto, [
+  "id",
   "name",
   "description",
   "roles",
 ]) {}
 
 export class CreateSectorDto extends PickType(SectorDto, [
+  "id",
   "name",
   "description",
 ]) {
-  constructor(readonly name: string, readonly description: string) {
+  constructor(
+    readonly id: string,
+    readonly name: string,
+    readonly description: string,
+  ) {
     super();
   }
 }

@@ -98,7 +98,7 @@ export class SessionService {
       "active",
     );
 
-    if (actualSession && actualSession?.isActive) {
+    if (actualSession?.isActive) {
       const closedSession = await this.repository.update(
         {
           isActive: false,
@@ -299,7 +299,7 @@ export class SessionService {
 
     const { register } = userData;
 
-    if (!actualSession || !actualSession?.isActive) {
+    if (!actualSession?.isActive) {
       throw new HttpException(
         "User could not access this resource",
         !actualSession?.isActive
