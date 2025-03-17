@@ -20,8 +20,9 @@ export class TicketController {
     @Headers("Authorization") token: string,
     @Query("page") page?: number,
     @Query("index") index?: number,
+    @Query("isSolver") isSolver?: boolean,
   ) {
-    return this.service.getAll(token, { page, index });
+    return this.service.getAll(token, isSolver, { page, index });
   }
 
   @Get("search")
@@ -47,8 +48,12 @@ export class TicketController {
   }
 
   @Get(":id")
-  getById(@Headers("Authorization") token: string, @Param("id") id: string) {
-    return this.service.getById(token, id);
+  getById(
+    @Headers("Authorization") token: string,
+    @Param("id") id: string,
+    @Query("isSolver") isSolver?: boolean,
+  ) {
+    return this.service.getById(token, id, isSolver);
   }
 
   @Put(":id")
@@ -63,5 +68,15 @@ export class TicketController {
   @Put(":id/close")
   close(@Headers("Authorization") token: string, @Param("id") id: string) {
     return this.service.close(token, id);
+  }
+
+  @Put(":id/start")
+  start(@Headers("Authorization") token: string, @Param("id") id: string) {
+    return this.service.start(token, id);
+  }
+
+  @Put(":id/resolve")
+  resolve(@Headers("Authorization") token: string, @Param("id") id: string) {
+    return this.service.resolve(token, id);
   }
 }

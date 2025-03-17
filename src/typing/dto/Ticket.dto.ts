@@ -87,7 +87,7 @@ export class CreateTicketDto extends PickType(TicketDto, [
   "description",
   "priority",
   "date",
-  "type"
+  "type",
 ]) {}
 
 export class UpdateTicketDto extends PartialType(CreateTicketDto) {}
@@ -110,6 +110,29 @@ export class PublicTicketDto extends OmitType(TicketDto, [
     readonly closedAt: Date | null,
     readonly createdBy: string,
     readonly closedBy: string | null,
+  ) {
+    super();
+  }
+}
+
+export class SearchedTicketDto extends OmitType(TicketDto, [
+  "updatedAt",
+  "updatedBy",
+  "createdAt",
+  "closedAt",
+  "createdBy",
+  "closedBy",
+]) {
+  constructor(
+    readonly id: string,
+    readonly resume: string,
+    readonly description: string,
+    readonly date: Date,
+    readonly priority: PriorityLevels,
+    readonly type: TicketType,
+    readonly status: TicketStatus,
+    readonly createdBy: string,
+    readonly resolver: string | null,
   ) {
     super();
   }
