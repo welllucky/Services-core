@@ -32,12 +32,12 @@ class TicketRepository {
   async findAll({
     userId,
     filters,
-    resolve,
+    isSolver,
     pagination,
   }: {
     userId: string;
     filters?: Partial<Omit<ITicket, "id">>;
-    resolve?: boolean;
+    isSolver?: boolean;
     pagination?: { page?: number; index?: number };
   }) {
     const pageIndex =
@@ -45,19 +45,19 @@ class TicketRepository {
     const page = pagination?.page || 10;
 
     return this.repository.find({
-      where: resolve
-        ? {
-            resolver: {
-              register: userId,
-            },
-            ...(filters as FindOptionsWhere<Ticket>),
-          }
-        : {
-            createdBy: {
-              register: userId,
-            },
-            ...(filters as FindOptionsWhere<Ticket>),
+      where: {
+        ...(isSolver && {
+          resolver: {
+            register: userId,
           },
+        }),
+        ...(!isSolver && {
+          createdBy: {
+            register: userId,
+          },
+        }),
+        ...(filters as FindOptionsWhere<Ticket>),
+      },
       relations: {
         createdBy: true,
         closedBy: true,
@@ -71,21 +71,21 @@ class TicketRepository {
     });
   }
 
-  async findById(userId: string, ticketId: string, resolve?: boolean) {
+  async findById(userId: string, ticketId: string, isSolver?: boolean) {
     return this.repository.findOne({
-      where: resolve
-        ? {
-            resolver: {
-              register: userId,
-            },
-            id: ticketId,
-          }
-        : {
-            createdBy: {
-              register: userId,
-            },
-            id: ticketId,
+      where: {
+        ...(isSolver && {
+          resolver: {
+            register: userId,
           },
+        }),
+        ...(!isSolver && {
+          createdBy: {
+            register: userId,
+          },
+        }),
+        id: ticketId,
+      },
       relations: {
         closedBy: true,
         createdBy: true,
@@ -106,58 +106,38 @@ class TicketRepository {
         | "updatedBy"
         | "closedBy"
         | "id"
+        | "historic"
       >
     >,
     ticketId: string,
     userId: string,
+    isSolver?: boolean,
   ) {
-    const result = await this.repository.update(
-      {
+    // First, check if the ticket exists and belongs to the resolver
+    const ticket = await this.repository.findOne({
+      where: {
         id: ticketId,
-        updatedBy: {
-          register: userId,
-        },
+        ...(isSolver && {
+          resolver: {
+            register: userId,
+          },
+        }),
+        ...(!isSolver && {
+          createdBy: {
+            register: userId,
+          },
+        }),
       },
-      {
-        ...data,
-      },
-    );
+    });
 
-    return {
-      isUpdated: result.affected === 1,
-    };
-  }
-
-  async updateByResolver(
-    data: Partial<
-      Omit<
-        ITicket,
-        | "closedAt"
-        | "updateAt"
-        | "createdAt"
-        | "createdBy"
-        | "updatedBy"
-        | "closedBy"
-        | "id"
-      >
-    >,
-    ticketId: string,
-    userId: string,
-  ) {
-    if (Object.keys(data).length === 0) {
-      throw new Error("No update values provided");
+    if (!ticket) {
+      return { isUpdated: false }; // Ticket not found or not assigned to this resolver
     }
 
+    // Perform the update
     const result = await this.repository.update(
-      {
-        id: ticketId,
-        updatedBy: {
-          register: userId,
-        },
-      },
-      {
-        ...data,
-      },
+      { id: ticketId }, // Simple where clause, no relations
+      data,
     );
 
     return {
@@ -189,6 +169,10 @@ class TicketRepository {
         { resume: ILike(`%${searchTerm}%`), resolver: { register: userId } },
         { id: ILike(`%${searchTerm}%`), resolver: { register: userId } },
       ],
+      relations: {
+        createdBy: true,
+        resolver: true,
+      },
       order: {
         createdAt: "DESC",
       },
