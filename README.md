@@ -1,5 +1,4 @@
-![Logo](https://firebasestorage.googleapis.com/v0/b/runnerdois.appspot.com/o/ServicesProject%2FImages%2FServices%20-%20Capa.png?alt=media&token=a5131cc4-2b48-4500-b90f-a22d55352242)
-![](https://api.checklyhq.com/v1/badges/checks/dd6528e6-fac1-4d85-8295-5b0697e16d86?style=flat&theme=dark)
+![Logo](https://services-buckt-dev.s3.us-east-1.amazonaws.com/public/Services+-+Capa.png)
 
 # ⛓️‍💥Desburocratizador do gerenciamento de chamados
 
@@ -19,7 +18,7 @@ O Services vem para trazer uma experiência um pouco diferente na hora de regist
 
 Você não precisa saber para quem enviar, qual o setor responsável, qual é a urgência do seu chamado ou algo do tipo. O Services se encarrega por isso, e não é só isso, o Services:
 
-![Logo](https://firebasestorage.googleapis.com/v0/b/runnerdois.appspot.com/o/ServicesProject%2FImages%2FFuncionalidades.png?alt=media&token=063796b2-ebec-4970-992d-247c6e637048)
+![Logo](https://services-buckt-dev.s3.us-east-1.amazonaws.com/public/Funcionalidades.png)
 
 ## 📃 Licença
 
