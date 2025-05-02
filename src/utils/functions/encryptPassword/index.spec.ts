@@ -1,4 +1,4 @@
-import { compareSync } from "bcrypt";
+import { compareSync } from "bcryptjs";
 import { comparePassword, encryptPassword } from ".";
 
 describe("Encrypt Password - Unit Test - Suite", () => {
