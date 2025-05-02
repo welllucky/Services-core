@@ -23,7 +23,7 @@ describe("Session Service - Unit Test - Suite", () => {
       AUTH_SECRET: AUTH_SECRET_MOCK,
     });
 
-    jest.mock("bcrypt", () => {
+    jest.mock("bcryptjs", () => {
       return {
         compareSync: compareMock.mockReturnValue(true),
       };
