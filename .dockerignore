@@ -1,0 +1,8 @@
+node_modules
+dist
+pnpm-debug.log
+Dockerfile
+.dockerignore
+.env.local
+.env.development
+.env.test
