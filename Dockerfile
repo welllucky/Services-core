@@ -4,6 +4,9 @@ FROM node:20-alpine AS builder
 # Defina o diretório de trabalho dentro do container
 WORKDIR /app
 
+ARG NODE_ENV=production
+# ARG SENTRY_AUTH_TOKEN
+
 # Copie os arquivos de dependências
 COPY package.json pnpm-lock.yaml ./
 
@@ -30,10 +33,14 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY package.json ./
 
-COPY .env .env
+# Ou, se preferir, adicionar diretamente ao ambiente do container
+ENV NODE_ENV=production \
+    HOST_ENV=development \
+    CI=false \
+    PORT=4000
 
 # Exponha a porta da aplicação
 EXPOSE 4000
 
 # Comando para iniciar a aplicação
-CMD ["node", "-r", "dotenv/config", "dist/src/main"]
+CMD ["node", "dist/src/main"]
