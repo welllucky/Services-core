@@ -161,24 +161,21 @@ describe("Get User By Token - Unit Test - Suite", () => {
     });
   });
 
-  it(
-    "should return null userData and accessToken when token is expired",
-    async () => {
-      const mockToken = "Bearer expiredToken";
+  it("should return null userData and accessToken when token is expired", async () => {
+    const mockToken = "Bearer expiredToken";
 
-      (verify as jest.Mock).mockImplementation(() => {
-        throw new Error("TokenExpiredError");
-      });
+    (verify as jest.Mock).mockImplementation(() => {
+      throw new Error("TokenExpiredError");
+    });
 
-      const result = await getUserByToken(mockToken);
+    const result = await getUserByToken(mockToken);
 
-      expect(verify).toHaveBeenCalledWith("expiredToken", mockAuthSecret, {
-        algorithms: ["HS256"],
-      });
-      expect(result).toEqual({
-        userData: null,
-        accessToken: null,
-      });
-    },
-  );
+    expect(verify).toHaveBeenCalledWith("expiredToken", mockAuthSecret, {
+      algorithms: ["HS256"],
+    });
+    expect(result).toEqual({
+      userData: null,
+      accessToken: null,
+    });
+  });
 });

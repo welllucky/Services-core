@@ -56,7 +56,11 @@ export class SectorService {
     return {
       title: "Success",
       message: "Sector created with success.",
-      data: new CreateSectorDto(createdSector.id, createdSector.name, createdSector.description),
+      data: new CreateSectorDto(
+        createdSector.id,
+        createdSector.name,
+        createdSector.description,
+      ),
     };
   }
 
