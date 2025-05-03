@@ -14,12 +14,7 @@ import { FormatResponseMiddleware } from "./utils/middlewares";
   imports: [
     SentryModule.forRoot(),
     ConfigModule.forRoot({
-      envFilePath: [
-        ".env.local",
-        ".env.development",
-        ".env.production",
-        ".env",
-      ],
+      ignoreEnvFile: true,
       isGlobal: true,
       cache: true,
       load: configLoads,
