@@ -1,12 +1,12 @@
-import * as Sentry from "@sentry/nestjs";
-import { nodeProfilingIntegration } from "@sentry/profiling-node";
+import * as Sentry from '@sentry/nestjs'
+import { nodeProfilingIntegration } from '@sentry/profiling-node'
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
 
   autoSessionTracking: true,
 
-  debug: process.env.HOST_ENV === "development",
+  debug: process.env.HOST_ENV === 'development',
 
   enabled: true,
 
@@ -20,5 +20,5 @@ Sentry.init({
 
   tracesSampleRate: 1.0,
 
-  profilesSampleRate: 1.0,
-});
+  profilesSampleRate: 1.0
+})

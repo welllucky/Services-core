@@ -74,6 +74,6 @@ console.log({
   DB_PASSWORD: process.env.DB_PASSWORD,
   DB_NAME: process.env.DB_NAME,
   DB_CA: process.env.DB_CA,
-})
+});
 
 startTheService();
