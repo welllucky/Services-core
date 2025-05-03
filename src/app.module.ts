@@ -20,9 +20,12 @@ import { FormatResponseMiddleware } from "./utils/middlewares";
         ".env.production",
         ".env",
       ],
+      ignoreEnvFile: false,
       isGlobal: true,
       cache: true,
       load: configLoads,
+      expandVariables: true,
+      ignoreEnvVars: false,
     }),
     TypeOrmModule.forRootAsync({
       useFactory: async (configService: ConfigService) => ({
