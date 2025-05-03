@@ -20,9 +20,12 @@ import { FormatResponseMiddleware } from "./utils/middlewares";
         ".env.production",
         ".env",
       ],
+      ignoreEnvFile: false,
       isGlobal: true,
       cache: true,
       load: configLoads,
+      expandVariables: true,
+      ignoreEnvVars: false,
     }),
     TypeOrmModule.forRootAsync({
       useFactory: async (configService: ConfigService) => ({
@@ -36,9 +39,11 @@ import { FormatResponseMiddleware } from "./utils/middlewares";
         synchronize: configService.get("HOST_ENV") === "development",
         entities: entities,
         subscribers: subscribers,
-        ssl: {
-          ca: configService.get("DB_CA"),
-        },
+        ...(configService.get("DB_CA") && {
+          ssl: {
+            ca: configService.get("DB_CA"),
+          },
+        }),
       }),
       inject: [ConfigService],
     }),

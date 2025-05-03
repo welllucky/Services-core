@@ -6,3 +6,6 @@ Dockerfile
 .env.local
 .env.development
 .env.test
+*.log
+*.md
+.git
