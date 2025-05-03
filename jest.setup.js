@@ -1,1 +1,1 @@
-import "tsconfig-paths/register";
+import 'tsconfig-paths/register'

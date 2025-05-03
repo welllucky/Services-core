@@ -1,7 +1,7 @@
 import {
   Event,
   // Ticket,
-  User
+  User,
 } from "@/entities";
 import { IEvent } from "@/typing";
 import { Injectable } from "@nestjs/common";
