@@ -30,7 +30,7 @@ export class UserService {
           title: "Users not found",
           message: "No users actives in the system",
         },
-        HttpStatus.NOT_FOUND,
+        HttpStatus.NO_CONTENT,
       );
     }
 
@@ -64,7 +64,7 @@ export class UserService {
           title: "User not found",
           message: "User was not found, please check if user exist.",
         },
-        HttpStatus.NOT_FOUND,
+        HttpStatus.NO_CONTENT,
       );
     }
 
@@ -95,7 +95,7 @@ export class UserService {
           title: "User not found",
           message: "User not found by email, please check the email.",
         },
-        HttpStatus.NOT_FOUND,
+        HttpStatus.NO_CONTENT,
       );
     }
 
