@@ -63,4 +63,17 @@ async function startTheService() {
   console.log(`Server is running on: ${await app.getUrl()}`);
 }
 
+console.log({
+  NODE_ENV: process.env.NODE_ENV,
+  HOST_ENV: process.env.HOST_ENV,
+  PORT: process.env.PORT,
+  CLIENT_URL: process.env.CLIENT_URL,
+  DB_HOST: process.env.DB_HOST,
+  DB_PORT: process.env.DB_PORT,
+  DB_USERNAME: process.env.DB_USERNAME,
+  DB_PASSWORD: process.env.DB_PASSWORD,
+  DB_NAME: process.env.DB_NAME,
+  DB_CA: process.env.DB_CA,
+})
+
 startTheService();
