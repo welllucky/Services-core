@@ -28,7 +28,12 @@ export class Sector extends BaseEntity {
   @Column({ type: "timestamp", nullable: true })
   public deletedAt!: Date | null;
 
-  @ManyToMany(() => Role)
+  @ManyToMany(() => Role, {
+    cascade: true,
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+    nullable: true,
+  })
   @JoinTable()
-  roles!: Role[];
+  roles!: Role[] | null;
 }

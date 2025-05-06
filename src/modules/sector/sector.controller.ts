@@ -1,5 +1,13 @@
 import { SectorWithoutIdDto, UpdateSectorDto } from "@/typing";
-import { Body, Controller, Get, Param, Patch, Post } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from "@nestjs/common";
 import { SectorService } from "./sector.service";
 
 @Controller("sector")
@@ -9,7 +17,7 @@ export class SectorController {
   @Get()
   getAll() {
     // @Query("index") index?: number, // @Query("page") page?: number,
-    return this.sessionService.getSectors();
+    return this.sessionService.getAll();
   }
 
   @Post()
@@ -19,17 +27,27 @@ export class SectorController {
 
   @Get(":id")
   async getSector(@Param("id") id: string) {
-    return this.sessionService.getSector(id);
+    return this.sessionService.get(id);
   }
 
   @Get("name/:name")
   async getSectorByName(@Param("name") name: string) {
-    return this.sessionService.getSectorByName(name);
+    return this.sessionService.getByName(name);
   }
 
   @Patch(":id")
   async updateSector(@Param("id") id: string, @Body() data: UpdateSectorDto) {
-    return this.sessionService.updateSector(id, data);
+    return this.sessionService.update(id, data);
+  }
+
+  @Get(":id/roles")
+  async getRoles(@Param("id") sectorId: string) {
+    return this.sessionService.getRoles(sectorId);
+  }
+
+  @Delete(":id")
+  async deleteSector(@Param("id") id: string) {
+    return this.sessionService.removeSector(id);
   }
 
   @Post(":sector/addRole/:role")
@@ -40,8 +58,11 @@ export class SectorController {
     return this.sessionService.addRole(roleName, sectorName);
   }
 
-  @Get(":id/roles")
-  async getRoles(@Param("id") sectorId: string) {
-    return this.sessionService.getRoles(sectorId);
+  @Delete(":sector/removeRole/:role")
+  async removeRole(
+    @Param("sector") sectorName: string,
+    @Param("role") roleName: string,
+  ) {
+    return this.sessionService.removeRole(roleName, sectorName);
   }
 }

@@ -14,10 +14,15 @@ import { User } from "./user.entity";
   name: "Events",
 })
 export class Event extends BaseEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn("increment")
   public readonly id!: string;
 
-  @ManyToOne(() => Ticket, (ticket) => ticket.id)
+  @ManyToOne(() => Ticket, (ticket) => ticket.id, {
+    cascade: ["insert", "update"],
+    nullable: false,
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
   @JoinColumn()
   public ticket!: Relation<Ticket>;
 
@@ -45,9 +50,14 @@ export class Event extends BaseEntity {
   })
   public visibility!: "public" | "private";
 
-  @ManyToOne(() => User, (user) => user.register)
+  @ManyToOne(() => User, (user) => user.register, {
+    cascade: ["insert", "update"],
+    nullable: true,
+    onDelete: "NO ACTION",
+    onUpdate: "CASCADE",
+  })
   @JoinColumn()
-  public readonly createdBy!: Relation<User>;
+  public readonly createdBy!: Relation<User> | null;
 
   @Column("timestamp")
   public readonly createdAt!: Date;
