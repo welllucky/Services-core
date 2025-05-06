@@ -1,4 +1,9 @@
-import { CreateRoleDto, IResponseFormat, RoleWithoutIdDto, UpdateRoleDto } from "@/typing";
+import {
+  CreateRoleDto,
+  IResponseFormat,
+  RoleWithoutIdDto,
+  UpdateRoleDto,
+} from "@/typing";
 import { Injectable } from "@nestjs/common";
 import { RoleRepository } from "./role.repository";
 
@@ -48,7 +53,7 @@ export class RoleService {
     };
   }
 
-  async getRole(id: string): Promise<IResponseFormat<CreateRoleDto>> {
+  async get(id: string): Promise<IResponseFormat<CreateRoleDto>> {
     if (!id) {
       return {
         title: "Role id not informed",
@@ -70,7 +75,7 @@ export class RoleService {
     };
   }
 
-  async getRoleByName(name: string): Promise<IResponseFormat<CreateRoleDto>> {
+  async getByName(name: string): Promise<IResponseFormat<CreateRoleDto>> {
     if (!name) {
       return {
         title: "Role name not informed",
@@ -96,7 +101,7 @@ export class RoleService {
     };
   }
 
-  async getRoles(): Promise<IResponseFormat<CreateRoleDto[]>> {
+  async getAll(): Promise<IResponseFormat<CreateRoleDto[]>> {
     const roles = await this.repository.findAll();
 
     if (!roles) {
@@ -116,7 +121,7 @@ export class RoleService {
     };
   }
 
-  async updateRole(
+  async update(
     id: string,
     data: UpdateRoleDto,
   ): Promise<IResponseFormat<unknown>> {
@@ -159,6 +164,41 @@ export class RoleService {
     return {
       title: "Success",
       message: "Role updated with success.",
+    };
+  }
+
+  async remove(id: string): Promise<IResponseFormat<unknown>> {
+    if (!id) {
+      return {
+        title: "Role id not informed",
+        message: "It's necessary to inform the Role id.",
+        data: null,
+      };
+    }
+
+    const Role = await this.repository.find(id);
+
+    if (!Role) {
+      return {
+        title: "Role not found",
+        message: "Role not found, please check the id.",
+        data: null,
+      };
+    }
+
+    const deletedRole = await this.repository.delete(id);
+
+    if (deletedRole.affected === 0) {
+      return {
+        title: "Error",
+        message: "Error on delete Role.",
+        data: null,
+      };
+    }
+
+    return {
+      title: "Success",
+      message: "Role deleted with success.",
     };
   }
 }

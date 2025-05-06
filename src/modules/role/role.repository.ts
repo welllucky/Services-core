@@ -22,7 +22,7 @@ export class RoleRepository {
     });
   }
 
-  findAll() {
+  async findAll() {
     return this.repository.find();
   }
 
@@ -43,5 +43,11 @@ export class RoleRepository {
         updatedAt: new Date(),
       },
     );
+  }
+
+  async delete(id: string) {
+    return this.repository.delete({
+      id: id,
+    });
   }
 }

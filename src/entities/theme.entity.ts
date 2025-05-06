@@ -2,7 +2,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: "Color_scheme" })
 export class Theme {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn("increment")
   id!: number;
 
   @Column({ type: "json" })
