@@ -14,7 +14,7 @@ import { Session } from "./session.entity";
 
 @Entity({ name: "Users" })
 export class User {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn("increment")
   public readonly id!: string;
 
   @Index({
@@ -35,9 +35,6 @@ export class User {
   @Column({ length: 256, nullable: false })
   public hash!: string;
 
-  @Column({ type: "timestamp", nullable: true })
-  public lastConnection!: Date | null;
-
   @Column({ default: false })
   public isBanned!: boolean;
 
@@ -56,17 +53,31 @@ export class User {
   @Column({ type: "timestamp", nullable: true })
   public deletedAt!: Date | null;
 
-  @ManyToOne(() => Role, (role) => role.id)
-  @JoinColumn()
-  public role!: Role;
-
   @Column({ type: "varchar", default: "user" })
   public systemRole!: SystemRoles;
 
-  @ManyToOne(() => Sector, (sector) => sector.id)
+  @ManyToOne(() => Role, (role) => role.id, {
+    cascade: ["insert", "update"],
+    eager: true,
+    onDelete: "SET NULL",
+    onUpdate: "CASCADE",
+  })
+  @JoinColumn()
+  public role!: Role;
+
+  @ManyToOne(() => Sector, (sector) => sector.id, {
+    cascade: ["insert", "update"],
+    eager: true,
+    onDelete: "SET NULL",
+    onUpdate: "CASCADE",
+  })
   @JoinColumn()
   public sector!: Sector;
 
-  @OneToMany(() => Session, (session) => session.user)
+  @OneToMany(() => Session, (session) => session.user, {
+    cascade: ["insert", "update"],
+    onDelete: "NO ACTION",
+    onUpdate: "CASCADE",
+  })
   public readonly sessions!: Session[];
 }

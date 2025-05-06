@@ -81,19 +81,19 @@ class UserModel {
     return this.user?.register;
   }
 
-  getLastConnection() {
-    return this.user?.lastConnection;
-  }
+  // getLastConnection() {
+  //   return this.user?.lastConnection;
+  // }
 
-  getConnectedTime() {
-    if (this.user?.lastConnection) {
-      return new Date(
-        new Date().getTime() - this.user.lastConnection.getTime(),
-      ).getHours();
-    }
+  // getConnectedTime() {
+  //   if (this.user?.lastConnection) {
+  //     return new Date(
+  //       new Date().getTime() - this.user.lastConnection.getTime(),
+  //     ).getHours();
+  //   }
 
-    return 0;
-  }
+  //   return 0;
+  // }
 
   getSectors() {
     return this.user?.sector;

@@ -15,7 +15,7 @@ import { User } from "./user.entity";
   name: "Tickets",
 })
 class Ticket extends BaseEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn("increment")
   public readonly id!: string;
 
   @Column({
@@ -54,7 +54,12 @@ class Ticket extends BaseEntity {
   })
   public status!: "notStarted" | "inProgress" | "blocked" | "closed";
 
-  @ManyToOne(() => User, (user) => user.register)
+  @ManyToOne(() => User, (user) => user.register, {
+    cascade: ["insert", "update"],
+    nullable: true,
+    onDelete: "SET NULL",
+    onUpdate: "CASCADE",
+  })
   @JoinColumn()
   public resolver!: User | null | undefined;
 
@@ -78,15 +83,30 @@ class Ticket extends BaseEntity {
   })
   public closedAt!: Date | null;
 
-  @ManyToOne(() => User, (user) => user.register)
+  @ManyToOne(() => User, (user) => user.register, {
+    cascade: ["insert", "update"],
+    eager: true,
+    onDelete: "NO ACTION",
+    onUpdate: "CASCADE",
+  })
   @JoinColumn()
   public createdBy!: Relation<User>;
 
-  @ManyToOne(() => User, (user) => user.register)
+  @ManyToOne(() => User, (user) => user.register, {
+    cascade: ["insert", "update"],
+    eager: true,
+    onDelete: "NO ACTION",
+    onUpdate: "CASCADE",
+  })
   @JoinColumn()
   public updatedBy!: Relation<User> | null | undefined;
 
-  @ManyToOne(() => User, (user) => user.register)
+  @ManyToOne(() => User, (user) => user.register, {
+    cascade: ["insert", "update"],
+    eager: true,
+    onDelete: "NO ACTION",
+    onUpdate: "CASCADE",
+  })
   @JoinColumn()
   public closedBy!: Relation<User> | null | undefined;
 }
