@@ -13,10 +13,15 @@ import { User } from "./user.entity";
   name: "Sessions",
 })
 class Session extends BaseEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn("increment")
   public readonly id!: string;
 
-  @ManyToOne(() => User, (user) => user.sessions)
+  @ManyToOne(() => User, (user) => user.sessions, {
+    cascade: ["insert", "update"],
+    nullable: false,
+    onDelete: "NO ACTION",
+    onUpdate: "CASCADE",
+  })
   @JoinColumn()
   public user!: Relation<User>;
 

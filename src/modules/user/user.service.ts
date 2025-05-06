@@ -116,8 +116,8 @@ export class UserService {
   }
 
   async create(data: CreateUserDTO): Promise<IResponseFormat<UserRestrictDTO>> {
-    const role = (await this.roleService.getRoleByName(data.role))?.data;
-    const sector = (await this.sectorService.getSectorByName(data.sector))
+    const role = (await this.roleService.getByName(data.role))?.data;
+    const sector = (await this.sectorService.getByName(data.sector))
       ?.data;
     const roles = (await this.sectorService.getRolesByName(data.sector))?.data;
 

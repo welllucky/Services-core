@@ -45,12 +45,12 @@ class SessionModel {
         register: userData?.register,
         email: userData?.email,
         name: userData?.name,
-        lastConnection: userData?.lastConnection,
+        // lastConnection: userData?.lastConnection,
         isBanned: userData?.isBanned,
         canCreateTicket: userData?.canCreateTicket,
         canResolveTicket: userData?.canResolveTicket,
-        role: userData?.role,
-        sector: userData?.sector,
+        role: userData?.role.name,
+        sector: userData?.sector.name,
       };
 
       const expiresAt = new Date();
