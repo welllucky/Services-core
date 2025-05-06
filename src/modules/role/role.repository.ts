@@ -1,5 +1,5 @@
 import { Role } from "@/entities";
-import { CreateRoleDto, UpdateRoleDto } from "@/typing";
+import { RoleWithoutIdDto, UpdateRoleDto } from "@/typing";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -26,7 +26,7 @@ export class RoleRepository {
     return this.repository.find();
   }
 
-  async create(data: CreateRoleDto) {
+  async create(data: RoleWithoutIdDto) {
     return this.repository.save({
       ...data,
       createdAt: new Date(),
