@@ -1,4 +1,4 @@
-import { CreateSectorDto, UpdateSectorDto } from "@/typing";
+import { SectorWithoutIdDto, UpdateSectorDto } from "@/typing";
 import { Body, Controller, Get, Param, Patch, Post } from "@nestjs/common";
 import { SectorService } from "./sector.service";
 
@@ -13,7 +13,7 @@ export class SectorController {
   }
 
   @Post()
-  create(@Body() data: CreateSectorDto) {
+  create(@Body() data: SectorWithoutIdDto) {
     return this.sessionService.create(data);
   }
 
@@ -33,7 +33,10 @@ export class SectorController {
   }
 
   @Post(":sector/addRole/:role")
-  async addRole(@Param("sector") sectorName: string, @Param("role") roleName: string) {
+  async addRole(
+    @Param("sector") sectorName: string,
+    @Param("role") roleName: string,
+  ) {
     return this.sessionService.addRole(roleName, sectorName);
   }
 
@@ -42,4 +45,3 @@ export class SectorController {
     return this.sessionService.getRoles(sectorId);
   }
 }
-

@@ -28,12 +28,18 @@ export class SectorDto {
   roles?: RoleDto[];
 }
 
-export class AlterSectorDto extends PickType(SectorDto, [
-  "id",
+
+export class SectorWithoutIdDto extends PickType(SectorDto, [
   "name",
   "description",
-  "roles",
-]) {}
+]) {
+  constructor(
+    readonly name: string,
+    readonly description: string,
+  ) {
+    super();
+  }
+}
 
 export class CreateSectorDto extends PickType(SectorDto, [
   "id",
@@ -49,4 +55,10 @@ export class CreateSectorDto extends PickType(SectorDto, [
   }
 }
 
-export class UpdateSectorDto extends PartialType(CreateSectorDto) {}
+export class AlterSectorDto extends PickType(SectorDto, [
+  "name",
+  "description",
+  "roles",
+]) {}
+
+export class UpdateSectorDto extends PartialType(SectorWithoutIdDto) {}

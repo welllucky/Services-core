@@ -17,7 +17,7 @@ export class RoleDto {
   description: string;
 }
 
-export class CreateRoleDto extends PickType(RoleDto, ["name", "description"]) {
+export class CreateRoleDto extends PickType(RoleDto, ["name", "description", "id"]) {
   constructor(
     readonly id: string,
     readonly name: string,
@@ -27,4 +27,13 @@ export class CreateRoleDto extends PickType(RoleDto, ["name", "description"]) {
   }
 }
 
-export class UpdateRoleDto extends PartialType(CreateRoleDto) {}
+export class RoleWithoutIdDto extends PickType(RoleDto, ["name", "description"]) {
+  constructor(
+    readonly name: string,
+    readonly description: string,
+  ) {
+    super();
+  }
+}
+
+export class UpdateRoleDto extends PartialType(RoleWithoutIdDto) {}

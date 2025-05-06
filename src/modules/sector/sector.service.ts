@@ -3,9 +3,10 @@ import {
   CreateSectorDto,
   IResponseFormat,
   SectorDto,
+  SectorWithoutIdDto,
   UpdateSectorDto,
 } from "@/typing";
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { RoleRepository } from "../role/role.repository";
 import { SectorRepository } from "./sector.repository";
 
@@ -17,40 +18,40 @@ export class SectorService {
   ) {}
 
   async create(
-    data: CreateSectorDto,
+    data: SectorWithoutIdDto,
   ): Promise<IResponseFormat<CreateSectorDto>> {
     if (!data) {
-      throw new HttpException(
-        {
-          title: "Empty fields",
-          message: "Please fill all fields.",
+      return {
+        message: "Sector data not informed.",
+        error: {
+          title: "Sector data not informed",
+          message: "It's necessary to inform the sector data.",
         },
-        HttpStatus.BAD_REQUEST,
-      );
+      };
     }
 
     const sectorExist = await this.repository.findByName(data.name);
 
     if (sectorExist) {
-      throw new HttpException(
-        {
+      return {
+        message: "Sector already exists.",
+        error: {
           title: "Sector already exists",
           message: "This sector already exists.",
         },
-        HttpStatus.BAD_REQUEST,
-      );
+      };
     }
 
     const createdSector = await this.repository.create(data);
 
     if (!createdSector) {
-      throw new HttpException(
-        {
+      return {
+        message: "Error on create sector.",
+        error: {
           title: "Error",
           message: "Error on create sector.",
         },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      };
     }
 
     return {
@@ -66,25 +67,25 @@ export class SectorService {
 
   async getSector(id: string): Promise<IResponseFormat<CreateSectorDto>> {
     if (!id) {
-      throw new HttpException(
-        {
+      return {
+        message: "Sector id not informed.",
+        error: {
           title: "Sector id not informed",
           message: "It's necessary to inform the sector id.",
         },
-        HttpStatus.BAD_REQUEST,
-      );
+      };
     }
 
     const sector = await this.repository.find(id);
 
     if (!sector) {
-      throw new HttpException(
-        {
+      return {
+        message: "Sector not found.",
+        error: {
           title: "Sector not found",
-          message: "Sector not found.",
+          message: "Sector does not exist.",
         },
-        HttpStatus.NOT_FOUND,
-      );
+      };
     }
 
     return {
@@ -94,27 +95,27 @@ export class SectorService {
     };
   }
 
-  async getSectorByName(name: string): Promise<IResponseFormat<SectorDto>> {
+  async getSectorByName(name: string): Promise<IResponseFormat<CreateRoleDto>> {
     if (!name) {
-      throw new HttpException(
-        {
+      return {
+        message: "Sector name not informed.",
+        error: {
           title: "Sector name not informed",
           message: "It's necessary to inform the sector name.",
         },
-        HttpStatus.BAD_REQUEST,
-      );
+      };
     }
 
     const sector = await this.repository.findByName(name);
 
     if (!sector) {
-      throw new HttpException(
-        {
+      return {
+        message: "Sector not found.",
+        error: {
           title: "Sector not found",
-          message: "Sector not found.",
+          message: "Sector does not exist.",
         },
-        HttpStatus.NOT_FOUND,
-      );
+      };
     }
 
     return {
@@ -128,13 +129,13 @@ export class SectorService {
     const sectors = await this.repository.findAll();
 
     if (!sectors) {
-      throw new HttpException(
-        {
+      return {
+        message: "Sectors not found.",
+        error: {
           title: "Sectors not found",
           message: "Sectors not found.",
         },
-        HttpStatus.NOT_FOUND,
-      );
+      };
     }
 
     return {
@@ -152,47 +153,47 @@ export class SectorService {
     data: UpdateSectorDto,
   ): Promise<IResponseFormat<unknown>> {
     if (!id) {
-      throw new HttpException(
-        {
+      return {
+        message: "Sector id not informed.",
+        error: {
           title: "Sector id not informed",
           message: "It's necessary to inform the sector id.",
         },
-        HttpStatus.BAD_REQUEST,
-      );
+      };
     }
 
     if (Object.values(data).length === 0) {
-      throw new HttpException(
-        {
+      return {
+        message: "Empty fields.",
+        error: {
           title: "Empty fields",
           message: "Please fill all fields.",
         },
-        HttpStatus.BAD_REQUEST,
-      );
+      };
     }
 
     const sector = await this.repository.find(id);
 
     if (!sector) {
-      throw new HttpException(
-        {
+      return {
+        message: "Sector not found.",
+        error: {
           title: "Sector not found",
-          message: "Sector not found, please check the id.",
+          message: "Sector does not exist.",
         },
-        HttpStatus.NOT_FOUND,
-      );
+      };
     }
 
     const updatedSector = await this.repository.update(id, data);
 
     if (updatedSector.affected === 0) {
-      throw new HttpException(
-        {
+      return {
+        message: "Error on update sector.",
+        error: {
           title: "Error",
           message: "Error on update sector.",
         },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      };
     }
 
     return {
@@ -215,15 +216,16 @@ export class SectorService {
         message: "It's necessary to inform the sector id.",
       },
     };
+
     if (!roleName || !sectorName) {
       const key = !roleName ? "role" : "sector";
-      throw new HttpException(
-        {
+      return {
+        message: errors[key].message,
+        error: {
           title: errors[key].title,
           message: errors[key].message,
         },
-        HttpStatus.BAD_REQUEST,
-      );
+      };
     }
 
     const sector = await this.repository.findByName(sectorName);
@@ -232,13 +234,13 @@ export class SectorService {
 
     if (!sector || !role) {
       const key = !sector ? "sector" : "role";
-      throw new HttpException(
-        {
+      return {
+        message: `${key} not found`,
+        error: {
           title: `${key} not found`,
           message: `${key} not found, please check the name.`,
         },
-        HttpStatus.NOT_FOUND,
-      );
+      };
     }
 
     sector.roles = [...sector.roles, role];
@@ -246,13 +248,13 @@ export class SectorService {
     const updatedSector = await sector.save();
 
     if (!updatedSector) {
-      throw new HttpException(
-        {
+      return {
+        message: "Error on add role.",
+        error: {
           title: "Error",
           message: "Error on add role.",
         },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      };
     }
 
     return {
@@ -263,16 +265,60 @@ export class SectorService {
 
   async getRoles(sectorId: string): Promise<IResponseFormat<CreateRoleDto[]>> {
     if (!sectorId) {
-      throw new HttpException(
-        {
+      return {
+        message: "Sector id not informed.",
+        error: {
           title: "Sector id not informed",
           message: "It's necessary to inform the sector id.",
         },
-        HttpStatus.BAD_REQUEST,
-      );
+      };
     }
 
     const sector = await this.repository.find(sectorId);
+
+    if (!sector) {
+      return {
+        message: "Sector not found.",
+        error: {
+          title: "Sector not found",
+          message: "Sector does not exist.",
+        },
+      };
+    }
+
+    return {
+      data: sector.roles.map(
+        (role) => new CreateRoleDto(role.id, role.name, role.description),
+      ),
+      title: "Success",
+      message: "Roles founded with success.",
+    };
+  }
+
+  async getRolesByName(
+    sectorId: string,
+  ): Promise<IResponseFormat<CreateRoleDto[]>> {
+    if (!sectorId) {
+      return {
+        message: "Sector id not informed.",
+        error: {
+          title: "Sector id not informed",
+          message: "It's necessary to inform the sector id.",
+        },
+      };
+    }
+
+    const sector = await this.repository.findByName(sectorId);
+
+    if (!sector) {
+      return {
+        message: "Sector not found.",
+        error: {
+          title: "Sector not found",
+          message: "Sector does not exist.",
+        },
+      };
+    }
 
     return {
       data: sector.roles.map(

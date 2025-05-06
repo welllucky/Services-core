@@ -1,4 +1,4 @@
-import { CreateRoleDto, UpdateRoleDto } from "@/typing";
+import { RoleWithoutIdDto, UpdateRoleDto } from "@/typing";
 import { Body, Controller, Get, Param, Patch, Post } from "@nestjs/common";
 import { RoleService } from "./role.service";
 
@@ -13,7 +13,7 @@ export class RoleController {
   }
 
   @Post()
-  create(@Body() data: CreateRoleDto) {
+  create(@Body() data: RoleWithoutIdDto) {
     return this.sessionService.create(data);
   }
 
