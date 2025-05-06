@@ -9,7 +9,7 @@ import { Theme } from "./theme.entity";
 
 @Entity({ name: "Enterprise" })
 export class Enterprise {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn("increment")
   id!: string;
 
   @Column({ unique: true, length: 64 })

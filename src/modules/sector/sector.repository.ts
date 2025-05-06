@@ -54,4 +54,8 @@ export class SectorRepository {
       },
     );
   }
+
+  async delete(id: string) {
+    return this.repository.delete(id);
+  }
 }

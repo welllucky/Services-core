@@ -8,7 +8,12 @@ export const createAccessToken = (
   const token = sign(data, secret, {
     algorithm: "HS256",
     expiresIn: `${expiresIn}d`,
-  }) as string;
+    issuer: process.env.CLIENT_URL ?? "services",
+    header: {
+      typ: "JWT",
+      alg: "HS256",
+    },
+  });
 
   return token;
 };
