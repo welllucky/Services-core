@@ -116,10 +116,12 @@ export class UserService {
   }
 
   async create(data: CreateUserDTO): Promise<IResponseFormat<UserRestrictDTO>> {
-    const role = (await this.roleService.getRole(data.role)).data;
-    const sector = (await this.sectorService.getSector(data.sector)).data;
-    const roles = (await this.sectorService.getRoles(data.sector)).data;
-    const existRoleInSector = roles.find((r) => r.id === role.id);
+    const role = (await this.roleService.getRoleByName(data.role))?.data;
+    const sector = (await this.sectorService.getSectorByName(data.sector))
+      ?.data;
+    const roles = (await this.sectorService.getRolesByName(data.sector))?.data;
+
+    const existRoleInSector = roles?.find((r) => r.id === role.id);
 
     if (!existRoleInSector) {
       throw new HttpException(
