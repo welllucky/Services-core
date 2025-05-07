@@ -1,4 +1,4 @@
-import { Role, Sector, User } from "@/entities";
+import { Position, Sector, User } from "@/entities";
 
 export const credentials = {
   email: "test@example.com",
@@ -19,14 +19,14 @@ export const mockedUser = {
   canResolveTicket: true,
   updatedAt: new Date(),
   deletedAt: null,
-  role: {
+  position: {
     id: "1",
     name: "user",
     description: "user",
     createdAt: new Date(),
     updatedAt: new Date(),
-  } as Role,
-  systemRole: "user",
+  } as Position,
+  role: "user",
   sector: {
     id: "1",
     name: "IT",

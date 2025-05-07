@@ -22,7 +22,7 @@ export class UserRepository {
       take: page,
       skip: pageIndex * page,
       relations: {
-        role: true,
+        position: true,
         sector: true,
       },
     });
@@ -32,7 +32,7 @@ export class UserRepository {
     return this.repository.findOne({
       where: { id },
       relations: {
-        role: true,
+        position: true,
         sector: true,
       },
     });
@@ -42,7 +42,7 @@ export class UserRepository {
     return this.repository.findOne({
       where: { register },
       relations: {
-        role: true,
+        position: true,
         sector: true,
       },
     });
@@ -52,7 +52,7 @@ export class UserRepository {
     return this.repository.findOne({
       where: { email },
       relations: {
-        role: true,
+        position: true,
         sector: true,
       },
     });
@@ -62,8 +62,8 @@ export class UserRepository {
     return this.repository.save(
       {
         ...user,
-        role: {
-          id: user.role,
+        position: {
+          id: user.position,
         },
         sector: {
           id: user.sector,
@@ -84,7 +84,7 @@ export class UserRepository {
       },
       {
         ...user,
-        role: user.role ? { id: user.role } : undefined,
+        position: user.position ? { id: user.position } : undefined,
         sector: user.sector ? { id: user.sector } : undefined,
       },
     );
