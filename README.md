@@ -13,9 +13,9 @@ Chega de formulários gigantes ou mal diagramados, chega de adicionar informaç�
 
 O Services vem para trazer uma experiência um pouco diferente na hora de registar o seu problema, são três etapas:
 
-- Você diz o que aconteceu
-- Adiciona, ou não, as evidências
-- E verifica se tá tudo ok para registrar, simples.
+-   Você diz o que aconteceu
+-   Adiciona, ou não, as evidências
+-   E verifica se tá tudo ok para registrar, simples.
 
 Você não precisa saber para quem enviar, qual o setor responsável, qual é a urgência do seu chamado ou algo do tipo. O Services se encarrega por isso, e não é só isso, o Services:
 
@@ -25,14 +25,14 @@ Você não precisa saber para quem enviar, qual o setor responsável, qual é a 
 
 Para isso o Services possui a licença [GNU General Public License v3.0](https://choosealicense.com/licenses/gpl-3.0/), isso significa que:
 
-- Liberdade de Uso: Você pode usar este software para qualquer finalidade.
+-   Liberdade de Uso: Você pode usar este software para qualquer finalidade.
 
-- Liberdade de Distribuição: Você pode redistribuir cópias deste software.
-- Liberdade de Modificação: Você pode modificar o software e distribuir essas modificações, desde que também estejam sob a GNU GPLv3.
+-   Liberdade de Distribuição: Você pode redistribuir cópias deste software.
+-   Liberdade de Modificação: Você pode modificar o software e distribuir essas modificações, desde que também estejam sob a GNU GPLv3.
 
-- Distribuição de Código-Fonte: Ao distribuir o software, seja de forma modificada ou não, você deve disponibilizar o código-fonte completo.
+-   Distribuição de Código-Fonte: Ao distribuir o software, seja de forma modificada ou não, você deve disponibilizar o código-fonte completo.
 
-- Uso em Rede: Se você modificar este software e permitir que outros o utilizem através de uma rede (por exemplo, um aplicativo web), você deve disponibilizar o código-fonte da sua versão modificada para esses usuários.
+-   Uso em Rede: Se você modificar este software e permitir que outros o utilizem através de uma rede (por exemplo, um aplicativo web), você deve disponibilizar o código-fonte da sua versão modificada para esses usuários.
 
 Saiba mais clicando no link ao lado: [GNU GPLv3](https://choosealicense.com/licenses/gpl-3.0/)
 
@@ -120,4 +120,4 @@ Para rodar esse projeto, você vai precisar adicionar as seguintes variáveis de
 
 ## Autores
 
-- [@welllucky](https://github.com/welllucky)
+-   [@welllucky](https://github.com/welllucky)
