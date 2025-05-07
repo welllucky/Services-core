@@ -7,7 +7,7 @@ import {
   UserRestrictDTO,
 } from "@/typing";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { RoleService } from "../role/role.service";
+import { PositionService } from "../position/position.service";
 import { SectorService } from "../sector/sector.service";
 import { UserRepository } from "./user.repository";
 
@@ -15,7 +15,7 @@ import { UserRepository } from "./user.repository";
 export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly roleService: RoleService,
+    private readonly positionService: PositionService,
     private readonly sectorService: SectorService,
   ) {}
 
@@ -42,7 +42,7 @@ export class UserService {
           new UserPublicDTO(
             user.name,
             user.email,
-            user.role.name,
+            user.position.name,
             user.sector.name,
             user.canCreateTicket,
             user.canResolveTicket,
@@ -73,12 +73,12 @@ export class UserService {
       data: new UserRestrictDTO(
         user.name,
         user.email,
-        user.role.name,
+        user.position.name,
         user.sector.name,
         user.canCreateTicket,
         user.canResolveTicket,
         user.isBanned,
-        user.systemRole,
+        user.role,
         user.register,
       ),
     };
@@ -104,38 +104,39 @@ export class UserService {
       data: new UserRestrictDTO(
         user.name,
         user.email,
-        user.role.name,
+        user.position.name,
         user.sector.name,
         user.canCreateTicket,
         user.canResolveTicket,
         user.isBanned,
-        user.systemRole,
+        user.role,
         user.register,
       ),
     };
   }
 
   async create(data: CreateUserDTO): Promise<IResponseFormat<UserRestrictDTO>> {
-    const role = (await this.roleService.getByName(data.role))?.data;
-    const sector = (await this.sectorService.getByName(data.sector))
+    const position = (await this.positionService.getByName(data.position))
       ?.data;
-    const roles = (await this.sectorService.getRolesByName(data.sector))?.data;
+    const sector = (await this.sectorService.getByName(data.sector))?.data;
+    const positions = (await this.sectorService.getPositionsByName(data.sector))
+      ?.data;
 
-    const existRoleInSector = roles?.find((r) => r.id === role.id);
+    const existPositionInSector = positions?.find((r) => r.id === position.id);
 
-    if (!existRoleInSector) {
+    if (!existPositionInSector) {
       throw new HttpException(
         {
-          title: "Role not found in sector",
+          title: "Position not found in sector",
           message:
-            "Role not found in sector, please check the role and sector.",
+            "Position not found in sector, please check the position and sector.",
         },
         HttpStatus.BAD_REQUEST,
       );
     }
 
     const createdUser = await this.userRepository.create(
-      { ...data, role: role.id, sector: sector.id },
+      { ...data, position: position.id, sector: sector.id },
       data.password,
     );
 
@@ -155,12 +156,12 @@ export class UserService {
       data: new UserRestrictDTO(
         createdUser.name,
         createdUser.email,
-        createdUser.role.name,
+        createdUser.position.name,
         createdUser.sector.name,
         createdUser.isBanned,
         createdUser.canCreateTicket,
         createdUser.canResolveTicket,
-        createdUser.systemRole,
+        createdUser.role,
         createdUser.register,
       ),
     };

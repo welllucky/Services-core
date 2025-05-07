@@ -1,13 +1,14 @@
-import { Role } from "@/entities";
-import { RoleWithoutIdDto, UpdateRoleDto } from "@/typing";
+import { Position } from "@/entities";
+import { PositionWithoutIdDto, UpdatePositionDto } from "@/typing";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
 @Injectable()
-export class RoleRepository {
+export class PositionRepository {
   constructor(
-    @InjectRepository(Role) private readonly repository: Repository<Role>,
+    @InjectRepository(Position)
+    private readonly repository: Repository<Position>,
   ) {}
 
   async find(id: string) {
@@ -26,14 +27,14 @@ export class RoleRepository {
     return this.repository.find();
   }
 
-  async create(data: RoleWithoutIdDto) {
+  async create(data: PositionWithoutIdDto) {
     return this.repository.save({
       ...data,
       createdAt: new Date(),
     });
   }
 
-  async update(id: string, data: Partial<UpdateRoleDto>) {
+  async update(id: string, data: Partial<UpdatePositionDto>) {
     return this.repository.update(
       {
         id: id,

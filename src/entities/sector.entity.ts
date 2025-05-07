@@ -6,7 +6,7 @@ import {
   ManyToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Role } from "./role.entity";
+import { Position } from "./position.entity";
 
 @Entity({ name: "Sectors" })
 export class Sector extends BaseEntity {
@@ -28,12 +28,12 @@ export class Sector extends BaseEntity {
   @Column({ type: "timestamp", nullable: true })
   public deletedAt!: Date | null;
 
-  @ManyToMany(() => Role, {
+  @ManyToMany(() => Position, {
     cascade: true,
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
     nullable: true,
   })
   @JoinTable()
-  roles!: Role[] | null;
+  positions!: Position[] | null;
 }
