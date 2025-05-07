@@ -6,5 +6,5 @@ export * from "./guards";
 export * from "./mocks";
 export * from "./validators";
 export * from "./middlewares";
-// export * from "./decorators";
+export * from "./decorators";
 // export * from "./resources";

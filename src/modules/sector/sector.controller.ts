@@ -1,68 +1,71 @@
 import { SectorWithoutIdDto, UpdateSectorDto } from "@/typing";
+import { IsPublic } from "@/utils";
 import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Patch,
+    Post,
 } from "@nestjs/common";
 import { SectorService } from "./sector.service";
 
 @Controller("sector")
 export class SectorController {
-  constructor(private readonly sessionService: SectorService) {}
+    constructor(private readonly sessionService: SectorService) {}
 
-  @Get()
-  getAll() {
-    // @Query("index") index?: number, // @Query("page") page?: number,
-    return this.sessionService.getAll();
-  }
+    @Get()
+    @IsPublic()
+    getAll() {
+        // @Query("index") index?: number, // @Query("page") page?: number,
+        return this.sessionService.getAll();
+    }
 
-  @Post()
-  create(@Body() data: SectorWithoutIdDto) {
-    return this.sessionService.create(data);
-  }
+    @Post()
+    create(@Body() data: SectorWithoutIdDto) {
+        return this.sessionService.create(data);
+    }
 
-  @Get(":id")
-  async getSector(@Param("id") id: string) {
-    return this.sessionService.get(id);
-  }
+    @Get(":id")
+    async getSector(@Param("id") id: string) {
+        return this.sessionService.get(id);
+    }
 
-  @Get("name/:name")
-  async getSectorByName(@Param("name") name: string) {
-    return this.sessionService.getByName(name);
-  }
+    @Get("name/:name")
+    async getSectorByName(@Param("name") name: string) {
+        return this.sessionService.getByName(name);
+    }
 
-  @Patch(":id")
-  async updateSector(@Param("id") id: string, @Body() data: UpdateSectorDto) {
-    return this.sessionService.update(id, data);
-  }
+    @Patch(":id")
+    async updateSector(@Param("id") id: string, @Body() data: UpdateSectorDto) {
+        return this.sessionService.update(id, data);
+    }
 
-  @Get(":id/roles")
-  async getPositions(@Param("id") sectorId: string) {
-    return this.sessionService.getPositions(sectorId);
-  }
+    @Get(":id/roles")
+    @IsPublic()
+    async getPositions(@Param("id") sectorId: string) {
+        return this.sessionService.getPositions(sectorId);
+    }
 
-  @Delete(":id")
-  async deleteSector(@Param("id") id: string) {
-    return this.sessionService.removeSector(id);
-  }
+    @Delete(":id")
+    async deleteSector(@Param("id") id: string) {
+        return this.sessionService.removeSector(id);
+    }
 
-  @Post(":sector/addPosition/:role")
-  async addPosition(
-    @Param("sector") sectorName: string,
-    @Param("role") roleName: string,
-  ) {
-    return this.sessionService.addPosition(roleName, sectorName);
-  }
+    @Post(":sector/addPosition/:role")
+    async addPosition(
+        @Param("sector") sectorName: string,
+        @Param("role") roleName: string,
+    ) {
+        return this.sessionService.addPosition(roleName, sectorName);
+    }
 
-  @Delete(":sector/removePosition/:role")
-  async removePosition(
-    @Param("sector") sectorName: string,
-    @Param("role") roleName: string,
-  ) {
-    return this.sessionService.removePosition(roleName, sectorName);
-  }
+    @Delete(":sector/removePosition/:role")
+    async removePosition(
+        @Param("sector") sectorName: string,
+        @Param("role") roleName: string,
+    ) {
+        return this.sessionService.removePosition(roleName, sectorName);
+    }
 }
