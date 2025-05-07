@@ -41,8 +41,8 @@ export class SectorController {
   }
 
   @Get(":id/roles")
-  async getRoles(@Param("id") sectorId: string) {
-    return this.sessionService.getRoles(sectorId);
+  async getPositions(@Param("id") sectorId: string) {
+    return this.sessionService.getPositions(sectorId);
   }
 
   @Delete(":id")
@@ -50,19 +50,19 @@ export class SectorController {
     return this.sessionService.removeSector(id);
   }
 
-  @Post(":sector/addRole/:role")
-  async addRole(
+  @Post(":sector/addPosition/:role")
+  async addPosition(
     @Param("sector") sectorName: string,
     @Param("role") roleName: string,
   ) {
-    return this.sessionService.addRole(roleName, sectorName);
+    return this.sessionService.addPosition(roleName, sectorName);
   }
 
-  @Delete(":sector/removeRole/:role")
-  async removeRole(
+  @Delete(":sector/removePosition/:role")
+  async removePosition(
     @Param("sector") sectorName: string,
     @Param("role") roleName: string,
   ) {
-    return this.sessionService.removeRole(roleName, sectorName);
+    return this.sessionService.removePosition(roleName, sectorName);
   }
 }

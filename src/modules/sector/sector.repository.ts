@@ -16,7 +16,7 @@ export class SectorRepository {
         id,
       },
       relations: {
-        roles: true,
+        positions: true,
       },
     });
   }
@@ -27,7 +27,7 @@ export class SectorRepository {
         name,
       },
       relations: {
-        roles: true,
+        positions: true,
       },
     });
   }

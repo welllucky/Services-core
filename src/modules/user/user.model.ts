@@ -1,124 +1,171 @@
 import { User } from "@/entities";
 import { IRegisterUser } from "@/typing";
-import { comparePassword } from "@/utils";
+import { comparePassword, getUserDataByToken } from "@/utils";
 import { Injectable } from "@nestjs/common";
+import assert from "node:assert";
 import { UserRepository } from "./user.repository";
 
 interface UserModelConstructorModel {
-  register?: string;
-  email?: string;
+    register?: string;
+    email?: string;
+    accessToken?: string;
 }
 
 @Injectable()
 class UserModel {
-  private user: User | null;
+    private user: User | null;
 
-  constructor(private readonly repository: UserRepository) {
-    this.user = new User();
-  }
-
-  async init({ register, email }: UserModelConstructorModel) {
-    try {
-      this.user = null;
-      const userByRegister = register
-        ? await this.repository.findByRegister(register)
-        : null;
-
-      const userByEmail = email
-        ? await this.repository.findByEmail(email)
-        : null;
-
-      if (!userByEmail && !userByRegister) {
-        throw new Error("Usuário não encontrado");
-      }
-
-      this.user = register ? userByRegister : userByEmail;
-    } catch {
-      return null;
+    constructor(private readonly repository: UserRepository) {
+        this.user = new User();
     }
-  }
 
-  exists() {
-    return this.user !== null;
-  }
+    async init({ register, email, accessToken }: UserModelConstructorModel) {
+        try {
+            this.user = null;
 
-  getData() {
-    return this.user;
-  }
+            let data = null;
 
-  getEntity() {
-    if (this.user) return this.user;
+            if (register) {
+                data = await this.repository.findByRegister(register);
+            } else if (email) {
+                data = await this.repository.findByEmail(email);
+            } else if (accessToken) {
+                const userByToken = await getUserDataByToken(accessToken);
+                const outsideData = userByToken.userData;
 
-    return null;
-  }
+                data = await this.repository.findByRegister(
+                    outsideData.register,
+                );
 
-  getFullName() {
-    return this.user?.name;
-    // return `${this.user.firstName} ${this.user.lastName}`;
-  }
+                assert.deepStrictEqual(
+                    {
+                        register: data?.register,
+                        email: data?.email,
+                        name: data?.name,
+                        isBanned: data?.isBanned,
+                        canCreateTicket: data?.canCreateTicket,
+                        canResolveTicket: data?.canResolveTicket,
+                        position: data?.position.name,
+                        sector: data?.sector.name,
+                        role: data?.role,
+                    },
+                    {
+                        register: outsideData.register,
+                        email: outsideData.email,
+                        name: outsideData.name,
+                        isBanned: outsideData.isBanned,
+                        canCreateTicket: outsideData.canCreateTicket,
+                        canResolveTicket: outsideData.canResolveTicket,
+                        position: outsideData.position,
+                        sector: outsideData.sector,
+                        role: outsideData.role,
+                    },
+                );
+            } else {
+                throw new Error(
+                    "Please provide a register, email or access token",
+                );
+            }
 
-  getRole() {
-    return this.user?.role;
-  }
+            if (!data) {
+                throw new Error("User not found");
+            }
 
-  isBanned() {
-    return this.user?.isBanned;
-  }
+            this.user = data;
+        } catch {
+            return null;
+        }
+    }
 
-  canCreateTicket() {
-    return this.user?.canCreateTicket;
-  }
+    exists() {
+        return this.user !== null;
+    }
 
-  canResolveTicket() {
-    return this.user?.canResolveTicket;
-  }
+    getData() {
+        return this.user;
+    }
 
-  getEmail() {
-    return this.user?.email;
-  }
+    getEntity() {
+        if (this.user) return this.user;
 
-  getRegister() {
-    return this.user?.register;
-  }
+        return null;
+    }
 
-  // getLastConnection() {
-  //   return this.user?.lastConnection;
-  // }
+    getFullName() {
+        return this.user?.name;
+        // return `${this.user.firstName} ${this.user.lastName}`;
+    }
 
-  // getConnectedTime() {
-  //   if (this.user?.lastConnection) {
-  //     return new Date(
-  //       new Date().getTime() - this.user.lastConnection.getTime(),
-  //     ).getHours();
-  //   }
+    getRole() {
+        return this.user?.role;
+    }
 
-  //   return 0;
-  // }
+    getPosition() {
+        return this.user?.position;
+    }
 
-  getSectors() {
-    return this.user?.sector;
-  }
+    isBanned() {
+        return this.user?.isBanned;
+    }
 
-  authUser(password: string) {
-    return comparePassword(password, this.user?.hash);
-  }
+    canCreateTicket() {
+        return this.user?.canCreateTicket;
+    }
 
-  async createUser(data: IRegisterUser) {
-    const user = await this.repository.create(
-      {
-        register: data.register,
-        email: data.email,
-        name: data.name,
-        role: data.role,
-        sector: data.sector,
-      },
-      data.password,
-    );
+    canResolveTicket() {
+        return this.user?.canResolveTicket;
+    }
 
-    this.user = user;
+    getEmail() {
+        return this.user?.email;
+    }
 
-    return { user };
-  }
+    getRegister() {
+        return this.user?.register;
+    }
+
+    getId() {
+        return this.user?.id;
+    }
+
+    // getLastConnection() {
+    //   return this.user?.lastConnection;
+    // }
+
+    // getConnectedTime() {
+    //   if (this.user?.lastConnection) {
+    //     return new Date(
+    //       new Date().getTime() - this.user.lastConnection.getTime(),
+    //     ).getHours();
+    //   }
+
+    //   return 0;
+    // }
+
+    getSectors() {
+        return this.user?.sector;
+    }
+
+    authUser(password: string) {
+        return comparePassword(password, this.user?.hash);
+    }
+
+    async createUser(data: IRegisterUser) {
+        const user = await this.repository.create(
+            {
+                register: data.register,
+                email: data.email,
+                name: data.name,
+                position: data.position,
+                sector: data.sector,
+            },
+            data.password,
+        );
+
+        this.user = user;
+
+        return { user };
+    }
 }
 
 export { UserModel };

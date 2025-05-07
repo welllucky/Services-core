@@ -1,4 +1,4 @@
-import { RoleModule } from "./role/role.module";
+import { PositionModule } from "./position/position.module";
 import { SectorModule } from "./sector/sector.module";
 import { SessionModule } from "./session/session.module";
 import { TicketModule } from "./ticket/ticket.module";
@@ -9,5 +9,5 @@ export const modules = [
   SessionModule,
   TicketModule,
   SectorModule,
-  RoleModule,
+  PositionModule,
 ];

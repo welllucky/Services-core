@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const SystemRolesSchema = z.enum([
+export const RolesSchema = z.enum([
   "admin",
   "user",
   "manager",
