@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { SystemRolesSchema } from "./SystemRoles";
 import { RegisterUserSchema } from "./Register";
+import { RolesSchema } from "./SystemRoles";
 
 export const UserSchema = z.object({
   register: z.string().min(3).max(10),
@@ -9,13 +9,13 @@ export const UserSchema = z.object({
     .string({ required_error: "Email is required" })
     .min(1, "Email is required")
     .email("Invalid email"),
-  lastConnection: z.date().nullish(),
+  // lastConnection: z.date().nullish(),
   isBanned: z.boolean().default(false),
   canCreateTicket: z.boolean().default(true),
   canResolveTicket: z.boolean().default(true),
-  role: z.string(),
+  position: z.string(),
   sector: z.string(),
-  systemRole: SystemRolesSchema,
+  role: RolesSchema,
 });
 
 export const UserTableSchema = z.object({
@@ -26,9 +26,9 @@ export const UserTableSchema = z.object({
     .email("Invalid email"),
   register: z.string().min(3).max(10),
   name: z.string().min(5).max(80),
-  role: z.string(),
+  position: z.string(),
   sector: z.string(),
-  lastConnection: z.date().nullish(),
+  // lastConnection: z.date().nullish(),
   isBanned: z.boolean().default(false),
   canCreateTicket: z.boolean().default(true),
   canResolveTicket: z.boolean().default(true),

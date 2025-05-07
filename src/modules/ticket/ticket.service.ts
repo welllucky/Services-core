@@ -6,7 +6,7 @@ import {
   SearchedTicketDto,
   UpdateTicketDto,
 } from "@/typing";
-import { getUserByToken } from "@/utils";
+import { getUserDataByToken } from "@/utils";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { response } from "express";
 import { UserModel } from "../user";
@@ -24,25 +24,22 @@ export class TicketService {
     isSolver?: boolean,
     pagination?: Pagination,
   ): Promise<IResponseFormat<PublicTicketDto[]>> {
-    const { userData } = await getUserByToken(token);
-    const userId = userData?.register;
-
     await this.userModel.init({
-      register: userId,
+      accessToken: token,
     });
 
-    if (!this.userModel.exists()) {
-      throw new HttpException(
-        {
-          title: "Access denied",
-          message: "User cannot find tickets without being logged in.",
-        },
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
+    // if (!this.userModel.exists()) {
+    //   throw new HttpException(
+    //     {
+    //       title: "Access denied",
+    //       message: "User cannot find tickets without being logged in.",
+    //     },
+    //     HttpStatus.UNAUTHORIZED,
+    //   );
+    // }
 
     const tickets = await this.repository.findAll({
-      userId,
+      userId: this.userModel.getRegister(),
       pagination,
       isSolver: isSolver,
     });
@@ -79,7 +76,7 @@ export class TicketService {
     ticketId: string,
     isSolver?: boolean,
   ): Promise<IResponseFormat<PublicTicketDto>> {
-    const { userData } = await getUserByToken(token);
+    const { userData } = await getUserDataByToken(token);
     const userId = userData?.register;
 
     await this.userModel.init({
@@ -133,7 +130,7 @@ export class TicketService {
       );
     }
 
-    const { userData } = await getUserByToken(token);
+    const { userData } = await getUserDataByToken(token);
     const userId = userData?.register;
 
     await this.userModel.init({
@@ -169,7 +166,7 @@ export class TicketService {
     token: string,
     pagination?: Pagination,
   ): Promise<IResponseFormat<unknown>> {
-    const { userData } = await getUserByToken(token);
+    const { userData } = await getUserDataByToken(token);
     const userId = userData?.register;
 
     await this.userModel.init({
@@ -231,7 +228,7 @@ export class TicketService {
     token: string,
     ticketData: Omit<ITicket, "id" | "createdAt" | "updatedAt" | "closedAt">,
   ): Promise<IResponseFormat<PublicTicketDto>> {
-    const { userData } = await getUserByToken(token);
+    const { userData } = await getUserDataByToken(token);
     const userId = userData?.register;
 
     await this.userModel.init({
@@ -287,7 +284,7 @@ export class TicketService {
     token: string,
     ticketId: string,
   ): Promise<IResponseFormat<unknown>> {
-    const { userData } = await getUserByToken(token);
+    const { userData } = await getUserDataByToken(token);
     const userId = userData?.register;
 
     await this.userModel.init({
@@ -333,7 +330,7 @@ export class TicketService {
     token: string,
     ticketId: string,
   ): Promise<IResponseFormat<unknown>> {
-    const { userData } = await getUserByToken(token);
+    const { userData } = await getUserDataByToken(token);
     const userId = userData?.register;
 
     await this.userModel.init({
@@ -376,7 +373,7 @@ export class TicketService {
     token: string,
     ticketId: string,
   ): Promise<IResponseFormat<unknown>> {
-    const { userData } = await getUserByToken(token);
+    const { userData } = await getUserDataByToken(token);
     const userId = userData?.register;
 
     await this.userModel.init({
@@ -419,7 +416,7 @@ export class TicketService {
   }
 
   async search(token: string, term: string): Promise<IResponseFormat<unknown>> {
-    const { userData } = await getUserByToken(token);
+    const { userData } = await getUserDataByToken(token);
     const userId = userData?.register;
 
     await this.userModel.init({

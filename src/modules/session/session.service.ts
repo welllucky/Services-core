@@ -7,7 +7,7 @@ import {
   SessionInfoDto,
   SessionStatus,
 } from "@/typing";
-import { getUserByToken } from "@/utils";
+import { getUserDataByToken } from "@/utils";
 import {
   HttpException,
   HttpStatus,
@@ -185,7 +185,7 @@ export class SessionService {
   }
 
   async close(token: string) {
-    const { userData } = await getUserByToken(token);
+    const { userData } = await getUserDataByToken(token);
     const userId = userData?.register;
 
     if (!userId) {
@@ -289,7 +289,7 @@ export class SessionService {
     status: SessionStatus = "active",
     safe = false,
   ): Promise<IResponseFormat<SessionInfoDto[]>> {
-    const { userData } = await getUserByToken(token);
+    const { userData } = await getUserDataByToken(token);
     const actualSession = await this.find(
       userData?.register,
       undefined,

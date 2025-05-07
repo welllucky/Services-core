@@ -49,7 +49,7 @@ class SessionModel {
         isBanned: userData?.isBanned,
         canCreateTicket: userData?.canCreateTicket,
         canResolveTicket: userData?.canResolveTicket,
-        role: userData?.role.name,
+        position: userData?.position.name,
         sector: userData?.sector.name,
       };
 

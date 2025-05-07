@@ -1,5 +1,5 @@
 import {
-  CreateRoleDto,
+  CreatePositionDto,
   CreateSectorDto,
   IResponseFormat,
   SectorDto,
@@ -7,14 +7,14 @@ import {
   UpdateSectorDto,
 } from "@/typing";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { RoleRepository } from "../role/role.repository";
+import { PositionRepository } from "../position/position.repository";
 import { SectorRepository } from "./sector.repository";
 
 @Injectable()
 export class SectorService {
   constructor(
     private readonly repository: SectorRepository,
-    private readonly roleRepository: RoleRepository,
+    private readonly roleRepository: PositionRepository,
   ) {}
 
   async create(
@@ -107,7 +107,7 @@ export class SectorService {
     };
   }
 
-  async getByName(name: string): Promise<IResponseFormat<CreateRoleDto>> {
+  async getByName(name: string): Promise<IResponseFormat<CreatePositionDto>> {
     if (!name) {
       throw new HttpException(
         {
@@ -235,13 +235,13 @@ export class SectorService {
     };
   }
 
-  async addRole(
+  async addPosition(
     roleName: string,
     sectorName: string,
   ): Promise<IResponseFormat<SectorDto>> {
     const errors = {
       role: {
-        title: "Role not informed",
+        title: "Position not informed",
         message: "It's necessary to inform the role.",
       },
       sector: {
@@ -282,7 +282,7 @@ export class SectorService {
       );
     }
 
-    sector.roles = [...sector.roles, role];
+    sector.positions = [...sector.positions, role];
 
     const updatedSector = await sector.save();
 
@@ -305,13 +305,13 @@ export class SectorService {
     };
   }
 
-  async removeRole(
+  async removePosition(
     roleName: string,
     sectorName: string,
   ): Promise<IResponseFormat<SectorDto>> {
     const errors = {
       role: {
-        title: "Role not informed",
+        title: "Position not informed",
         message: "It's necessary to inform the role.",
       },
       sector: {
@@ -348,20 +348,20 @@ export class SectorService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const roleIndex = sector.roles.findIndex((r) => r.id === role.id);
+    const roleIndex = sector.positions.findIndex((r) => r.id === role.id);
     if (roleIndex === -1) {
       throw new HttpException(
         {
-          message: "Role not found in sector.",
+          message: "Position not found in sector.",
           error: {
-            title: "Role not found",
-            message: "Role not found in sector.",
+            title: "Position not found",
+            message: "Position not found in sector.",
           },
         },
         HttpStatus.NOT_FOUND,
       );
     }
-    sector.roles.splice(roleIndex, 1);
+    sector.positions.splice(roleIndex, 1);
     const updatedSector = await sector.save();
     if (!updatedSector) {
       throw new HttpException(
@@ -381,7 +381,9 @@ export class SectorService {
     };
   }
 
-  async getRoles(sectorId: string): Promise<IResponseFormat<CreateRoleDto[]>> {
+  async getPositions(
+    sectorId: string,
+  ): Promise<IResponseFormat<CreatePositionDto[]>> {
     if (!sectorId) {
       throw new HttpException(
         {
@@ -411,17 +413,17 @@ export class SectorService {
     }
 
     return {
-      data: sector.roles.map(
-        (role) => new CreateRoleDto(role.id, role.name, role.description),
+      data: sector.positions.map(
+        (role) => new CreatePositionDto(role.id, role.name, role.description),
       ),
       title: "Success",
-      message: "Roles founded with success.",
+      message: "Positions founded with success.",
     };
   }
 
-  async getRolesByName(
+  async getPositionsByName(
     sectorId: string,
-  ): Promise<IResponseFormat<CreateRoleDto[]>> {
+  ): Promise<IResponseFormat<CreatePositionDto[]>> {
     if (!sectorId) {
       throw new HttpException(
         {
@@ -451,11 +453,11 @@ export class SectorService {
     }
 
     return {
-      data: sector.roles.map(
-        (role) => new CreateRoleDto(role.id, role.name, role.description),
+      data: sector.positions.map(
+        (role) => new CreatePositionDto(role.id, role.name, role.description),
       ),
       title: "Success",
-      message: "Roles founded with success.",
+      message: "Positions founded with success.",
     };
   }
 

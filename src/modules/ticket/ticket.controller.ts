@@ -1,4 +1,5 @@
 import { CreateTicketDto, UpdateTicketDto } from "@/typing";
+import { AuthGuard } from "@/utils";
 import {
   Body,
   Controller,
@@ -8,10 +9,12 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from "@nestjs/common";
 import { TicketService } from "./ticket.service";
 
 @Controller("tickets")
+@UseGuards(AuthGuard)
 export class TicketController {
   constructor(private readonly service: TicketService) {}
 
