@@ -1,4 +1,4 @@
-import { SystemRoles } from "@/typing";
+import { Roles } from "@/typing";
 import { UniqueEmail, UniqueRegister } from "@/utils";
 import { OmitType, PartialType, PickType } from "@nestjs/mapped-types";
 import {
@@ -86,7 +86,7 @@ export class UserDTO {
   @IsNotEmpty({
     message: "Role is required",
   })
-  role: string;
+  position: string;
 
   @IsString({
     message: "Sector must be a string",
@@ -97,12 +97,12 @@ export class UserDTO {
   sector: string;
 
   @IsString({
-    message: "System role must be a string",
+    message: "System position must be a string",
   })
   @IsNotEmpty({
-    message: "System role is required",
+    message: "System position is required",
   })
-  systemRole: SystemRoles;
+  role: Roles;
 }
 
 export class CreateUserDTO extends OmitType(UserDTO, [
@@ -111,7 +111,7 @@ export class CreateUserDTO extends OmitType(UserDTO, [
   "lastConnection",
   "canResolveTicket",
   "hash",
-  "systemRole",
+  "role",
 ]) {}
 
 export class UpdateUserDTO extends PartialType(CreateUserDTO) {}
@@ -119,7 +119,7 @@ export class UpdateUserDTO extends PartialType(CreateUserDTO) {}
 export class UserPublicDTO extends PickType(UserDTO, [
   "name",
   "email",
-  "role",
+  "position",
   "sector",
   "canCreateTicket",
   "canResolveTicket",
@@ -129,7 +129,7 @@ export class UserPublicDTO extends PickType(UserDTO, [
   constructor(
     readonly name: string,
     readonly email: string,
-    readonly role: string,
+    readonly position: string,
     readonly sector: string,
     readonly canCreateTicket: boolean,
     readonly canResolveTicket: boolean,
@@ -143,23 +143,23 @@ export class UserPublicDTO extends PickType(UserDTO, [
 export class UserRestrictDTO extends PickType(UserDTO, [
   "name",
   "email",
-  "role",
+  "position",
   "sector",
   "isBanned",
   "canCreateTicket",
   "canResolveTicket",
-  "systemRole",
+  "role",
   "register",
 ]) {
   constructor(
     readonly name: string,
     readonly email: string,
-    readonly role: string,
+    readonly position: string,
     readonly sector: string,
     readonly isBanned: boolean,
     readonly canCreateTicket: boolean,
     readonly canResolveTicket: boolean,
-    readonly systemRole: SystemRoles,
+    readonly role: Roles,
     readonly register: string,
   ) {
     super();

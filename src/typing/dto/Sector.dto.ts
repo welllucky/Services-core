@@ -6,7 +6,7 @@ import {
   MaxLength,
   MinLength,
 } from "class-validator";
-import { RoleDto } from "./Role.dto";
+import { PositionDto } from "./Position.dto";
 
 export class SectorDto {
   @IsString({ message: "Id must be a string" })
@@ -25,9 +25,8 @@ export class SectorDto {
 
   @IsArray()
   @IsOptional()
-  roles?: RoleDto[];
+  roles?: PositionDto[];
 }
-
 
 export class SectorWithoutIdDto extends PickType(SectorDto, [
   "name",

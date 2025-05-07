@@ -1,4 +1,4 @@
-import { SystemRoles } from "@/typing";
+import { Roles } from "@/typing";
 import {
   Column,
   Entity,
@@ -8,7 +8,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Role } from "./role.entity";
+import { Position } from "./position.entity";
 import { Sector } from "./sector.entity";
 import { Session } from "./session.entity";
 
@@ -54,16 +54,16 @@ export class User {
   public deletedAt!: Date | null;
 
   @Column({ type: "varchar", default: "user" })
-  public systemRole!: SystemRoles;
+  public role!: Roles;
 
-  @ManyToOne(() => Role, (role) => role.id, {
+  @ManyToOne(() => Position, (position) => position.id, {
     cascade: ["insert", "update"],
     eager: true,
     onDelete: "SET NULL",
     onUpdate: "CASCADE",
   })
   @JoinColumn()
-  public role!: Role;
+  public position!: Position;
 
   @ManyToOne(() => Sector, (sector) => sector.id, {
     cascade: ["insert", "update"],

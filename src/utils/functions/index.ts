@@ -1,4 +1,4 @@
 export * from "./createAccessToken";
 export * from "./encryptPassword";
-export * from "./getAuthUser";
-export * from "./getUserByToken";
+export * from "./getAuthInformation";
+export * from "./getUserDataByToken";
