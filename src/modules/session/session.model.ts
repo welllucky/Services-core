@@ -49,8 +49,8 @@ class SessionModel {
         isBanned: userData?.isBanned,
         canCreateTicket: userData?.canCreateTicket,
         canResolveTicket: userData?.canResolveTicket,
-        position: userData?.position.name,
-        sector: userData?.sector.name,
+        position: userData?.position?.name,
+        sector: userData?.sector?.name,
       };
 
       const expiresAt = new Date();
