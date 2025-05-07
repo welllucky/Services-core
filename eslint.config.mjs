@@ -9,38 +9,38 @@ import tseslint from "typescript-eslint";
 
 /** @type {import('eslint').Linter.Config[]} */
 const configs = [
-  { files: ["**/*.{js,mjs,cjs,ts}"] },
-  { languageOptions: { globals: { ...globals.node, ...globals.jest } } },
-  { ignores: ["eslint.config.mjs"] },
-  {
-    plugins: {
-      import: importPlugin,
-      prettier: prettierPlugin,
-      security: securityPlugin,
-      "simple-import-sort": simpleImportSort,
+    { files: ["**/*.{js,mjs,cjs,ts}"] },
+    { languageOptions: { globals: { ...globals.node, ...globals.jest } } },
+    { ignores: ["eslint.config.mjs"] },
+    {
+        plugins: {
+            import: importPlugin,
+            prettier: prettierPlugin,
+            security: securityPlugin,
+            "simple-import-sort": simpleImportSort,
+        },
     },
-  },
-  {
-    rules: {
-      "no-console": "warn",
-      "no-unused-vars": "error",
-      "no-undef": "error",
+    {
+        rules: {
+            "no-console": "warn",
+            "no-unused-vars": "error",
+            "no-undef": "error",
 
-      "no-unused-expressions": "error",
-      "@typescript-eslint/interface-name-prefix": "off",
-      "@typescript-eslint/explicit-function-return-type": "off",
-      "@typescript-eslint/explicit-module-boundary-types": "off",
-      "@typescript-eslint/no-explicit-any": "off",
-      "no-empty-function": [
-        "warn",
-        { allow: ["methods", "getters", "constructors"] },
-      ],
+            "no-unused-expressions": "error",
+            "@typescript-eslint/interface-name-prefix": "off",
+            "@typescript-eslint/explicit-function-return-type": "off",
+            "@typescript-eslint/explicit-module-boundary-types": "off",
+            "@typescript-eslint/no-explicit-any": "off",
+            "no-empty-function": [
+                "warn",
+                { allow: ["methods", "getters", "constructors"] },
+            ],
+        },
     },
-  },
-  pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
-  // airbnbBase,
-  prettierConfig,
+    pluginJs.configs.recommended,
+    ...tseslint.configs.recommended,
+    // airbnbBase,
+    prettierConfig,
 ];
 
 export default configs;

@@ -2,23 +2,23 @@ import * as Sentry from "@sentry/nestjs";
 import { nodeProfilingIntegration } from "@sentry/profiling-node";
 
 Sentry.init({
-  dsn: process.env.SENTRY_DSN,
+    dsn: process.env.SENTRY_DSN,
 
-  autoSessionTracking: true,
+    autoSessionTracking: true,
 
-  debug: process.env.HOST_ENV === "development",
+    debug: process.env.HOST_ENV === "development",
 
-  enabled: true,
+    enabled: true,
 
-  release: process.env.VERSION,
+    release: process.env.VERSION,
 
-  environment: process.env.HOST_ENV,
+    environment: process.env.HOST_ENV,
 
-  sendDefaultPii: true,
+    sendDefaultPii: true,
 
-  integrations: [nodeProfilingIntegration()],
+    integrations: [nodeProfilingIntegration()],
 
-  tracesSampleRate: 1.0,
+    tracesSampleRate: 1.0,
 
-  profilesSampleRate: 1.0,
+    profilesSampleRate: 1.0,
 });
