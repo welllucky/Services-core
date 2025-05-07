@@ -35,7 +35,7 @@ export const mockedUser = {
     updatedAt: new Date(),
   } as Sector,
   sessions: [],
-} as User;
+} as unknown as User;
 
 export const mockedSessionData = (isActive?: boolean) => ({
   id: "1",
