@@ -1,32 +1,58 @@
-import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
+import {
+    CanActivate,
+    ExecutionContext,
+    HttpException,
+    HttpStatus,
+    Injectable,
+} from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
 import { Request } from "express";
-import { Observable } from "rxjs";
-import { getAuthToken } from "../functions";
+import { IsPublic } from "../decorators";
+import { getUserDataByToken, searchUserByRegister } from "../functions";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
-    const request = context.switchToHttp().getRequest<Request>();
+    constructor(private readonly reflector: Reflector) {}
+    async canActivate(context: ExecutionContext): Promise<boolean> {
+        const isPublic = this.reflector.get<boolean>(
+            IsPublic,
+            context.getHandler(),
+        );
 
-    const accessToken = request.headers["authorization"];
+        if (isPublic) {
+            return true;
+        } else {
+            const request = context.switchToHttp().getRequest<Request>();
+            const accessToken = request.headers["authorization"];
 
-    console.log({
-      request,
-      accessToken,
-    });
+            if (!accessToken) {
+                throw new HttpException(
+                    "User not authenticated",
+                    HttpStatus.UNAUTHORIZED,
+                );
+            }
 
-    getAuthToken({
-      accessToken,
-    }).then(() => {
-      if (this.userModel.exists() && !this.userModel.isBanned()) {
-        console.log("User found and is not banned");
-        return true;
-      }
-    });
+            const { userData: outsideUserData } =
+                await getUserDataByToken(accessToken);
 
-    console.log("User not found or is banned");
-    return false;
-  }
+            const userData = await searchUserByRegister(
+                outsideUserData?.register,
+            );
+
+            const isDataValid =
+                outsideUserData?.register === userData?.register &&
+                outsideUserData?.isBanned === userData?.isBanned &&
+                outsideUserData?.email === userData?.email &&
+                // outsideUserData?.role === userData?.role &&
+                outsideUserData?.name === userData?.name &&
+                outsideUserData?.canCreateTicket ===
+                    userData?.canCreateTicket &&
+                outsideUserData?.canResolveTicket ===
+                    userData?.canResolveTicket &&
+                outsideUserData?.position === userData?.position &&
+                outsideUserData?.sector === userData?.sector;
+
+            return isDataValid;
+        }
+    }
 }
