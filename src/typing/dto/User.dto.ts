@@ -134,6 +134,7 @@ export class UserPublicDTO extends PickType(UserDTO, [
     readonly canCreateTicket: boolean,
     readonly canResolveTicket: boolean,
     readonly isBanned: boolean,
+    readonly role: Roles,
     readonly register: string,
   ) {
     super();
