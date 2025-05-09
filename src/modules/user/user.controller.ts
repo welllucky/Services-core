@@ -1,22 +1,26 @@
 import { CreateUserDTO, UpdateUserDTO } from "@/typing";
 import { Body, Controller, Get, Param, Post, Put, Query } from "@nestjs/common";
 import { UserService } from "./user.service";
+import { AllowRoles } from "@/utils/decorators";
 
 @Controller("users")
 export class UserController {
   constructor(private readonly service: UserService) {}
 
   @Get()
+  @AllowRoles(["admin", "manager"])
   getAll(@Query("page") page: number, @Query("index") index: number) {
     return this.service.findAll({ page, index });
   }
 
   @Get(":register")
+  @AllowRoles(["admin", "manager"])
   getUserByRegister(@Param("register") register: string) {
     return this.service.findOne(register);
   }
 
   @Get("/email/:email")
+  @AllowRoles(["admin", "manager"])
   getUserByEmail(@Param("email") email: string) {
     return this.service.findByEmail(email);
   }
