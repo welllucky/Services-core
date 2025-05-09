@@ -6,7 +6,7 @@ Sentry.init({
 
   autoSessionTracking: true,
 
-  debug: process.env.HOST_ENV === "development",
+  debug: process.env.SHOW_SENTRY_DEBUG === "true",
 
   enabled: true,
 
