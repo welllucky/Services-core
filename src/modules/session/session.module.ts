@@ -8,9 +8,9 @@ import { SessionRepository } from "./session.repository";
 import { SessionService } from "./session.service";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Session]), UserModule],
-  controllers: [SessionController],
-  providers: [SessionService, SessionRepository, SessionModel],
-  exports: [SessionService, SessionRepository, SessionModel],
+    imports: [TypeOrmModule.forFeature([Session]), UserModule],
+    controllers: [SessionController],
+    providers: [SessionService, SessionRepository, SessionModel],
+    exports: [SessionService, SessionRepository, SessionModel],
 })
 export class SessionModule {}

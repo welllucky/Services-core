@@ -7,9 +7,9 @@ import { TicketRepository } from "./ticket.repository";
 import { TicketService } from "./ticket.service";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Ticket]), UserModule],
-  controllers: [TicketController],
-  providers: [TicketService, TicketRepository],
-  exports: [TicketService, TicketRepository],
+    imports: [TypeOrmModule.forFeature([Ticket]), UserModule],
+    controllers: [TicketController],
+    providers: [TicketService, TicketRepository],
+    exports: [TicketService, TicketRepository],
 })
 export class TicketModule {}

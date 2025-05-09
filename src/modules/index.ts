@@ -5,9 +5,9 @@ import { TicketModule } from "./ticket/ticket.module";
 import { UserModule } from "./user/user.module";
 
 export const modules = [
-  UserModule,
-  SessionModule,
-  TicketModule,
-  SectorModule,
-  PositionModule,
+    UserModule,
+    SessionModule,
+    TicketModule,
+    SectorModule,
+    PositionModule,
 ];
