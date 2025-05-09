@@ -52,22 +52,22 @@ import { AuthGuard, RoleGuard, TrackUserMiddleware } from "./utils";
         ThrottlerModule.forRoot({
             throttlers: [
                 {
-                    name: 'short',
+                    name: "short",
                     ttl: 1000,
                     limit: 3,
-                  },
-                  {
-                    name: 'medium',
+                },
+                {
+                    name: "medium",
                     ttl: 10000,
-                    limit: 20
-                  },
-                  {
-                    name: 'long',
+                    limit: 20,
+                },
+                {
+                    name: "long",
                     ttl: 60000,
-                    limit: 50
-                  }
+                    limit: 50,
+                },
             ],
-          }),
+        }),
         ...modules,
     ],
     providers: [
@@ -78,15 +78,17 @@ import { AuthGuard, RoleGuard, TrackUserMiddleware } from "./utils";
         {
             provide: APP_GUARD,
             useClass: RoleGuard,
-        }
+        },
     ],
 })
 export class AppModule {
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(
-            TrackUserMiddleware,
-            // FormatResponseMiddleware,
-            // LoggerMiddleware
-        ).forRoutes("*");
+        consumer
+            .apply(
+                TrackUserMiddleware,
+                // FormatResponseMiddleware,
+                // LoggerMiddleware
+            )
+            .forRoutes("*");
     }
 }
