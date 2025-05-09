@@ -10,6 +10,7 @@ import {
     Query,
 } from "@nestjs/common";
 import { TicketService } from "./ticket.service";
+import { DeniedRoles } from "@/utils/decorators";
 
 @Controller("tickets")
 export class TicketController {
@@ -26,6 +27,7 @@ export class TicketController {
     }
 
     @Get("search")
+    @DeniedRoles(["guest"])
     search(
         @Headers("Authorization") token: string,
         @Query("term") term: string,
@@ -43,6 +45,7 @@ export class TicketController {
     }
 
     @Post()
+    @DeniedRoles(["guest", "viewer"])
     create(
         @Headers("Authorization") token: string,
         @Body() data: CreateTicketDto,
@@ -51,6 +54,7 @@ export class TicketController {
     }
 
     @Get(":id")
+    @DeniedRoles(["guest"])
     getById(
         @Headers("Authorization") token: string,
         @Param("id") id: string,
@@ -60,6 +64,7 @@ export class TicketController {
     }
 
     @Put(":id")
+    @DeniedRoles(["guest", "viewer"])
     update(
         @Headers("Authorization") token: string,
         @Param("id") id: string,
@@ -69,16 +74,19 @@ export class TicketController {
     }
 
     @Put(":id/close")
+    @DeniedRoles(["guest", "viewer"])
     close(@Headers("Authorization") token: string, @Param("id") id: string) {
         return this.service.close(token, id);
     }
 
     @Put(":id/start")
+    @DeniedRoles(["guest", "viewer"])
     start(@Headers("Authorization") token: string, @Param("id") id: string) {
         return this.service.start(token, id);
     }
 
     @Put(":id/resolve")
+    @DeniedRoles(["guest", "viewer"])
     resolve(@Headers("Authorization") token: string, @Param("id") id: string) {
         return this.service.resolve(token, id);
     }
