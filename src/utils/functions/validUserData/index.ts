@@ -2,9 +2,7 @@ import { IUser } from "@/typing";
 import { searchUserByRegister } from "../searchUserByRegister";
 
 export const validUserData = async (outsideUserData: IUser) => {
-    const userData = await searchUserByRegister(
-        outsideUserData?.register,
-    );
+    const userData = await searchUserByRegister(outsideUserData?.register);
 
     return (
         outsideUserData?.register === userData?.register &&
@@ -12,10 +10,9 @@ export const validUserData = async (outsideUserData: IUser) => {
         outsideUserData?.email === userData?.email &&
         // outsideUserData?.role === userData?.role &&
         outsideUserData?.name === userData?.name &&
-        outsideUserData?.canCreateTicket ===
-            userData?.canCreateTicket &&
-        outsideUserData?.canResolveTicket ===
-            userData?.canResolveTicket &&
+        outsideUserData?.canCreateTicket === userData?.canCreateTicket &&
+        outsideUserData?.canResolveTicket === userData?.canResolveTicket &&
         outsideUserData?.position === userData?.position &&
-        outsideUserData?.sector === userData?.sector);
-}
+        outsideUserData?.sector === userData?.sector
+    );
+};
