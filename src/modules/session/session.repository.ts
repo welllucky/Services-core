@@ -7,94 +7,96 @@ import { Repository } from "typeorm";
 
 @Injectable()
 export class SessionRepository {
-  constructor(
-    @InjectRepository(Session)
-    private readonly repository: Repository<Session>,
-  ) {}
+    constructor(
+        @InjectRepository(Session)
+        private readonly repository: Repository<Session>,
+    ) {}
 
-  async findAll(
-    userId: string,
-    status: SessionStatus,
-    pagination?: Pagination,
-  ): Promise<Session[]> {
-    const pageIndex =
-      !pagination?.index || pagination?.index === 1 ? 0 : pagination?.index;
-    const page = pagination?.page || 10;
+    async findAll(
+        userId: string,
+        status: SessionStatus,
+        pagination?: Pagination,
+    ): Promise<Session[]> {
+        const pageIndex =
+            !pagination?.index || pagination?.index === 1
+                ? 0
+                : pagination?.index;
+        const page = pagination?.page || 10;
 
-    const whereConditions = {
-      isActive: status === "all" ? undefined : status === "active",
-    };
+        const whereConditions = {
+            isActive: status === "all" ? undefined : status === "active",
+        };
 
-    return this.repository.find({
-      where: [
-        {
-          user: {
-            register: userId,
-          },
-          ...whereConditions,
-        },
-        {
-          user: {
-            id: userId,
-          },
-          ...whereConditions,
-        },
-      ],
-      relations: {
-        user: true,
-      },
-      order: {
-        createdAt: "DESC",
-      },
-      take: page,
-      skip: pageIndex * page,
-    });
-  }
+        return this.repository.find({
+            where: [
+                {
+                    user: {
+                        register: userId,
+                    },
+                    ...whereConditions,
+                },
+                {
+                    user: {
+                        id: userId,
+                    },
+                    ...whereConditions,
+                },
+            ],
+            relations: {
+                user: true,
+            },
+            order: {
+                createdAt: "DESC",
+            },
+            take: page,
+            skip: pageIndex * page,
+        });
+    }
 
-  async find(
-    userId: string,
-    sessionId?: string,
-    status: SessionStatus = "active",
-  ): Promise<Session | null> {
-    const whereConditions = {
-      ...(sessionId && { id: sessionId }),
-      isActive: status === "all" ? undefined : status === "active",
-    };
-    return this.repository.findOne({
-      where: [
-        {
-          user: {
-            id: userId,
-          },
-          ...whereConditions,
-        },
-        {
-          user: {
-            register: userId,
-          },
-          ...whereConditions,
-        },
-      ],
-      relations: {
-        user: true,
-      },
-      order: {
-        createdAt: "ASC",
-      },
-    });
-  }
+    async find(
+        userId: string,
+        sessionId?: string,
+        status: SessionStatus = "active",
+    ): Promise<Session | null> {
+        const whereConditions = {
+            ...(sessionId && { id: sessionId }),
+            isActive: status === "all" ? undefined : status === "active",
+        };
+        return this.repository.findOne({
+            where: [
+                {
+                    user: {
+                        id: userId,
+                    },
+                    ...whereConditions,
+                },
+                {
+                    user: {
+                        register: userId,
+                    },
+                    ...whereConditions,
+                },
+            ],
+            relations: {
+                user: true,
+            },
+            order: {
+                createdAt: "ASC",
+            },
+        });
+    }
 
-  async update(session: Partial<Session>, sessionId: string, userId: string) {
-    return this.repository.update(
-      {
-        id: sessionId,
-        user: {
-          id: userId,
-        },
-      },
-      {
-        ...session,
-      },
-    );
-  }
+    async update(session: Partial<Session>, sessionId: string, userId: string) {
+        return this.repository.update(
+            {
+                id: sessionId,
+                user: {
+                    id: userId,
+                },
+            },
+            {
+                ...session,
+            },
+        );
+    }
 }

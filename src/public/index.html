@@ -1,156 +1,157 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="preconnect"
-      href="https://fonts.googleapis.com" />
-    <link
-      rel="preconnect"
-      href="https://fonts.gstatic.com"
-      crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-      rel="stylesheet" />
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="/public/favicon.ico" />
-    <title>Services core</title>
-    <meta
-      name="description"
-      content="A 'mente' da desburocratização do gerenciamento de chamados." />
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Inter", serif;
-        font-optical-sizing: auto;
-      }
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="preconnect"
+            href="https://fonts.googleapis.com" />
+        <link
+            rel="preconnect"
+            href="https://fonts.gstatic.com"
+            crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+            rel="stylesheet" />
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="/public/favicon.ico" />
+        <title>Services core</title>
+        <meta
+            name="description"
+            content="A 'mente' da desburocratização do gerenciamento de chamados." />
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: "Inter", serif;
+                font-optical-sizing: auto;
+            }
 
-      body {
-        display: flex;
-        justify-content: start;
-        align-items: start;
-        min-height: 100vh;
-        background: linear-gradient(135deg, #7ac143, #57a722);
-        font-family: Arial, sans-serif;
-        overflow: hidden;
-      }
+            body {
+                display: flex;
+                justify-content: start;
+                align-items: start;
+                min-height: 100vh;
+                background: linear-gradient(135deg, #7ac143, #57a722);
+                font-family: Arial, sans-serif;
+                overflow: hidden;
+            }
 
-      .content {
-        text-align: center;
-        color: white;
-        padding: 8vw;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding-bottom: 300px;
-      }
+            .content {
+                text-align: center;
+                color: white;
+                padding: 8vw;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding-bottom: 300px;
+            }
 
-      h1 {
-        font-family: "Inter", serif;
-        text-align: start;
-        font-size: 10rem;
-        margin-bottom: 20px;
-        font-weight: 300;
-        letter-spacing: 1.2rem;
-      }
+            h1 {
+                font-family: "Inter", serif;
+                text-align: start;
+                font-size: 10rem;
+                margin-bottom: 20px;
+                font-weight: 300;
+                letter-spacing: 1.2rem;
+            }
 
-      .description {
-        font-family: "Inter", serif;
-        font-size: 1.5rem;
-        padding: 1.5rem 1.6rem;
-        background-color: #7ac1437b;
-        border: 3px solid #8eca5f;
-        letter-spacing: 0.3rem;
-        border-radius: 20px;
-        margin-bottom: 60px;
-        max-width: 888px;
-        text-align: start;
-      }
+            .description {
+                font-family: "Inter", serif;
+                font-size: 1.5rem;
+                padding: 1.5rem 1.6rem;
+                background-color: #7ac1437b;
+                border: 3px solid #8eca5f;
+                letter-spacing: 0.3rem;
+                border-radius: 20px;
+                margin-bottom: 60px;
+                max-width: 888px;
+                text-align: start;
+            }
 
-      .robot-container {
-        position: absolute;
-        right: 0;
-        top: 42vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 25vw;
-        height: 30vh;
-        animation: moveLeft 1600s linear infinite;
-      }
+            .robot-container {
+                position: absolute;
+                right: 0;
+                top: 42vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 25vw;
+                height: 30vh;
+                animation: moveLeft 1600s linear infinite;
+            }
 
-      .robot-container img {
-        width: 100%;
-      }
+            .robot-container img {
+                width: 100%;
+            }
 
-      @keyframes moveLeft {
-        0% {
-          transform: translateX(0);
-        }
-        100% {
-          transform: translateX(-100vw);
-        }
-      }
+            @keyframes moveLeft {
+                0% {
+                    transform: translateX(0);
+                }
+                100% {
+                    transform: translateX(-100vw);
+                }
+            }
 
-      .statusContainer {
-        display: flex;
-        align-items: center;
-        justify-content: start;
-        gap: 12px;
-      }
+            .statusContainer {
+                display: flex;
+                align-items: center;
+                justify-content: start;
+                gap: 12px;
+            }
 
-      .statusText {
-        font-size: 2rem;
-        color: white;
-        text-align: center;
-        font-family: "Inter", serif;
-        letter-spacing: 0.2rem;
-        font-weight: 500;
-      }
+            .statusText {
+                font-size: 2rem;
+                color: white;
+                text-align: center;
+                font-family: "Inter", serif;
+                letter-spacing: 0.2rem;
+                font-weight: 500;
+            }
 
-      .statusIndicator {
-        width: 24px;
-        height: 24px;
-        background-color: #ff0000;
-        border-radius: 80%;
-        animation: blink 1s infinite;
-      }
+            .statusIndicator {
+                width: 24px;
+                height: 24px;
+                background-color: #ff0000;
+                border-radius: 80%;
+                animation: blink 1s infinite;
+            }
 
-      @keyframes blink {
-        0%,
-        50% {
-          opacity: 1;
-        }
-        50.01%,
-        100% {
-          opacity: 0;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="content">
-      <h1>Services</h1>
-      <p class="description">
-        A solução que vai mudar o gerenciamento de solicitações e chamados!
-      </p>
-      <div class="robot-container">
-        <img
-          src="/public/services-bot.svg"
-          alt="Services Robot" />
-      </div>
-      <div class="statusContainer">
-        <div class="statusIndicator"></div>
-        <p class="statusText">Estamos no ar!</p>
-      </div>
-    </div>
-  </body>
+            @keyframes blink {
+                0%,
+                50% {
+                    opacity: 1;
+                }
+                50.01%,
+                100% {
+                    opacity: 0;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content">
+            <h1>Services</h1>
+            <p class="description">
+                A solução que vai mudar o gerenciamento de solicitações e
+                chamados!
+            </p>
+            <div class="robot-container">
+                <img
+                    src="/public/services-bot.svg"
+                    alt="Services Robot" />
+            </div>
+            <div class="statusContainer">
+                <div class="statusIndicator"></div>
+                <p class="statusText">Estamos no ar!</p>
+            </div>
+        </div>
+    </body>
 </html>
