@@ -1,5 +1,5 @@
 import { SectorWithoutIdDto, UpdateSectorDto } from "@/typing";
-import { IsPublic } from "@/utils/decorators";
+import { AllowRoles } from "@/utils/decorators";
 import {
     Body,
     Controller,
@@ -13,59 +13,63 @@ import { SectorService } from "./sector.service";
 
 @Controller("sector")
 export class SectorController {
-    constructor(private readonly sessionService: SectorService) {}
+    constructor(private readonly sectorService: SectorService) {}
 
     @Get()
-    @IsPublic()
+    @AllowRoles(["admin", "manager"])
     getAll() {
         // @Query("index") index?: number, // @Query("page") page?: number,
-        return this.sessionService.getAll();
+        return this.sectorService.getAll();
     }
 
     @Post()
+    @AllowRoles(["admin", "manager"])
     create(@Body() data: SectorWithoutIdDto) {
-        return this.sessionService.create(data);
+        return this.sectorService.create(data);
     }
 
     @Get(":id")
     async getSector(@Param("id") id: string) {
-        return this.sessionService.get(id);
+        return this.sectorService.get(id);
     }
 
     @Get("name/:name")
     async getSectorByName(@Param("name") name: string) {
-        return this.sessionService.getByName(name);
+        return this.sectorService.getByName(name);
     }
 
     @Patch(":id")
+    @AllowRoles(["admin", "manager"])
     async updateSector(@Param("id") id: string, @Body() data: UpdateSectorDto) {
-        return this.sessionService.update(id, data);
+        return this.sectorService.update(id, data);
     }
 
     @Get(":id/roles")
-    @IsPublic()
     async getPositions(@Param("id") sectorId: string) {
-        return this.sessionService.getPositions(sectorId);
+        return this.sectorService.getPositions(sectorId);
     }
 
     @Delete(":id")
-    async deleteSector(@Param("id") id: string) {
-        return this.sessionService.removeSector(id);
+    @AllowRoles(["admin", "manager"])
+    async removeSector(@Param("id") id: string) {
+        return this.sectorService.removeSector(id);
     }
 
     @Post(":sector/addPosition/:role")
+    @AllowRoles(["admin", "manager"])
     async addPosition(
         @Param("sector") sectorName: string,
         @Param("role") roleName: string,
     ) {
-        return this.sessionService.addPosition(roleName, sectorName);
+        return this.sectorService.addPosition(roleName, sectorName);
     }
 
     @Delete(":sector/removePosition/:role")
+    @AllowRoles(["admin", "manager"])
     async removePosition(
         @Param("sector") sectorName: string,
         @Param("role") roleName: string,
     ) {
-        return this.sessionService.removePosition(roleName, sectorName);
+        return this.sectorService.removePosition(roleName, sectorName);
     }
 }

@@ -1,7 +1,7 @@
 import { IUser } from "@/typing";
 import { verify } from "jsonwebtoken";
 
-export const getUserDataByToken = async (token: string) => {
+export const getUserDataByToken = (token: string) => {
   try {
     const accessToken = token?.replace("Bearer", "").trimStart().trimEnd();
     const authToken = process.env.AUTH_SECRET ?? "";

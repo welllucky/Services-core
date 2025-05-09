@@ -289,7 +289,7 @@ export class SessionService {
     status: SessionStatus = "active",
     safe = false,
   ): Promise<IResponseFormat<SessionInfoDto[]>> {
-    const { userData } = await getUserDataByToken(token);
+    const { userData } = getUserDataByToken(token);
     const actualSession = await this.find(
       userData?.register,
       undefined,
