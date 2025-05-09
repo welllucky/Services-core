@@ -21,6 +21,6 @@ export class TrackUserMiddleware implements NestMiddleware {
         req.user = userData;
     }
 
-    next();
+    return next();
   }
 }

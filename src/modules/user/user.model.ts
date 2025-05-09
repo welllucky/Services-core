@@ -19,7 +19,7 @@ class UserModel {
         this.user = new User();
     }
 
-    async init({ register, email, accessToken }: UserModelConstructorModel) {
+    async init({ register, email, accessToken }: UserModelConstructorModel | null) {
         try {
             this.user = null;
 
@@ -30,7 +30,7 @@ class UserModel {
             } else if (email) {
                 data = await this.repository.findByEmail(email);
             } else if (accessToken) {
-                const userByToken = await getUserDataByToken(accessToken);
+                const userByToken = getUserDataByToken(accessToken);
                 const outsideData = userByToken.userData;
 
                 data = await this.repository.findByRegister(
@@ -72,6 +72,7 @@ class UserModel {
             }
 
             this.user = data;
+            return this.user;
         } catch {
             return null;
         }

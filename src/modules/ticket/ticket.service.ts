@@ -41,7 +41,7 @@ export class TicketService {
     const tickets = await this.repository.findAll({
       userId: this.userModel.getRegister(),
       pagination,
-      isSolver: isSolver,
+      isSolver,
     });
 
     if (!tickets.length) {
@@ -76,7 +76,7 @@ export class TicketService {
     ticketId: string,
     isSolver?: boolean,
   ): Promise<IResponseFormat<PublicTicketDto>> {
-    const { userData } = await getUserDataByToken(token);
+    const { userData } = getUserDataByToken(token);
     const userId = userData?.register;
 
     await this.userModel.init({
@@ -130,7 +130,7 @@ export class TicketService {
       );
     }
 
-    const { userData } = await getUserDataByToken(token);
+    const { userData } = getUserDataByToken(token);
     const userId = userData?.register;
 
     await this.userModel.init({
@@ -166,7 +166,7 @@ export class TicketService {
     token: string,
     pagination?: Pagination,
   ): Promise<IResponseFormat<unknown>> {
-    const { userData } = await getUserDataByToken(token);
+    const { userData } = getUserDataByToken(token);
     const userId = userData?.register;
 
     await this.userModel.init({
@@ -228,7 +228,7 @@ export class TicketService {
     token: string,
     ticketData: Omit<ITicket, "id" | "createdAt" | "updatedAt" | "closedAt">,
   ): Promise<IResponseFormat<PublicTicketDto>> {
-    const { userData } = await getUserDataByToken(token);
+    const { userData } = getUserDataByToken(token);
     const userId = userData?.register;
 
     await this.userModel.init({
@@ -284,7 +284,7 @@ export class TicketService {
     token: string,
     ticketId: string,
   ): Promise<IResponseFormat<unknown>> {
-    const { userData } = await getUserDataByToken(token);
+    const { userData } = getUserDataByToken(token);
     const userId = userData?.register;
 
     await this.userModel.init({
@@ -330,7 +330,7 @@ export class TicketService {
     token: string,
     ticketId: string,
   ): Promise<IResponseFormat<unknown>> {
-    const { userData } = await getUserDataByToken(token);
+    const { userData } = getUserDataByToken(token);
     const userId = userData?.register;
 
     await this.userModel.init({
@@ -373,7 +373,7 @@ export class TicketService {
     token: string,
     ticketId: string,
   ): Promise<IResponseFormat<unknown>> {
-    const { userData } = await getUserDataByToken(token);
+    const { userData } = getUserDataByToken(token);
     const userId = userData?.register;
 
     await this.userModel.init({
@@ -416,7 +416,7 @@ export class TicketService {
   }
 
   async search(token: string, term: string): Promise<IResponseFormat<unknown>> {
-    const { userData } = await getUserDataByToken(token);
+    const { userData } = getUserDataByToken(token);
     const userId = userData?.register;
 
     await this.userModel.init({

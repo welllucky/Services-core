@@ -129,15 +129,7 @@ class SessionModel {
   }
 
   public async isValid() {
-    if (
-      !this.session ||
-      !this.session.isActive ||
-      this.session.expiresAt < new Date()
-    ) {
-      return false;
-    }
-
-    return true;
+    return this.session?.isActive && this.session.expiresAt > new Date();
   }
 
   public async init(sessionId: string, userId: string) {
