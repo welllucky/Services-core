@@ -10,15 +10,15 @@ import { UserRepository } from "./user.repository";
 import { UserService } from "./user.service";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), SectorModule, PositionModule],
-  controllers: [UserController],
-  providers: [
-    UserService,
-    UserRepository,
-    UserModel,
-    UniqueRegisterValidator,
-    UniqueEmailValidator,
-  ],
-  exports: [UserModel, UserService, UserRepository],
+    imports: [TypeOrmModule.forFeature([User]), SectorModule, PositionModule],
+    controllers: [UserController],
+    providers: [
+        UserService,
+        UserRepository,
+        UserModel,
+        UniqueRegisterValidator,
+        UniqueEmailValidator,
+    ],
+    exports: [UserModel, UserService, UserRepository],
 })
 export class UserModule {}

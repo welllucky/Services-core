@@ -7,9 +7,9 @@ import { SectorRepository } from "./sector.repository";
 import { SectorService } from "./sector.service";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Sector]), PositionModule],
-  controllers: [SectorController],
-  providers: [SectorService, SectorRepository],
-  exports: [SectorService, SectorRepository],
+    imports: [TypeOrmModule.forFeature([Sector]), PositionModule],
+    controllers: [SectorController],
+    providers: [SectorService, SectorRepository],
+    exports: [SectorService, SectorRepository],
 })
 export class SectorModule {}
