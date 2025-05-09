@@ -16,9 +16,3 @@ name = "javascript"
     "nodejs",
     "jest"
   ]
-
-[[transformers]]
-name = "prettier"
-
-[[transformers]]
-name = "standardjs"
