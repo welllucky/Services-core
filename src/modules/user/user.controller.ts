@@ -2,6 +2,7 @@ import { CreateUserDTO, UpdateUserDTO } from "@/typing";
 import { Body, Controller, Get, Param, Post, Put, Query } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { AllowRoles } from "@/utils/decorators";
+import { Throttle } from "@nestjs/throttler";
 
 @Controller("users")
 export class UserController {
@@ -25,6 +26,7 @@ export class UserController {
     return this.service.findByEmail(email);
   }
 
+  @Throttle({ default: { limit: 1, ttl: 60000 } })
   @Post()
   create(@Body() createUserDto: CreateUserDTO) {
     return this.service.create(createUserDto);
