@@ -33,7 +33,7 @@ export class AuthGuard implements CanActivate {
             }
 
             const { userData: outsideUserData } =
-                await getUserDataByToken(accessToken);
+                getUserDataByToken(accessToken);
 
             const isDataValid = await validUserData(outsideUserData);
 

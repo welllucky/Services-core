@@ -13,13 +13,13 @@ export class PositionRepository {
 
   async find(id: string) {
     return this.repository.findOneBy({
-      id: id,
+      id,
     });
   }
 
   async findByName(name: string) {
     return this.repository.findOneBy({
-      name: name,
+      name,
     });
   }
 
@@ -37,7 +37,7 @@ export class PositionRepository {
   async update(id: string, data: Partial<UpdatePositionDto>) {
     return this.repository.update(
       {
-        id: id,
+        id,
       },
       {
         ...data,
@@ -48,7 +48,7 @@ export class PositionRepository {
 
   async delete(id: string) {
     return this.repository.delete({
-      id: id,
+      id,
     });
   }
 }

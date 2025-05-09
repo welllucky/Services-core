@@ -21,7 +21,7 @@ export class UserService {
 
     async findAll(
         pagination?: Pagination,
-        safe: boolean = false,
+        safe = false,
     ): Promise<IResponseFormat<UserPublicDTO[]>> {
         const users = await this.userRepository.findAll(pagination);
         if (!users.length && !safe) {
@@ -56,7 +56,7 @@ export class UserService {
 
     async findOne(
         register: string,
-        safe: boolean = false,
+        safe = false,
     ): Promise<IResponseFormat<UserRestrictDTO>> {
         const user = await this.userRepository.findByRegister(register);
         if (!user && !safe) {
@@ -87,7 +87,7 @@ export class UserService {
 
     async findByEmail(
         email: string,
-        safe: boolean = false,
+        safe = false,
     ): Promise<IResponseFormat<UserRestrictDTO>> {
         const user = await this.userRepository.findByEmail(email);
         if (!user && !safe) {
