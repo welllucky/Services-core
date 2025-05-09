@@ -1,5 +1,5 @@
 import { Roles } from "@/typing";
-import { UniqueEmail, UniqueRegister } from "@/utils";
+import { UniqueEmail, UniqueRegister } from "@/utils/decorators";
 import { OmitType, PartialType, PickType } from "@nestjs/mapped-types";
 import {
   IsBoolean,
