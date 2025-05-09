@@ -4,7 +4,7 @@ import {
   PositionWithoutIdDto,
   UpdatePositionDto,
 } from "@/typing";
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { PositionRepository } from "./position.repository";
 
 @Injectable()
@@ -15,31 +15,29 @@ export class PositionService {
     data: PositionWithoutIdDto,
   ): Promise<IResponseFormat<CreatePositionDto>> {
     if (Object.values(data).length === 0) {
-      return {
+      throw new HttpException({
         title: "Empty fields",
         message: "Please fill all fields.",
-        data: null,
-      };
+
+      }, HttpStatus.BAD_REQUEST);
     }
 
     const positionExist = await this.repository.findByName(data.name);
 
     if (positionExist) {
-      return {
+      throw new HttpException ({
         title: "Position already exists",
         message: "This Position already exists.",
-        data: null,
-      };
+      }, HttpStatus.BAD_REQUEST);
     }
 
     const createdPosition = await this.repository.create(data);
 
     if (!createdPosition) {
-      return {
+      throw new HttpException ({
         title: "Error",
         message: "Error on create Position.",
-        data: null,
-      };
+      }, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return {
@@ -55,17 +53,19 @@ export class PositionService {
 
   async get(id: string): Promise<IResponseFormat<CreatePositionDto>> {
     if (!id) {
-      return {
+      throw new HttpException({
         title: "Position id not informed",
         message: "It's necessary to inform the Position id.",
-        data: null,
-      };
+      }, HttpStatus.BAD_REQUEST);
     }
 
     const position = await this.repository.find(id);
 
     if (!position) {
-      return null;
+      throw new HttpException({
+        title: "Position not found",
+        message: "Position not found.",
+      }, HttpStatus.NOT_FOUND);
     }
 
     return {
@@ -81,21 +81,19 @@ export class PositionService {
 
   async getByName(name: string): Promise<IResponseFormat<CreatePositionDto>> {
     if (!name) {
-      return {
+      throw new HttpException({
         title: "Position name not informed",
         message: "It's necessary to inform the Position name.",
-        data: null,
-      };
+      }, HttpStatus.BAD_REQUEST);
     }
 
     const position = await this.repository.findByName(name);
 
     if (!position) {
-      return {
+      throw new HttpException({
         title: "Position not found",
         message: "Position not found.",
-        data: null,
-      };
+      }, HttpStatus.NOT_FOUND);
     }
 
     return {
@@ -113,11 +111,10 @@ export class PositionService {
     const positions = await this.repository.findAll();
 
     if (!positions) {
-      return {
+      throw new HttpException({
         title: "Positions not found",
         message: "Positions not found.",
-        data: null,
-      };
+      }, HttpStatus.NOT_FOUND);
     }
 
     return {
@@ -139,39 +136,35 @@ export class PositionService {
     data: UpdatePositionDto,
   ): Promise<IResponseFormat<unknown>> {
     if (!id) {
-      return {
+      throw new HttpException({
         title: "Position id not informed",
         message: "It's necessary to inform the Position id.",
-        data: null,
-      };
+      }, HttpStatus.BAD_REQUEST);
     }
 
     if (Object.values(data).length === 0) {
-      return {
+      throw new HttpException({
         title: "Empty fields",
         message: "Please fill all fields.",
-        data: null,
-      };
+      }, HttpStatus.BAD_REQUEST);
     }
 
     const Position = await this.repository.find(id);
 
     if (!Position) {
-      return {
+      throw new HttpException({
         title: "Position not found",
         message: "Position not found, please check the id.",
-        data: null,
-      };
+      }, HttpStatus.NOT_FOUND);
     }
 
     const updatedPosition = await this.repository.update(id, data);
 
     if (updatedPosition.affected === 0) {
-      return {
+      throw new HttpException({
         title: "Error",
         message: "Error on update Position.",
-        data: null,
-      };
+      }, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return {
@@ -182,31 +175,28 @@ export class PositionService {
 
   async remove(id: string): Promise<IResponseFormat<unknown>> {
     if (!id) {
-      return {
+      throw new HttpException({
         title: "Position id not informed",
         message: "It's necessary to inform the Position id.",
-        data: null,
-      };
+      }, HttpStatus.BAD_REQUEST);
     }
 
     const Position = await this.repository.find(id);
 
     if (!Position) {
-      return {
+      throw new HttpException({
         title: "Position not found",
         message: "Position not found, please check the id.",
-        data: null,
-      };
+      }, HttpStatus.NOT_FOUND);
     }
 
     const deletedPosition = await this.repository.delete(id);
 
     if (deletedPosition.affected === 0) {
-      return {
+      throw new HttpException({
         title: "Error",
         message: "Error on delete Position.",
-        data: null,
-      };
+      }, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return {
