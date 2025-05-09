@@ -1,57 +1,28 @@
 import "./instrument.js";
-
-// import { HttpExceptionFilter } from "@/utils";
-import { ValidationPipe, VersioningType } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { NestFactory } from "@nestjs/core";
-import {
-  ExpressAdapter,
-  NestExpressApplication,
-} from "@nestjs/platform-express";
 import { useContainer } from "class-validator";
 import * as express from "express";
 import { join } from "path";
 import { AppModule } from "./app.module.js";
+import { configureCors, createAppInstance, enableGlobalPipes, enableVersioning } from "./utils/functions";
 
 async function startTheService() {
-  const app = await NestFactory.create<NestExpressApplication>(
-    AppModule,
-    new ExpressAdapter(),
-    {
-      logger: ["debug", "error", "log", "warn", "verbose"],
-    },
-  );
+  const hostEnv = process.env.HOST_ENV as "development" | "production";
 
+  const app = await createAppInstance(hostEnv);
+
+  // app.useLogger(new CustomLogger());
   const configService = app.get(ConfigService);
   const isDevelopment = configService.get("HOST_ENV") === "development";
   const clientApplicationUrl = configService.get("CLIENT_URL");
 
-  app.enableCors({
-    origin: isDevelopment ? "*" : clientApplicationUrl,
-    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Accept", "Authorization"],
-    credentials: false,
-    optionsSuccessStatus: 204,
-  });
+  configureCors(app, isDevelopment, clientApplicationUrl);
 
   app.use("/public", express.static(join(__dirname, "..", "public")));
 
-  app.enableVersioning({
-    type: VersioningType.URI,
-    defaultVersion: "1",
-  });
+  enableVersioning(app);
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      enableDebugMessages: isDevelopment,
-      transform: true,
-      transformOptions: {
-        enableImplicitConversion: true,
-      },
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    }),
-  );
+  enableGlobalPipes(app, isDevelopment);
 
   // app.useGlobalFilters(new HttpExceptionFilter());
 
