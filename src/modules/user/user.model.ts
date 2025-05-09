@@ -19,7 +19,11 @@ class UserModel {
         this.user = new User();
     }
 
-    async init({ register, email, accessToken }: UserModelConstructorModel | null) {
+    async init({
+        register,
+        email,
+        accessToken,
+    }: UserModelConstructorModel | null) {
         try {
             this.user = null;
 

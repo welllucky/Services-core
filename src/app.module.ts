@@ -9,7 +9,13 @@ import { configLoads } from "./configs";
 import { entities } from "./entities";
 import { modules } from "./modules";
 import { subscribers } from "./subscribers";
-import { AuthGuard, FormatResponseMiddleware, LoggerMiddleware, RoleGuard, TrackUserMiddleware } from "./utils";
+import {
+    AuthGuard,
+    FormatResponseMiddleware,
+    LoggerMiddleware,
+    RoleGuard,
+    TrackUserMiddleware,
+} from "./utils";
 
 @Module({
     controllers: [AppController],
@@ -52,22 +58,22 @@ import { AuthGuard, FormatResponseMiddleware, LoggerMiddleware, RoleGuard, Track
         ThrottlerModule.forRoot({
             throttlers: [
                 {
-                    name: 'short',
+                    name: "short",
                     ttl: 1000,
                     limit: 3,
-                  },
-                  {
-                    name: 'medium',
+                },
+                {
+                    name: "medium",
                     ttl: 10000,
-                    limit: 20
-                  },
-                  {
-                    name: 'long',
+                    limit: 20,
+                },
+                {
+                    name: "long",
                     ttl: 60000,
-                    limit: 50
-                  }
+                    limit: 50,
+                },
             ],
-          }),
+        }),
         ...modules,
     ],
     providers: [
@@ -78,15 +84,17 @@ import { AuthGuard, FormatResponseMiddleware, LoggerMiddleware, RoleGuard, Track
         {
             provide: APP_GUARD,
             useClass: RoleGuard,
-        }
+        },
     ],
 })
 export class AppModule {
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(
-            TrackUserMiddleware,
-            FormatResponseMiddleware,
-            LoggerMiddleware
-        ).forRoutes("*");
+        consumer
+            .apply(
+                TrackUserMiddleware,
+                FormatResponseMiddleware,
+                LoggerMiddleware,
+            )
+            .forRoutes("*");
     }
 }
