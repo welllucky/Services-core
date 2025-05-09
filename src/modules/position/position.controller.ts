@@ -1,4 +1,5 @@
 import { PositionWithoutIdDto, UpdatePositionDto } from "@/typing";
+import { AllowRoles } from "@/utils/decorators";
 import {
   Body,
   Controller,
@@ -15,12 +16,14 @@ export class PositionController {
   constructor(private readonly position: PositionService) {}
 
   @Get()
+  @AllowRoles(["admin", "manager"])
   getAll() {
     // @Query("index") index?: number, // @Query("page") page?: number,
     return this.position.getAll();
   }
 
   @Post()
+  @AllowRoles(["admin", "manager"])
   create(@Body() data: PositionWithoutIdDto) {
     return this.position.create(data);
   }
@@ -36,6 +39,7 @@ export class PositionController {
   }
 
   @Patch(":id")
+  @AllowRoles(["admin", "manager"])
   async updatePosition(
     @Param("id") id: string,
     @Body() data: UpdatePositionDto,
@@ -44,6 +48,7 @@ export class PositionController {
   }
 
   @Delete(":id")
+  @AllowRoles(["admin", "manager"])
   async removePosition(@Param("id") id: string) {
     return this.position.remove(id);
   }

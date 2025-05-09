@@ -51,6 +51,7 @@ class SessionModel {
         canResolveTicket: userData?.canResolveTicket,
         position: userData?.position?.name,
         sector: userData?.sector?.name,
+        role: userData?.role,
       };
 
       const expiresAt = new Date();
