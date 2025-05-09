@@ -14,7 +14,7 @@ const getAuthInformation = async (token: string, session: Session) => {
             throw new Error("No access token found");
         }
 
-        const { accessToken, userData } = await getUserDataByToken(token);
+        const { accessToken, userData } = getUserDataByToken(token);
 
         if (!session || !userData || !accessToken) {
             addBreadcrumb({

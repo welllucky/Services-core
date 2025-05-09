@@ -185,7 +185,7 @@ export class SessionService {
   }
 
   async close(token: string) {
-    const { userData } = await getUserDataByToken(token);
+    const { userData } = getUserDataByToken(token);
     const userId = userData?.register;
 
     if (!userId) {

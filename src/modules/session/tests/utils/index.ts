@@ -42,7 +42,7 @@ export const mockedSessionData = (isActive?: boolean) => ({
   userId: "1",
   isActive: isActive ?? true,
   createdAt: new Date(),
-  expiresAt: new Date(),
+  expiresAt: new Date(new Date().setDate(new Date().getDate() + 1000 * 60 * 60 * 24)),
   user: mockedUser,
   hasId: () => true,
   save: async () => mockedSessionData(),
