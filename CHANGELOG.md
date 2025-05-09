@@ -2,6 +2,23 @@
 
 ## [1.2.0](https://github.com/welllucky/Services-core/compare/v1.1.0...v1.2.0) (2025-05-09)
 
+
+### Features
+
+* :art: Refatora e melhora o fluxo de autenticação - Simplifica a lógica condicional para validação de sessão.  - Simplifica a recuperação de token removendo chamadas assíncronas desnecessárias e simplificando a desestruturação de objetos.  - Habilita middlewares globais para rastreamento de solicitações, formatação de resposta e registro em log. ([183e7da](https://github.com/welllucky/Services-core/commit/183e7da535e0060eca59cdd5bb843edb9c1f0a19))
+* :sparkles: Adiciona decorador IsPublic e refatora guardas e controladores para suporte a rotas públicas, melhorando a segurança e a organização do código ([9f1d656](https://github.com/welllucky/Services-core/commit/9f1d6562914f0aa514cffef3f4edad0fc33e6989))
+* :sparkles: Adiciona suporte para filtragem de tickets pelo resolutor e implementa novos endpoints para iniciar e resolver tickets ([94473b2](https://github.com/welllucky/Services-core/commit/94473b258f4174e446934d04c527d3be0f8dec46))
+* :sparkles: Altera colunas de ID para uso de incremento em entidades e refatora serviços e controladores de Role e Sector para melhorar a consistência e legibilidade do código ([4d72ad0](https://github.com/welllucky/Services-core/commit/4d72ad089351e621542ea89bd5e99906bc51f3fa))
+* :sparkles: Implementa acesso a endpoints a partir da role do usuário ([d279bb2](https://github.com/welllucky/Services-core/commit/d279bb28efabb2f3740c909e5c4a9bc535ed8621))
+* :sparkles: Implementa camada extra de proteção para a aplicação - Helmet ([01affe0](https://github.com/welllucky/Services-core/commit/01affe0a4c6ae77c2a7fefc0b665fce28180d06f))
+* :sparkles: Implementa logging na chamadas feitas para a aplicação ([2268151](https://github.com/welllucky/Services-core/commit/2268151679602ad5373109230e498dd0b36c8dee))
+* :sparkles: Implementa o rate limit na aplicação ([675314b](https://github.com/welllucky/Services-core/commit/675314b3435979b7eee7e559c1a5435ebedc7b53))
+* :sparkles: Refatora serviços e controladores de Role e Sector para utilizar DTOs sem ID, melhorando a consistência e a legibilidade do código ([8f68126](https://github.com/welllucky/Services-core/commit/8f6812644f38bc6da3124cde7c56621e94687e63))
+* :sparkles: Substitui bcrypt por bcryptjs em serviços de criptografia e testes, garantindo compatibilidade e consistência no uso da biblioteca ([4962488](https://github.com/welllucky/Services-core/commit/49624885eece074230421a367bf5e2df9490b0e5))
+* :sparkles: Substitui bcrypt por bcryptjs em serviços de criptografia e testes, garantindo compatibilidade e consistência no uso da biblioteca ([2276749](https://github.com/welllucky/Services-core/commit/2276749de9a98917c0688344cf4e8f9992691c42))
+
+## [1.2.0](https://github.com/welllucky/Services-core/compare/v1.1.0...v1.2.0) (2025-05-09)
+
 ### Features
 
 -   :art: Refatora e melhora o fluxo de autenticação - Simplifica a lógica condicional para validação de sessão. - Simplifica a recuperação de token removendo chamadas assíncronas desnecessárias e simplificando a desestruturação de objetos. - Habilita middlewares globais para rastreamento de solicitações, formatação de resposta e registro em log. ([37a41ba](https://github.com/welllucky/Services-core/commit/37a41bad171428bff7901f3bb86071b184de403a))
