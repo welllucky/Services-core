@@ -32,7 +32,6 @@ export class Sector extends BaseEntity {
     cascade: true,
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
-    nullable: true,
   })
   @JoinTable()
   positions!: Position[] | null;
