@@ -1,18 +1,20 @@
+import { Injectable, Logger, NestMiddleware } from "@nestjs/common";
 import { NextFunction, Request, Response } from "express";
 
-export const logger = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const log = `${req.method} ${req.url} ${res.statusCode} ${req.headers["user-agent"]} ${new Date().toISOString()} `;
+@Injectable()
+export class LoggerMiddleware implements NestMiddleware {
+  private readonly logger = new Logger("LoggerMiddleware", {
+    timestamp: true,
+  });
 
-  if (res.statusCode >= 400) {
-    // eslint-disable-next-line no-console
-    console.error(log);
-  } else {
-    // eslint-disable-next-line no-console
-    console.log(log);
+  use(req: Request, res: Response, next: NextFunction) {
+    const log = `${req.method} ${req.originalUrl} ${res.statusCode} ${req.headers["user-agent"]}`;
+
+    if (res.statusCode >= 400) {
+      this.logger.error(log);
+    } else {
+      this.logger.log(log);
+    }
+    next();
   }
-  next();
-};
+}
