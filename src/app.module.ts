@@ -6,7 +6,7 @@ import { SentryModule } from "@sentry/nestjs/setup";
 import { AppController } from "./app.controller";
 import { configLoads } from "./configs";
 import { entities } from "./entities";
-import { FormatResponseMiddleware } from "./middlewares";
+import { FormatResponseMiddleware, LoggerMiddleware } from "./middlewares";
 import { modules } from "./modules";
 import { subscribers } from "./subscribers";
 import { AuthGuard } from "./utils";
@@ -60,6 +60,6 @@ import { AuthGuard } from "./utils";
 })
 export class AppModule {
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(FormatResponseMiddleware).forRoutes("*");
+        consumer.apply(FormatResponseMiddleware, LoggerMiddleware).forRoutes("*");
     }
 }
