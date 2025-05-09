@@ -9,7 +9,7 @@ import { configLoads } from "./configs";
 import { entities } from "./entities";
 import { modules } from "./modules";
 import { subscribers } from "./subscribers";
-import { AuthGuard, RoleGuard, TrackUserMiddleware } from "./utils";
+import { AuthGuard, FormatResponseMiddleware, LoggerMiddleware, RoleGuard, TrackUserMiddleware } from "./utils";
 
 @Module({
     controllers: [AppController],
@@ -39,7 +39,7 @@ import { AuthGuard, RoleGuard, TrackUserMiddleware } from "./utils";
                 database: configService.get("DB_NAME"),
                 autoLoadEntities: true,
                 synchronize: configService.get("HOST_ENV") === "development",
-                entities: entities,
+                entities,
                 subscribers: subscribers,
                 ...(configService.get("DB_CA") && {
                     ssl: {
@@ -85,8 +85,8 @@ export class AppModule {
     configure(consumer: MiddlewareConsumer) {
         consumer.apply(
             TrackUserMiddleware,
-            // FormatResponseMiddleware,
-            // LoggerMiddleware
+            FormatResponseMiddleware,
+            LoggerMiddleware
         ).forRoutes("*");
     }
 }
