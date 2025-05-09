@@ -1,6 +1,7 @@
 import { MiddlewareConsumer, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
+import { ThrottlerModule } from "@nestjs/throttler";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { SentryModule } from "@sentry/nestjs/setup";
 import { AppController } from "./app.controller";
@@ -48,6 +49,25 @@ import { AuthGuard, RoleGuard, TrackUserMiddleware } from "./utils";
             }),
             inject: [ConfigService],
         }),
+        ThrottlerModule.forRoot({
+            throttlers: [
+                {
+                    name: 'short',
+                    ttl: 1000,
+                    limit: 3,
+                  },
+                  {
+                    name: 'medium',
+                    ttl: 10000,
+                    limit: 20
+                  },
+                  {
+                    name: 'long',
+                    ttl: 60000,
+                    limit: 50
+                  }
+            ],
+          }),
         ...modules,
     ],
     providers: [
