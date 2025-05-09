@@ -6,87 +6,89 @@ import { Repository } from "typeorm";
 
 @Injectable()
 export class UserRepository {
-  constructor(
-    @InjectRepository(User) private readonly repository: Repository<User>,
-  ) {}
+    constructor(
+        @InjectRepository(User) private readonly repository: Repository<User>,
+    ) {}
 
-  async findAll(pagination?: Pagination): Promise<User[]> {
-    const pageIndex =
-      !pagination?.index || pagination?.index === 1 ? 0 : pagination?.index;
-    const page = pagination?.page || 10;
+    async findAll(pagination?: Pagination): Promise<User[]> {
+        const pageIndex =
+            !pagination?.index || pagination?.index === 1
+                ? 0
+                : pagination?.index;
+        const page = pagination?.page || 10;
 
-    return this.repository.find({
-      order: {
-        createdAt: "DESC",
-      },
-      take: page,
-      skip: pageIndex * page,
-      relations: {
-        position: true,
-        sector: true,
-      },
-    });
-  }
+        return this.repository.find({
+            order: {
+                createdAt: "DESC",
+            },
+            take: page,
+            skip: pageIndex * page,
+            relations: {
+                position: true,
+                sector: true,
+            },
+        });
+    }
 
-  async findById(id: string) {
-    return this.repository.findOne({
-      where: { id },
-      relations: {
-        position: true,
-        sector: true,
-      },
-    });
-  }
+    async findById(id: string) {
+        return this.repository.findOne({
+            where: { id },
+            relations: {
+                position: true,
+                sector: true,
+            },
+        });
+    }
 
-  async findByRegister(register: string) {
-    return this.repository.findOne({
-      where: { register },
-      relations: {
-        position: true,
-        sector: true,
-      },
-    });
-  }
+    async findByRegister(register: string) {
+        return this.repository.findOne({
+            where: { register },
+            relations: {
+                position: true,
+                sector: true,
+            },
+        });
+    }
 
-  async findByEmail(email: string) {
-    return this.repository.findOne({
-      where: { email },
-      relations: {
-        position: true,
-        sector: true,
-      },
-    });
-  }
+    async findByEmail(email: string) {
+        return this.repository.findOne({
+            where: { email },
+            relations: {
+                position: true,
+                sector: true,
+            },
+        });
+    }
 
-  async create(user: Omit<CreateUserDTO, "password">, password: string) {
-    return this.repository.save(
-      {
-        ...user,
-        position: {
-          id: user.position,
-        },
-        sector: {
-          id: user.sector,
-        },
-      },
-      {
-        data: {
-          rootPassword: password,
-        },
-      },
-    );
-  }
+    async create(user: Omit<CreateUserDTO, "password">, password: string) {
+        return this.repository.save(
+            {
+                ...user,
+                position: {
+                    id: user.position,
+                },
+                sector: {
+                    id: user.sector,
+                },
+            },
+            {
+                data: {
+                    rootPassword: password,
+                },
+            },
+        );
+    }
 
-  async update(userId: string, user: UpdateUserDTO) {
-    return this.repository.update(
-      {
-        register: userId,
-      },
-      {
-        ...user,
-        position: user.position ? { id: user.position } : undefined,
-        sector: user.sector ? { id: user.sector } : undefined,
-      },
-    );
-  }
+    async update(userId: string, user: UpdateUserDTO) {
+        return this.repository.update(
+            {
+                register: userId,
+            },
+            {
+                ...user,
+                position: user.position ? { id: user.position } : undefined,
+                sector: user.sector ? { id: user.sector } : undefined,
+            },
+        );
+    }
 }
