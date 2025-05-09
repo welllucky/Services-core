@@ -1,10 +1,8 @@
 import { UserRepository } from "@/modules/user/user.repository";
 import { Injectable } from "@nestjs/common";
 import {
-  registerDecorator,
-  ValidationOptions,
   ValidatorConstraint,
-  ValidatorConstraintInterface,
+  ValidatorConstraintInterface
 } from "class-validator";
 
 @Injectable()
@@ -21,15 +19,3 @@ export class UniqueRegisterValidator implements ValidatorConstraintInterface {
     return "Register already exists, please try logging in";
   }
 }
-
-export const UniqueRegister = (validationOptions?: ValidationOptions) => {
-  return (object: object, property: string) => {
-    registerDecorator({
-      target: object.constructor,
-      propertyName: property,
-      options: validationOptions,
-      constraints: [],
-      validator: UniqueRegisterValidator,
-    });
-  };
-};
