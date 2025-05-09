@@ -71,9 +71,10 @@ export class User extends BaseEntity {
         eager: true,
         onDelete: "SET NULL",
         onUpdate: "CASCADE",
+        nullable: true,
     })
     @JoinColumn()
-    public sector!: Sector;
+    public sector!: Sector | null;
 
     @OneToMany(() => Session, (session) => session.user, {
         cascade: ["insert", "update"],
