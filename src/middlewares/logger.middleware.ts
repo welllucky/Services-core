@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
-export const LoggerMiddleware = (
+export const logger = (
   req: Request,
   res: Response,
-  next: () => void,
+  next: NextFunction,
 ) => {
   const log = `${req.method} ${req.url} ${res.statusCode} ${req.headers["user-agent"]} ${new Date().toISOString()} `;
 

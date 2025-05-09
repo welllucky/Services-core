@@ -1,10 +1,8 @@
 import { UserRepository } from "@/modules/user/user.repository";
 import { Injectable } from "@nestjs/common";
 import {
-  registerDecorator,
-  ValidationOptions,
   ValidatorConstraint,
-  ValidatorConstraintInterface,
+  ValidatorConstraintInterface
 } from "class-validator";
 
 @Injectable()
@@ -21,15 +19,3 @@ export class UniqueEmailValidator implements ValidatorConstraintInterface {
     return "Email already exists, please choose another one";
   }
 }
-
-export const UniqueEmail = (validationOptions?: ValidationOptions) => {
-  return (object: object, property: string) => {
-    registerDecorator({
-      target: object.constructor,
-      propertyName: property,
-      options: validationOptions,
-      constraints: [],
-      validator: UniqueEmailValidator,
-    });
-  };
-};

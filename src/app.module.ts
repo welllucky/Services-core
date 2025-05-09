@@ -6,10 +6,10 @@ import { SentryModule } from "@sentry/nestjs/setup";
 import { AppController } from "./app.controller";
 import { configLoads } from "./configs";
 import { entities } from "./entities";
+import { FormatResponseMiddleware } from "./middlewares";
 import { modules } from "./modules";
 import { subscribers } from "./subscribers";
 import { AuthGuard } from "./utils";
-import { FormatResponseMiddleware } from "./utils/middlewares";
 
 @Module({
     controllers: [AppController],

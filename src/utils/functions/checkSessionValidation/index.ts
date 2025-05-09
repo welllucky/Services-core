@@ -11,11 +11,6 @@ export const checkSessionValidation = (session: Session) => {
 
     const isSessionValid = session.expiresAt.getTime() > Date.now();
 
-    console.log({
-        isSessionValid,
-        session,
-    });
-
     if (isSessionValid && session.isActive) {
         return {
             isValid: true,
@@ -36,7 +31,6 @@ export const checkSessionValidation = (session: Session) => {
     }
 
     if (session.isActive) {
-        console.log("caiu aqui");
         session.isActive = false;
         session.save();
 

@@ -10,7 +10,7 @@ export class FormatResponseMiddleware implements NestMiddleware {
     res.send = function (body: unknown) {
       const parsedBody: IResponseFormat<
         Record<string, unknown> | Record<string, unknown>[]
-      > = body ? JSON.parse(body as unknown as string) : null;
+      > = body ? JSON.parse(body as string) : null;
 
       const hasError = res.statusCode >= 400;
 
