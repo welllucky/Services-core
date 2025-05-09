@@ -7,8 +7,8 @@ import {
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Request } from "express";
-import { IsPublic } from "../decorators";
-import { getUserDataByToken, searchUserByRegister } from "../functions";
+import { IsPublic } from "../utils/decorators";
+import { getUserDataByToken, validUserData } from "../utils/functions";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -35,22 +35,7 @@ export class AuthGuard implements CanActivate {
             const { userData: outsideUserData } =
                 await getUserDataByToken(accessToken);
 
-            const userData = await searchUserByRegister(
-                outsideUserData?.register,
-            );
-
-            const isDataValid =
-                outsideUserData?.register === userData?.register &&
-                outsideUserData?.isBanned === userData?.isBanned &&
-                outsideUserData?.email === userData?.email &&
-                // outsideUserData?.role === userData?.role &&
-                outsideUserData?.name === userData?.name &&
-                outsideUserData?.canCreateTicket ===
-                    userData?.canCreateTicket &&
-                outsideUserData?.canResolveTicket ===
-                    userData?.canResolveTicket &&
-                outsideUserData?.position === userData?.position &&
-                outsideUserData?.sector === userData?.sector;
+            const isDataValid = await validUserData(outsideUserData);
 
             return isDataValid;
         }

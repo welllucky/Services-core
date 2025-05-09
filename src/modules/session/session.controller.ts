@@ -1,5 +1,5 @@
 import { GetSessionDTO, SessionStatus } from "@/typing";
-import { IsPublic } from "@/utils";
+import { IsPublic } from "@/utils/decorators";
 import {
     Body,
     Controller,
