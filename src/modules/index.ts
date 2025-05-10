@@ -3,6 +3,7 @@ import { SectorModule } from "./sector/sector.module";
 import { SessionModule } from "./session/session.module";
 import { TicketModule } from "./ticket/ticket.module";
 import { UserModule } from "./user/user.module";
+import { SystemModule } from "./system/system.module";
 
 export const modules = [
     UserModule,
@@ -10,4 +11,5 @@ export const modules = [
     TicketModule,
     SectorModule,
     PositionModule,
+    SystemModule,
 ];
