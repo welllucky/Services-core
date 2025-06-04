@@ -1,6 +1,7 @@
 import { ConfigService } from "@nestjs/config";
 import { useContainer } from "class-validator";
 import * as express from "express";
+import helmet from "helmet";
 import { join } from "path";
 import { AppModule } from "./app.module.js";
 import "./instrument.js";
@@ -10,7 +11,6 @@ import {
     enableGlobalPipes,
     enableVersioning,
 } from "./utils/functions";
-import helmet from "helmet";
 
 async function startTheService() {
     const hostEnv = process.env.HOST_ENV as "development" | "production";

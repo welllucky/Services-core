@@ -1,4 +1,4 @@
-import { AUTH_SECRET_MOCK } from "@/utils/constants";
+import { AUTH_SECRET_MOCK } from "@/utils/alias/constants";
 import { createAccessToken } from "@/utils/functions";
 import * as mock from "@ngneat/falso";
 import { user } from "../user";

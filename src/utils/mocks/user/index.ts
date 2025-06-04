@@ -1,4 +1,4 @@
-import { ADMIN_PASSWORD } from "@/utils/constants";
+import { ADMIN_PASSWORD } from "@/utils/alias/constants";
 import { encryptPassword } from "@/utils/functions";
 import * as mock from "@ngneat/falso";
 

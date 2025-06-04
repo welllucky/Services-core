@@ -1,21 +1,20 @@
+import { entities } from "@/entities";
+import {
+    BackofficeModule,
+    configLoads,
+    CoreModule,
+    FormatResponseMiddleware,
+    guards,
+    LoggerMiddleware,
+    TrackUserMiddleware,
+} from "@/modules";
+import { subscribers } from "@/subscribers";
 import { MiddlewareConsumer, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { APP_GUARD } from "@nestjs/core";
 import { ThrottlerModule } from "@nestjs/throttler";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { SentryModule } from "@sentry/nestjs/setup";
 import { AppController } from "./app.controller";
-import { configLoads } from "./configs";
-import { entities } from "./entities";
-import { modules } from "./modules";
-import { subscribers } from "./subscribers";
-import {
-    AuthGuard,
-    FormatResponseMiddleware,
-    LoggerMiddleware,
-    RoleGuard,
-    TrackUserMiddleware,
-} from "./utils";
 
 @Module({
     controllers: [AppController],
@@ -74,18 +73,11 @@ import {
                 },
             ],
         }),
-        ...modules,
+        CoreModule,
+        BackofficeModule,
     ],
-    providers: [
-        {
-            provide: APP_GUARD,
-            useClass: AuthGuard,
-        },
-        {
-            provide: APP_GUARD,
-            useClass: RoleGuard,
-        },
-    ],
+    providers: [...guards],
+    exports: [CoreModule, BackofficeModule],
 })
 export class AppModule {
     configure(consumer: MiddlewareConsumer) {

@@ -1,7 +1,7 @@
 import { Controller, Get, Res, VERSION_NEUTRAL } from "@nestjs/common";
 import { Response } from "express";
 import { join } from "path";
-import { IsPublic } from "./utils/decorators/IsPublic.decorator";
+import { IsPublic } from "@/utils/decorators";
 import { Throttle } from "@nestjs/throttler";
 
 @Controller({
