@@ -30,9 +30,8 @@ export const inactiveSession = {
 
 export const mockedAccessToken = createAccessToken(user, AUTH_SECRET_MOCK, 3);
 
-const withoutRegister = { ...user };
-
-delete withoutRegister.register;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const { register, ...withoutRegister } = user;
 
 export const mockedAccessTokenWithoutRegister = createAccessToken(
   { ...withoutRegister },

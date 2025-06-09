@@ -1,6 +1,6 @@
 import { RoleController } from "@/modules/backoffice/role/role.controller";
 import { RoleService } from "@/modules/backoffice/role/role.service";
-import { UserRepository } from "@/modules/core/user/user.repository";
+import { UserRepository } from "@/repositories/user.repository";
 import { RolesSchema } from "@/typing";
 import { getUserDataByToken, user } from "@/utils";
 import { INestApplication } from "@nestjs/common";

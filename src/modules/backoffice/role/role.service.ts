@@ -1,5 +1,5 @@
 import { UserModel } from "@/models/user.model";
-import { UserRepository } from "@/modules/core/user/user.repository";
+import { UserRepository } from "@/repositories/user.repository";
 import { IResponseFormat, Roles, RolesSchema } from "@/typing";
 import { ALLOWED_BACKOFFICE_ROLES } from "@/utils";
 import {
@@ -32,7 +32,7 @@ export class RoleService {
             register: targetUserRegister,
         });
 
-        if (!ALLOWED_BACKOFFICE_ROLES.includes(actualUser.Role().toString())) {
+        if (!ALLOWED_BACKOFFICE_ROLES.includes(actualUser.Role()?.toString() as Roles)) {
             throw new ForbiddenException();
         }
 
@@ -40,10 +40,10 @@ export class RoleService {
             throw new ForbiddenException("You can't change your own role");
         }
 
-        targetUser.Role().set(newRole);
+        targetUser.Role()?.set(newRole);
 
         const { affected } = await this.userRepository.updateRole(
-            targetUser.Register(),
+            targetUser.Register() ?? "",
             newRole,
         );
 

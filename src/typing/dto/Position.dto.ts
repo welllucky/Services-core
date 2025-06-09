@@ -3,18 +3,18 @@ import { IsString, MaxLength, MinLength } from "class-validator";
 
 export class PositionDto {
     @IsString({ message: "Id must be a string" })
-    id: string;
+    id!: string;
 
     @IsString({ message: "Name must be a string" })
     @MinLength(3, { message: "Name must have a minimum of 3 characters" })
     @MaxLength(128, { message: "Name must have a maximum of 128 characters" })
-    name: string;
+    name!: string;
 
     @IsString({ message: "Description must be a string" })
     @MaxLength(128, {
         message: "Description must have a maximum of 128 characters",
     })
-    description: string;
+    description!: string;
 }
 
 export class CreatePositionDto extends PickType(PositionDto, [

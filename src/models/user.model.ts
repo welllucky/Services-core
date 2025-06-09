@@ -1,5 +1,5 @@
 import { User } from "@/entities";
-import { UserRepository } from "@/modules/core/user/user.repository";
+import { UserRepository } from "@/repositories/user.repository";
 import { IRegisterUser } from "@/typing";
 import { comparePassword, getUserDataByToken } from "@/utils";
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
@@ -14,7 +14,7 @@ interface UserModelConstructorModel {
 @Injectable()
 class UserModel {
     private user: User | null;
-    private role: RoleModel | null;
+    private role!: RoleModel | null;
 
     constructor(
         private readonly repository: UserRepository,
@@ -27,7 +27,7 @@ class UserModel {
         register,
         email,
         accessToken,
-    }: UserModelConstructorModel | null) {
+    }: UserModelConstructorModel) {
             this.user = null;
 
             let data: User | null = null;
@@ -52,7 +52,7 @@ class UserModel {
                 const outsideData = userByToken.userData;
 
                 data = await this.repository.findByRegister(
-                    outsideData.register,
+                    outsideData?.register || "",
                 );
             }
 
@@ -135,7 +135,7 @@ class UserModel {
     }
 
     authUser(password: string) {
-        return comparePassword(password, this.user?.hash);
+        return comparePassword(password, this.user?.hash || "");
     }
 
     async createUser(data: IRegisterUser) {

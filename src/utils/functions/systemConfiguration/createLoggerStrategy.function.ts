@@ -15,5 +15,5 @@ export function createLoggerStrategy(
         production: ["log", "error", "warn", "fatal"] as LogLevel[],
     };
 
-    return logStrategy[applicationEnvironment] || logStrategy.production;
+    return logStrategy[applicationEnvironment ?? "production"];
 }

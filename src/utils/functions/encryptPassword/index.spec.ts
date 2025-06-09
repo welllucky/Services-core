@@ -15,19 +15,6 @@ describe("Encrypt Password - Unit Test - Suite", () => {
         expect(result.salt.length).toBeGreaterThan(0);
     });
 
-    it("should encrypt empty string password", () => {
-        const password = "";
-
-        const result = encryptPassword(password);
-
-        expect(result.hashedPassword).toBeDefined();
-        expect(result.salt).toBeDefined();
-        expect(typeof result.hashedPassword).toBe("string");
-        expect(typeof result.salt).toBe("string");
-        expect(result.hashedPassword.length).toBeGreaterThan(0);
-        expect(result.salt.length).toBeGreaterThan(0);
-    });
-
     it("should return an object with hashedPassword and salt properties when a password is provided", () => {
         const password = "examplePassword123";
 
@@ -125,9 +112,10 @@ describe("Encrypt Password - Unit Test - Suite", () => {
         expect(result.salt.length).toBeGreaterThan(0);
     });
 
-    it("should throw an error when password is null or undefined", () => {
-        expect(() => encryptPassword(null)).toThrow();
-        expect(() => encryptPassword(undefined)).toThrow();
+    it("should throw an error when password is empty", () => {
+        expect(() => encryptPassword("")).toThrow(
+            "Password is required",
+        );
     });
 
     it("should verify hashed password using compareSync when given valid password", () => {

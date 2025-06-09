@@ -14,12 +14,12 @@ import { TicketStatus, ticketStatusArray } from "../types/TicketStatus";
 
 export class TicketDto {
     @IsString({ message: "Id must be a string" })
-    id: string;
+    id!: string;
 
     @IsString({ message: "Resume must be a string" })
     @MinLength(20, { message: "Resume must have a minimum of 20 characters" })
     @MaxLength(80, { message: "Resume must have a maximum of 80 characters" })
-    resume: string;
+    resume!: string;
 
     @IsString({ message: "Description must be a string" })
     @MinLength(50, {
@@ -28,25 +28,25 @@ export class TicketDto {
     @MaxLength(460, {
         message: "Description must have a maximum of 460 characters",
     })
-    description: string;
+    description!: string;
 
     @IsString({ message: "Priority must be a string" })
     @IsIn(["low", "medium", "high"], {
         message: "Priority must be 'low', 'medium' or 'high'",
     })
-    priority: PriorityLevels;
+    priority!: PriorityLevels;
 
     @IsString({ message: "Type must be a string" })
     @IsIn(TicketTypeArray, {
         message: "Type must be 'low', 'medium' or 'high'",
     })
-    type: TicketType;
+    type!: TicketType;
 
     @IsString({ message: "Status must be a string" })
     @IsIn(ticketStatusArray, {
         message: "Status must be 'low', 'medium' or 'high'",
     })
-    status: TicketStatus;
+    status!: TicketStatus;
 
     @IsString({ message: "Date must be a string" })
     @IsOptional()
@@ -56,10 +56,10 @@ export class TicketDto {
     events?: Event[] | null;
 
     @IsDate({ message: "Date must be a date" })
-    date: Date;
+    date!: Date;
 
     @IsDate({ message: "CreatedAt must be a date" })
-    createdAt: Date;
+    createdAt!: Date;
 
     @IsDate({ message: "UpdatedAt must be a date" })
     @IsOptional()

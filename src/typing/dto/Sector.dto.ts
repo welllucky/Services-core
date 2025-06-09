@@ -10,18 +10,18 @@ import { PositionDto } from "./Position.dto";
 
 export class SectorDto {
     @IsString({ message: "Id must be a string" })
-    id: string;
+    id!: string;
 
     @IsString({ message: "Name must be a string" })
     @MinLength(2, { message: "Name must have a minimum of 2 characters" })
     @MaxLength(128, { message: "Name must have a maximum of 128 characters" })
-    name: string;
+    name!: string;
 
     @IsString({ message: "Description must be a string" })
     @MaxLength(128, {
         message: "Description must have a maximum of 128 characters",
     })
-    description: string;
+    description!: string;
 
     @IsArray()
     @IsOptional()

@@ -1,9 +1,9 @@
-import { Session } from "@/entities";
+import { Session, User } from "@/entities";
+import { SessionRepository } from "@/repositories/session.repository";
+import { SessionStatus } from "@/typing";
 import { createAccessToken } from "@/utils";
 import { Injectable } from "@nestjs/common";
 import { UserModel } from "./user.model";
-import { SessionRepository } from "@/modules/core/session/session.repository";
-import { SessionStatus } from "@/typing";
 
 @Injectable()
 class SessionModel {
@@ -60,13 +60,13 @@ class SessionModel {
 
             const accessToken = createAccessToken(
                 tokenInfo,
-                process.env.AUTH_SECRET,
+                process.env.AUTH_SECRET ?? "",
                 3,
             );
 
             this.session.expiresAt = expiresAt;
             this.session.isActive = true;
-            this.session.user = this.user.getEntity();
+            this.session.user = this.user.getEntity() as User;
 
             await this.session.save();
 
@@ -80,7 +80,7 @@ class SessionModel {
         try {
             const session = await this.repository.find(
                 this.user.Register() ?? "",
-                sessionId ?? this.session.id,
+                sessionId ?? this.session?.id,
             );
 
             if (!session) {

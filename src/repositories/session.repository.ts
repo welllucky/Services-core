@@ -19,7 +19,7 @@ export class SessionRepository {
   ): Promise<Session[]> {
     const pageIndex =
       !pagination?.index || pagination?.index === 1 ? 0 : pagination?.index;
-    const page = pagination?.page || 10;
+    const page = pagination?.page ?? 10;
 
     const whereConditions = {
       isActive: status === "all" ? undefined : status === "active",

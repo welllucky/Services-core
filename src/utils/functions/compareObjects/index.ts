@@ -1,24 +1,18 @@
-export const compareObjects = (obj1: unknown, obj2: unknown) => {
-    if (
-        typeof obj1 !== "object" ||
-        obj1 === null ||
-        typeof obj2 !== "object" ||
-        obj2 === null
-    ) {
+export const compareObjects = <T extends object>(obj1: T, obj2: unknown): boolean => {
+    if (typeof obj2 !== 'object' || obj2 === null) {
         return false;
     }
 
-    const keys1 = Object.keys(obj1);
+    const keys1 = Object.keys(obj1) as Array<keyof T>;
+    const keys2 = Object.keys(obj2);
 
-    // if (keys1.length !== keys2.length) {
-    //     return false;
-    // }
-
-    for (const key of keys1) {
-        if (obj1[key] !== obj2[key]) {
-            return false;
-        }
+    if (keys1.length !== keys2.length) {
+        return false;
     }
 
-    return true;
+    return keys1.every(key => {
+        // Use type assertion to tell TypeScript we've checked the types
+        const obj2Typed = obj2 as T;
+        return obj1[key] === obj2Typed[key];
+    });
 };

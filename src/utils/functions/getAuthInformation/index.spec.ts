@@ -160,7 +160,7 @@ describe("Get Auth Information - Unit Test - Suite", () => {
     });
 
     it("should return null for accessToken and userId when session does not exist", async () => {
-        const mockSession = null;
+        const mockSession = {} as Session;
 
         const mockUserData = {
             register: "456",
@@ -241,7 +241,7 @@ describe("Get Auth Information - Unit Test - Suite", () => {
 
     it("should return unauthenticated response when an error occurs", async () => {
         const mockToken = "invalid-token";
-        const mockSession = null;
+        const mockSession = {} as Session;
 
         (getUserDataByToken as jest.Mock).mockReturnValue({
             accessToken: null,

@@ -1,5 +1,6 @@
 import { SessionModel } from "@/models/session.model";
 import { UserModel } from "@/models/user.model";
+import { SessionRepository } from "@/repositories/session.repository";
 import {
     GetSessionDTO,
     IResponseFormat,
@@ -11,13 +12,14 @@ import {
 } from "@/typing";
 import { getUserDataByToken } from "@/utils";
 import {
+    BadRequestException,
     HttpException,
     HttpStatus,
-    Injectable
+    Injectable,
+    NotFoundException,
 } from "@nestjs/common";
 import { addBreadcrumb } from "@sentry/nestjs";
 import { response } from "express";
-import { SessionRepository } from "./session.repository";
 
 @Injectable()
 export class SessionService {
@@ -67,28 +69,28 @@ export class SessionService {
 
         const userId = this.userModel.getData()?.id;
 
-        // if (!userId) {
-        //     addBreadcrumb({
-        //         category: "api",
-        //         level: "log",
-        //         message: "User not exist",
-        //         data: {
-        //             email: credentials.email,
-        //         },
-        //     });
+        if (!userId) {
+            addBreadcrumb({
+                category: "api",
+                level: "log",
+                message: "User not exist",
+                data: {
+                    email: credentials.email,
+                },
+            });
 
-        //     throw new NotFoundException(
-        //         {
-        //             title: "User not found",
-        //             message:
-        //                 "User not found. Maybe the email is wrong or not was registered.",
-        //         },
-        //         {
-        //             description:
-        //                 "User not found. Maybe the email is wrong or not exists.",
-        //         },
-        //     );
-        // }
+            throw new NotFoundException(
+                {
+                    title: "User not found",
+                    message:
+                        "User not found. Maybe the email is wrong or not was registered.",
+                },
+                {
+                    description:
+                        "User not found. Maybe the email is wrong or not exists.",
+                },
+            );
+        }
 
         const actualSession = new SessionModel(this.repository, this.userModel);
 
@@ -130,60 +132,6 @@ export class SessionService {
         };
     }
 
-    async update(
-        sessionData: Partial<SessionDTO>,
-        sessionId: string,
-        register: string,
-        safe = false,
-    ): Promise<IResponseFormat<SessionDTO>> {
-        const session = new SessionModel(this.repository, this.userModel);
-
-        await session.init(sessionId, register);
-
-        const isSessionValid = await session.isValid();
-
-        if (!isSessionValid)
-            throw new HttpException(
-                {
-                    title: "Session not found",
-                    message: "Session not found or is not valid",
-                },
-                HttpStatus.BAD_REQUEST,
-            );
-
-        const updatedSession = await this.repository.update(
-            sessionData,
-            sessionId,
-            session.session.user.id,
-        );
-
-        if (!updatedSession?.affected) {
-            if (!safe) {
-                throw new HttpException(
-                    {
-                        title: "Session not updated",
-                        message:
-                            "Occurred an error while updating the session, please try again later",
-                    },
-                    HttpStatus.BAD_REQUEST,
-                );
-            }
-
-            return {
-                message: "",
-                error: {
-                    title: "Session not updated",
-                    message:
-                        "Occurred an error while updating the session, please try again later",
-                },
-            };
-        }
-
-        return {
-            message: "Session updated successfully",
-        };
-    }
-
     async close(token: string) {
         const { userData } = getUserDataByToken(token);
         const userId = userData?.register;
@@ -220,28 +168,23 @@ export class SessionService {
         await session.init(actualSession.id, userId);
 
         const isSessionValid = await session.isValid();
-        const sessionId = session.session.id;
+        const sessionId = session.session?.id;
 
-        if (!isSessionValid) {
-            return response.status(204);
+        if (!isSessionValid || !sessionId) {
+            throw new BadRequestException("Session not valid or not exists");
         }
 
-        const updatedSession = await this.update(
+        const updatedSession = await this.repository.update(
             {
                 isActive: false,
             },
             sessionId,
-            userId,
+            session.session?.user.id || "",
         );
 
-        if (!updatedSession?.message) {
-            throw new HttpException(
-                {
-                    title: "Session not updated",
-                    message:
-                        "Occurred an error while updating the session, please try again later",
-                },
-                HttpStatus.BAD_REQUEST,
+        if (!updatedSession?.affected) {
+            throw new BadRequestException(
+                "Occurred an error while updating the session, please try again later",
             );
         }
 
@@ -253,7 +196,7 @@ export class SessionService {
         sessionId?: string,
         status: SessionStatus = "active",
         safe = false,
-    ): Promise<Omit<SessionDTO, "token">> {
+    ): Promise<Partial<Omit<SessionDTO, "token">>> {
         if (!userId) {
             throw new HttpException(
                 {
@@ -293,6 +236,13 @@ export class SessionService {
         safe = false,
     ): Promise<IResponseFormat<SessionInfoDto[]>> {
         const { userData } = getUserDataByToken(token);
+
+        if (!userData?.register) {
+            throw new BadRequestException({
+                description: "User not found. Please check the credentials.",
+            });
+        }
+
         const actualSession = await this.find(
             userData?.register,
             undefined,

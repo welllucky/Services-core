@@ -25,7 +25,6 @@ const configs = [
       "no-console": "warn",
       "no-unused-vars": "error",
       "no-undef": "error",
-
       "no-unused-expressions": "error",
       "@typescript-eslint/interface-name-prefix": "off",
       "@typescript-eslint/explicit-function-return-type": "off",

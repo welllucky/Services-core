@@ -9,7 +9,7 @@ export class TrackUserMiddleware implements NestMiddleware {
         req: Request & {
             user?: IUser;
         },
-        res: Response,
+        _res: Response,
         next: NextFunction,
     ) {
         const accessToken = req.headers["authorization"];

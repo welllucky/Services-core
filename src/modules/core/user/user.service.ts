@@ -1,15 +1,12 @@
+import { UserRepository } from "@/repositories/user.repository";
 import {
     CreateUserDTO,
     IResponseFormat,
-    Pagination,
-    UpdateUserDTO,
-    UserPublicDTO,
-    UserRestrictDTO,
+    UserRestrictDTO
 } from "@/typing";
 import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common";
 import { PositionService } from "../position/position.service";
 import { SectorService } from "../sector/sector.service";
-import { UserRepository } from "./user.repository";
 
 @Injectable()
 export class UserService {
@@ -21,47 +18,11 @@ export class UserService {
         private readonly sectorService: SectorService,
     ) {}
 
-    async findAll(
-        pagination?: Pagination,
-        safe = false,
-    ): Promise<IResponseFormat<UserPublicDTO[]>> {
-        const users = await this.userRepository.findAll(pagination);
-        if (!users.length && !safe) {
-            throw new HttpException(
-                {
-                    title: "Users not found",
-                    message: "No users actives in the system",
-                },
-                HttpStatus.NO_CONTENT,
-            );
-        }
-
-        return {
-            title: "Users was found",
-            message: "All users actives in the system",
-            data: users.map(
-                (user) =>
-                    new UserPublicDTO(
-                        user?.name,
-                        user?.email,
-                        user?.position?.name,
-                        user?.sector?.name,
-                        user?.canCreateTicket,
-                        user?.canResolveTicket,
-                        user?.isBanned,
-                        user?.role,
-                        user?.register,
-                    ),
-            ),
-        };
-    }
-
     async findOne(
         register: string,
-        safe = false,
     ): Promise<IResponseFormat<UserRestrictDTO>> {
         const user = await this.userRepository.findByRegister(register);
-        if (!user && !safe) {
+        if (!user) {
             throw new HttpException(
                 {
                     title: "User not found",
@@ -74,25 +35,24 @@ export class UserService {
         return {
             message: "User was found",
             data: new UserRestrictDTO(
-                user?.name,
-                user?.email,
-                user?.position?.name,
-                user?.sector?.name,
-                user?.canCreateTicket,
-                user?.canResolveTicket,
-                user?.isBanned,
-                user?.role,
-                user?.register,
+                user?.name || "",
+                user?.email || "",
+                user?.position?.name || "",
+                user?.sector?.name || "",
+                user?.canCreateTicket || false,
+                user?.canResolveTicket || false,
+                user?.isBanned || false,
+                user?.role || "user",
+                user?.register || "",
             ),
         };
     }
 
     async findByEmail(
         email: string,
-        safe = false,
     ): Promise<IResponseFormat<UserRestrictDTO>> {
         const user = await this.userRepository.findByEmail(email);
-        if (!user && !safe) {
+        if (!user) {
             throw new HttpException(
                 {
                     title: "User not found",
@@ -105,15 +65,15 @@ export class UserService {
         return {
             message: "User was found",
             data: new UserRestrictDTO(
-                user?.name,
-                user?.email,
-                user?.position?.name,
-                user?.sector?.name,
-                user?.canCreateTicket,
-                user?.canResolveTicket,
-                user?.isBanned,
-                user?.role,
-                user?.register,
+                user?.name || "",
+                user?.email || "",
+                user?.position?.name || "",
+                user?.sector?.name || "",
+                user?.canCreateTicket || false,
+                user?.canResolveTicket || false,
+                user?.isBanned || false,
+                user?.role || "user",
+                user?.register || "",
             ),
         };
     }
@@ -129,8 +89,19 @@ export class UserService {
         )?.data;
 
         const existPositionInSector = positions?.find(
-            (r) => r.id === position.id,
+            (r) => r.id === position?.id,
         );
+
+        if (!sector || !position) {
+            throw new HttpException(
+                {
+                    title: "Sector or position not found",
+                    message:
+                        "Sector or position not found, please check the sector and position.",
+                },
+                HttpStatus.BAD_REQUEST,
+            );
+        }
 
         if (!existPositionInSector) {
             throw new HttpException(
@@ -172,24 +143,6 @@ export class UserService {
                 createdUser?.role,
                 createdUser?.register,
             ),
-        };
-    }
-
-    async update(id: string, data: UpdateUserDTO) {
-        const updatedUser = await this.userRepository.update(id, data);
-
-        if (!updatedUser) {
-            throw new HttpException(
-                {
-                    title: "User not updated",
-                    message: "User was not updated, please try again later",
-                },
-                HttpStatus.INTERNAL_SERVER_ERROR,
-            );
-        }
-
-        return {
-            message: "User updated successfully",
         };
     }
 }
