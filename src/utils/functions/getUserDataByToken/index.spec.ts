@@ -74,7 +74,16 @@ describe("Get User Data By Token - Unit Test - Suite", () => {
     });
 
     it("should cast token payload to IUser type when valid token is provided", async () => {
-        const mockUser: IUser = { register: "123", name: "Test User" };
+        const mockUser: IUser = {
+            register: "123", name: "Test User",
+            email: "",
+            position: "",
+            role: "admin",
+            sector: "",
+            isBanned: false,
+            canCreateTicket: false,
+            canResolveTicket: false
+        };
         const mockToken = "Bearer abc123";
 
         (verify as jest.Mock).mockReturnValue(mockUser);
@@ -122,7 +131,7 @@ describe("Get User Data By Token - Unit Test - Suite", () => {
     });
 
     it("should return null for userData and accessToken when token is undefined", async () => {
-        const result = getUserDataByToken(undefined);
+        const result = getUserDataByToken("");
         expect(result).toEqual({
             userData: null,
             accessToken: null,

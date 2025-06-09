@@ -15,7 +15,7 @@ export class UserRepository {
             !pagination?.index || pagination?.index === 1
                 ? 0
                 : pagination?.index;
-        const page = pagination?.page || 10;
+        const page = pagination?.page ?? 10;
 
         return this.repository.find({
             order: {

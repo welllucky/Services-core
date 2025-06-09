@@ -1,13 +1,11 @@
-import { SectorWithoutIdDto, UpdateSectorDto } from "@/typing";
+import { SectorWithoutIdDto } from "@/typing";
 import { AllowRoles } from "@/utils/decorators";
 import {
     Body,
     Controller,
-    Delete,
     Get,
     Param,
-    Patch,
-    Post,
+    Post
 } from "@nestjs/common";
 import { SectorService } from "./sector.service";
 
@@ -38,38 +36,8 @@ export class SectorController {
         return this.sectorService.getByName(name);
     }
 
-    @Patch(":id")
-    @AllowRoles(["admin", "manager"])
-    async updateSector(@Param("id") id: string, @Body() data: UpdateSectorDto) {
-        return this.sectorService.update(id, data);
-    }
-
     @Get(":id/roles")
     async getPositions(@Param("id") sectorId: string) {
         return this.sectorService.getPositions(sectorId);
-    }
-
-    @Delete(":id")
-    @AllowRoles(["admin", "manager"])
-    async removeSector(@Param("id") id: string) {
-        return this.sectorService.removeSector(id);
-    }
-
-    @Post(":sector/addPosition/:role")
-    @AllowRoles(["admin", "manager"])
-    async addPosition(
-        @Param("sector") sectorName: string,
-        @Param("role") roleName: string,
-    ) {
-        return this.sectorService.addPosition(roleName, sectorName);
-    }
-
-    @Delete(":sector/removePosition/:role")
-    @AllowRoles(["admin", "manager"])
-    async removePosition(
-        @Param("sector") sectorName: string,
-        @Param("role") roleName: string,
-    ) {
-        return this.sectorService.removePosition(roleName, sectorName);
     }
 }

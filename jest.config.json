@@ -17,7 +17,7 @@
     "instrument.js",
     "main.ts"
   ],
-  "collectCoverage": true,
+  "collectCoverage": false,
   "coverageReporters": ["json", "text-summary", "text", "html"],
   "testEnvironment": "node",
   "fakeTimers": {

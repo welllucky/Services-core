@@ -1,4 +1,4 @@
-import { verify } from "jsonwebtoken";
+import { JwtPayload, verify } from "jsonwebtoken";
 import { createAccessToken } from ".";
 
 describe("Create Access Token - Unit Test - Suite", () => {
@@ -137,7 +137,7 @@ describe("Create Access Token - Unit Test - Suite", () => {
     const decoded = verify(token, secret);
 
     const currentTime = Math.floor(Date.now() / 1000);
-    expect(decoded["exp"]).toBeLessThanOrEqual(
+    expect((decoded as JwtPayload).exp).toBeLessThanOrEqual(
       currentTime + expiresIn * 24 * 60 * 60,
     );
   });

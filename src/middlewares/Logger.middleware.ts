@@ -8,7 +8,7 @@ export class LoggerMiddleware implements NestMiddleware {
     });
 
     use(req: Request, res: Response, next: NextFunction) {
-        const log = `${req.method} ${req.originalUrl} ${res.statusCode} ${req.headers["user-agent"]}`;
+        const log = `${req.method} ${req.originalUrl} ${req.headers["user-agent"]}`;
 
         if (res.statusCode >= 400) {
             this.logger.error(log);

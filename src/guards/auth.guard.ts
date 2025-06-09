@@ -34,6 +34,13 @@ export class AuthGuard implements CanActivate {
             const { userData: outsideUserData } =
                 getUserDataByToken(accessToken);
 
+            if (!outsideUserData) {
+                throw new HttpException(
+                    "User not authenticated",
+                    HttpStatus.UNAUTHORIZED,
+                );
+            }
+
             const isDataValid = await validUserData(outsideUserData);
 
             return isDataValid;

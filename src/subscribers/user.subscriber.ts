@@ -20,19 +20,29 @@ export class UserSubscriber implements EntitySubscriberInterface<User> {
 
     const { hashedPassword } = encryptPassword(rootPassword);
 
-    event.entity.hash = hashedPassword;
-    event.entity.createdAt = new Date();
+    if (event.entity) {
+      event.entity.hash = hashedPassword;
+      event.entity.createdAt = new Date();
+    }
   }
 
   beforeUpdate(event: UpdateEvent<User>): Promise<User> | void {
-    event.entity.updatedAt = new Date();
+    if (event.entity) {
+      event.entity.updatedAt = new Date();
+    }
+  }
+
+  private setDeletedAt(entity: User | undefined): void {
+    if (entity) {
+      entity.deletedAt = new Date();
+    }
   }
 
   beforeRemove(event: RemoveEvent<User>): Promise<User> | void {
-    event.entity.deletedAt = new Date();
+    this.setDeletedAt(event.entity);
   }
 
   beforeSoftRemove(event: SoftRemoveEvent<User>): Promise<User> | void {
-    event.entity.deletedAt = new Date();
+    this.setDeletedAt(event.entity);
   }
 }

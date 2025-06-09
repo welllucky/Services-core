@@ -1,13 +1,8 @@
-import { PositionWithoutIdDto, UpdatePositionDto } from "@/typing";
 import { AllowRoles } from "@/utils/decorators";
 import {
-    Body,
     Controller,
-    Delete,
     Get,
-    Param,
-    Patch,
-    Post,
+    Param
 } from "@nestjs/common";
 import { PositionService } from "./position.service";
 
@@ -22,12 +17,6 @@ export class PositionController {
         return this.position.getAll();
     }
 
-    @Post()
-    @AllowRoles(["admin", "manager"])
-    create(@Body() data: PositionWithoutIdDto) {
-        return this.position.create(data);
-    }
-
     @Get(":id")
     async getPosition(@Param("id") id: string) {
         return this.position.get(id);
@@ -36,20 +25,5 @@ export class PositionController {
     @Get("name/:name")
     async getPositionByName(@Param("name") name: string) {
         return this.position.getByName(name);
-    }
-
-    @Patch(":id")
-    @AllowRoles(["admin", "manager"])
-    async updatePosition(
-        @Param("id") id: string,
-        @Body() data: UpdatePositionDto,
-    ) {
-        return this.position.update(id, data);
-    }
-
-    @Delete(":id")
-    @AllowRoles(["admin", "manager"])
-    async removePosition(@Param("id") id: string) {
-        return this.position.remove(id);
     }
 }

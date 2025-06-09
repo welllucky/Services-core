@@ -1,7 +1,12 @@
 import { IUser } from "@/typing";
 import { verify } from "jsonwebtoken";
 
-export const getUserDataByToken = (token: string) => {
+interface IAuthenticationUserData {
+    userData: IUser | null;
+    accessToken: string | null;
+}
+
+export const getUserDataByToken = (token: string): IAuthenticationUserData => {
     try {
         const accessToken = token?.replace("Bearer", "").trimStart().trimEnd();
         const authToken = process.env.AUTH_SECRET ?? "";

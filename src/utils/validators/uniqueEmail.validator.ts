@@ -1,4 +1,4 @@
-import { UserRepository } from "@/modules/core/user/user.repository";
+import { UserRepository } from "@/repositories/user.repository";
 import { Injectable } from "@nestjs/common";
 import {
     ValidatorConstraint,

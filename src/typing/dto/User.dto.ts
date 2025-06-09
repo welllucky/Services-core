@@ -24,7 +24,7 @@ export class UserDTO {
         message: "Register is required",
     })
     @UniqueRegister()
-    register: string;
+    register!: string;
 
     @IsString({
         message: "Name must be a string",
@@ -38,11 +38,11 @@ export class UserDTO {
     @IsNotEmpty({
         message: "Name is required",
     })
-    name: string;
+    name!: string;
 
     @IsEmail()
     @UniqueEmail()
-    email: string;
+    email!: string;
 
     @IsStrongPassword({
         minLength: 8,
@@ -51,42 +51,42 @@ export class UserDTO {
         minUppercase: 1,
         minLowercase: 1,
     })
-    password: string;
+    password!: string;
 
     @IsString()
-    hash: string;
+    hash!: string;
 
     @IsDate({
         message: "Last connection must be a date",
     })
     @IsOptional()
-    lastConnection: Date | null;
+    lastConnection?: Date | null;
 
     @IsBoolean({
         message: "Is banned must be a boolean",
     })
     @IsOptional()
-    isBanned: boolean;
+    isBanned!: boolean;
 
     @IsBoolean({
         message: "Can create ticket must be a boolean",
     })
     @IsOptional()
-    canCreateTicket: boolean;
+    canCreateTicket!: boolean;
 
     @IsBoolean({
         message: "Can resolve ticket must be a boolean",
     })
     @IsOptional()
-    canResolveTicket: boolean;
+    canResolveTicket!: boolean;
 
     @IsString({
-        message: "Role must be a string",
+        message: "Position must be a string",
     })
     @IsNotEmpty({
-        message: "Role is required",
+        message: "Position is required",
     })
-    position: string;
+    position!: string;
 
     @IsString({
         message: "Sector must be a string",
@@ -94,15 +94,15 @@ export class UserDTO {
     @IsNotEmpty({
         message: "Sector is required",
     })
-    sector: string;
+    sector!: string;
 
     @IsString({
-        message: "System position must be a string",
+        message: "System role must be a string",
     })
     @IsNotEmpty({
-        message: "System position is required",
+        message: "System role is required",
     })
-    role: Roles;
+    role!: Roles;
 }
 
 export class CreateUserDTO extends OmitType(UserDTO, [

@@ -4,7 +4,7 @@ import { NextFunction, Request, Response } from "express";
 
 @Injectable()
 export class FormatResponseMiddleware implements NestMiddleware {
-    use(req: Request, res: Response, next: NextFunction) {
+    use(_req: Request, res: Response, next: NextFunction) {
         const originalSend = res.send;
 
         res.send = function (body: unknown) {

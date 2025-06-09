@@ -7,13 +7,13 @@ import { RoleService } from "./role.service";
 export class RoleController {
     constructor(private readonly service: RoleService) {}
 
-    @AllowRoles(ALLOWED_BACKOFFICE_ROLES as Roles[])
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     @Get()
     async getRoles() {
         return this.service.getRoles();
     }
 
-    @AllowRoles(ALLOWED_BACKOFFICE_ROLES as Roles[])
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     @Put("change/:user/:newRole")
     async changeRole(
         @Param("user") user: string,

@@ -1,16 +1,16 @@
+import { UserModel } from "@/models";
+import { TicketRepository } from "@/repositories/ticket.repository";
 import {
+    CreateTicketDto,
     IResponseFormat,
-    ITicket,
     Pagination,
     PublicTicketDto,
     SearchedTicketDto,
-    UpdateTicketDto,
+    UpdateTicketDto
 } from "@/typing";
 import { getUserDataByToken } from "@/utils";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { response } from "express";
-import { UserModel } from "@/models";
-import { TicketRepository } from "./ticket.repository";
 
 @Injectable()
 export class TicketService {
@@ -39,13 +39,19 @@ export class TicketService {
         // }
 
         const tickets = await this.repository.findAll({
-            userId: this.userModel.Register(),
+            userId: this.userModel.Register() || "",
             pagination,
             isSolver,
         });
 
         if (!tickets.length) {
-            throw new HttpException(undefined, HttpStatus.NO_CONTENT);
+            throw new HttpException(
+                {
+                    title: "Tickets not found",
+                    message: "No tickets found for the resolver",
+                },
+                HttpStatus.NO_CONTENT,
+            );
         }
 
         return {
@@ -59,12 +65,12 @@ export class TicketService {
                         ticket.priority,
                         ticket.type,
                         ticket.status,
-                        ticket?.resolver?.register,
+                        ticket?.resolver?.register || null,
                         // ticket.events,
                         ticket.createdAt,
                         ticket?.closedAt,
                         ticket.createdBy.register,
-                        ticket?.closedBy?.register,
+                        ticket?.closedBy?.register || null,
                     ),
             ),
             message: "Tickets found successfully",
@@ -83,7 +89,7 @@ export class TicketService {
             register: userId,
         });
 
-        if (!this.userModel.exists()) {
+        if (!userId || !this.userModel.exists()) {
             throw new HttpException(
                 {
                     title: "Access denied",
@@ -113,12 +119,12 @@ export class TicketService {
                 ticket.priority,
                 ticket.type,
                 ticket.status,
-                ticket.resolver?.register,
+                ticket.resolver?.register || null,
                 // ticket.events,
                 ticket.createdAt,
                 ticket.closedAt,
                 ticket.createdBy?.register,
-                ticket.closedBy?.register,
+                ticket.closedBy?.register || null,
             ),
             message: `Ticket ${ticketId} was found`,
         };
@@ -142,7 +148,7 @@ export class TicketService {
             register: userId,
         });
 
-        if (!this.userModel.exists()) {
+        if (!userId || !this.userModel.exists()) {
             throw new HttpException(
                 {
                     title: "Access denied",
@@ -183,7 +189,7 @@ export class TicketService {
             register: userId,
         });
 
-        if (!this.userModel.exists()) {
+        if (!userId || !this.userModel.exists()) {
             throw new HttpException(
                 {
                     title: "Access denied",
@@ -223,12 +229,12 @@ export class TicketService {
                         ticket.priority,
                         ticket.type,
                         ticket.status,
-                        ticket?.resolver?.register,
+                        ticket?.resolver?.register || null,
                         // ticket.events,
                         ticket.createdAt,
                         ticket?.closedAt,
                         ticket?.createdBy?.register,
-                        ticket?.closedBy?.register,
+                        ticket?.closedBy?.register || null,
                     ),
             ),
             message: `${tickets.length} tickets in progress was founded`,
@@ -237,10 +243,7 @@ export class TicketService {
 
     async create(
         token: string,
-        ticketData: Omit<
-            ITicket,
-            "id" | "createdAt" | "updatedAt" | "closedAt"
-        >,
+        ticketData: CreateTicketDto,
     ): Promise<IResponseFormat<PublicTicketDto>> {
         const { userData } = getUserDataByToken(token);
         const userId = userData?.register;
@@ -262,7 +265,7 @@ export class TicketService {
 
         const ticket = await this.repository.create(
             ticketData,
-            this.userModel.getEntity(),
+            this.userModel.getEntity()!,
         );
 
         if (!ticket) {
@@ -284,12 +287,12 @@ export class TicketService {
                 ticket.priority,
                 ticket.type,
                 ticket.status,
-                ticket.resolver?.register,
+                ticket.resolver?.register || null,
                 // ticket.events,
                 ticket?.createdAt,
                 ticket?.closedAt,
                 ticket.createdBy.register,
-                ticket.closedBy?.register,
+                ticket.closedBy?.register || null,
             ),
             message: "Ticket created successfully",
         };
@@ -306,7 +309,7 @@ export class TicketService {
             register: userId,
         });
 
-        if (!this.userModel.exists()) {
+        if (!userId || !this.userModel.exists()) {
             throw new HttpException(
                 {
                     title: "Access denied",
@@ -353,7 +356,7 @@ export class TicketService {
             register: userId,
         });
 
-        if (!this.userModel.exists()) {
+        if (!userId || !this.userModel.exists()) {
             throw new HttpException(
                 {
                     title: "Access denied",
@@ -397,7 +400,7 @@ export class TicketService {
             register: userId,
         });
 
-        if (!this.userModel.exists()) {
+        if (!userId || !this.userModel.exists()) {
             throw new HttpException(
                 {
                     title: "Access denied",
@@ -444,7 +447,7 @@ export class TicketService {
             register: userId,
         });
 
-        if (!this.userModel.exists()) {
+        if (!userId || !this.userModel.exists()) {
             throw new HttpException(
                 {
                     title: "User provided is not valid",
@@ -482,7 +485,7 @@ export class TicketService {
                         ticket.type,
                         ticket.status,
                         ticket.createdBy?.register,
-                        ticket?.resolver?.register,
+                        ticket?.resolver?.register || null,
                     ),
             ),
             message: `${tickets.length} tickets found with the term: ${term}.`,

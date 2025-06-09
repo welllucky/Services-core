@@ -5,8 +5,8 @@ import {
     mockedAccessTokenWithoutRegister,
 } from "@/utils";
 import { Test, TestingModule } from "@nestjs/testing";
-import { UserRepository } from "../../user/user.repository";
-import { SessionRepository } from "../session.repository";
+import { SessionRepository } from "../../../../repositories/session.repository";
+import { UserRepository } from "../../../../repositories/user.repository";
 import { SessionService } from "../session.service";
 import { credentials, mockedSessionData, mockedUser } from "./utils";
 
@@ -189,7 +189,7 @@ describe("Session Service - Unit Test - Suite", () => {
         });
 
         it("Should throw error if actual session is not found", async () => {
-            jest.spyOn(service, "find").mockResolvedValue(null);
+            jest.spyOn(service, "find").mockResolvedValue({});
 
             await expect(
                 service.findAll(
@@ -252,71 +252,6 @@ describe("Session Service - Unit Test - Suite", () => {
         });
     });
 
-    describe("Update Method - Suite", () => {
-
-        it("should throw error if session is not valid", async () => {
-            jest.spyOn(repository, "find").mockResolvedValue(
-                mockedSessionData(false),
-            );
-
-            await expect(service.update({}, "1", "1")).rejects.toThrow(
-                "Session not found or is not valid",
-            );
-        });
-
-        it("should throw error if session is not updated", async () => {
-            jest.spyOn(repository, "find").mockResolvedValue(
-                mockedSessionData(),
-            );
-
-            jest.spyOn(repository, "update").mockResolvedValue({
-                affected: 0,
-                raw: null,
-                generatedMaps: [{}],
-            });
-
-            await expect(service.update({}, "24", "1")).rejects.toThrow(
-                "Occurred an error while updating the session, please try again later",
-            );
-        });
-
-        it("should call session repository update method", async () => {
-            jest.spyOn(repository, "find").mockResolvedValue(
-                mockedSessionData(),
-            );
-
-            const updateRepositoryMethod = jest
-                .spyOn(repository, "update")
-                .mockResolvedValue({
-                    affected: 1,
-                    raw: null,
-                    generatedMaps: [{}],
-                });
-
-            await service.update({}, "24", "1");
-
-            expect(updateRepositoryMethod).toHaveBeenCalledWith({}, "24", "1");
-        });
-
-        it("should return a success message", async () => {
-            jest.spyOn(repository, "find").mockResolvedValue(
-                mockedSessionData(),
-            );
-
-            jest.spyOn(repository, "update").mockResolvedValue({
-                affected: 1,
-                raw: null,
-                generatedMaps: [{}],
-            });
-
-            const result = await service.update({}, "24", "1");
-
-            expect(JSON.stringify(result)).toBe(
-                '{"message":"Session updated successfully"}',
-            );
-        });
-    });
-
     describe("Close Method - Suite", () => {
         it("Should throw error if user id is not provided", async () => {
             jest.spyOn(repository, "find").mockResolvedValue(null);
@@ -336,36 +271,28 @@ describe("Session Service - Unit Test - Suite", () => {
             );
         });
 
-        it("Should return a response with status code 204 if session is not valid", async () => {
+        it("Should return a response with status code 400 if session is not valid", async () => {
             const session = mockedSessionData(false);
             jest.spyOn(repository, "find").mockResolvedValue(session);
-            jest.spyOn(service, "update").mockResolvedValue({
-                message: "Session updated successfully",
+            jest.spyOn(repository, "update").mockResolvedValue({
+                affected: 1,
+                raw: null,
+                generatedMaps: [{}],
             });
 
-            expect((await service.close(mockedAccessToken)).statusCode).toBe(
-                204,
+            await expect(service.close(mockedAccessToken)).rejects.toThrow(
+                "Session not valid or not exists",
             );
-        });
-
-        it("Should call session repository update method", async () => {
-            const session = mockedSessionData();
-            jest.spyOn(repository, "find").mockResolvedValue(session);
-            const updateServiceMethod = jest
-                .spyOn(service, "update")
-                .mockResolvedValue({
-                    message: "Session updated successfully",
-                });
-
-            await service.close(mockedAccessToken);
-
-            expect(updateServiceMethod).toHaveBeenCalledTimes(1);
         });
 
         it("Should throw error if session is not updated", async () => {
             const session = mockedSessionData();
             jest.spyOn(repository, "find").mockResolvedValue(session);
-            jest.spyOn(service, "update").mockResolvedValue(null);
+            jest.spyOn(repository, "update").mockResolvedValue({
+                affected: 0,
+                raw: null,
+                generatedMaps: [],
+            });
 
             await expect(service.close(mockedAccessToken)).rejects.toThrow(
                 "Occurred an error while updating the session, please try again later",
@@ -375,8 +302,10 @@ describe("Session Service - Unit Test - Suite", () => {
         it("Should return a response with status code 204 if session is updated", async () => {
             const session = mockedSessionData();
             jest.spyOn(repository, "find").mockResolvedValue(session);
-            jest.spyOn(service, "update").mockResolvedValue({
-                message: "Session updated successfully",
+            jest.spyOn(repository, "update").mockResolvedValue({
+                affected: 1,
+                raw: null,
+                generatedMaps: [{}],
             });
 
             expect((await service.close(mockedAccessToken)).statusCode).toBe(
@@ -407,7 +336,7 @@ describe("Session Service - Unit Test - Suite", () => {
         it.failing("Should call init user model method", async () => {
             const initUserModelMethod = jest
                 .spyOn(userModel, "init")
-                .mockImplementation(() => null);
+                .mockImplementation(() => Promise.resolve(mockedUser));
             jest.spyOn(userModel, "getData").mockImplementation(
                 () => mockedUser,
             );
@@ -502,7 +431,11 @@ describe("Session Service - Unit Test - Suite", () => {
                 accessToken: mockedAccessToken,
                 expiresAt: new Date(),
             });
-            jest.spyOn(repository, "update").mockResolvedValue(null);
+            jest.spyOn(repository, "update").mockResolvedValue({
+                affected: 0,
+                raw: null,
+                generatedMaps: [],
+            });
             jest.spyOn(repository, "find").mockResolvedValue(session);
             jest.spyOn(userRepository, "findByEmail").mockResolvedValue(
                 mockedUser,
@@ -513,30 +446,35 @@ describe("Session Service - Unit Test - Suite", () => {
             );
         });
 
-        it.failing("Should create the access token if user is authenticated", async () => {
-            const session = mockedSessionData();
-            jest.spyOn(userModel, "getData").mockImplementation(
-                () => mockedUser,
-            );
-            jest.spyOn(sessionModel, "createAccessToken").mockResolvedValue({
-                accessToken: mockedAccessToken,
-                expiresAt: new Date(),
-            });
-            jest.spyOn(repository, "update").mockResolvedValue({
-                affected: 1,
-                raw: null,
-                generatedMaps: [{}],
-            });
-            jest.spyOn(repository, "find").mockResolvedValue(session);
-            jest.spyOn(userRepository, "findByEmail").mockResolvedValue(
-                mockedUser,
-            );
+        it.failing(
+            "Should create the access token if user is authenticated",
+            async () => {
+                const session = mockedSessionData();
+                jest.spyOn(userModel, "getData").mockImplementation(
+                    () => mockedUser,
+                );
+                jest.spyOn(sessionModel, "createAccessToken").mockResolvedValue(
+                    {
+                        accessToken: mockedAccessToken,
+                        expiresAt: new Date(),
+                    },
+                );
+                jest.spyOn(repository, "update").mockResolvedValue({
+                    affected: 1,
+                    raw: null,
+                    generatedMaps: [{}],
+                });
+                jest.spyOn(repository, "find").mockResolvedValue(session);
+                jest.spyOn(userRepository, "findByEmail").mockResolvedValue(
+                    mockedUser,
+                );
 
-            const result = await service.create(credentials);
+                const result = await service.create(credentials);
 
-            expect(JSON.stringify(result)).toBe(
-                `{"message":"Session created","data":{"token":"${mockedAccessToken}","expiresAt":"${new Date().toISOString()}"}}`,
-            );
-        });
+                expect(JSON.stringify(result)).toBe(
+                    `{"message":"Session created","data":{"token":"${mockedAccessToken}","expiresAt":"${new Date().toISOString()}"}}`,
+                );
+            },
+        );
     });
 });
