@@ -2,10 +2,27 @@ import { RoleController } from "@/modules/backoffice/role/role.controller";
 import { RoleService } from "@/modules/backoffice/role/role.service";
 import { UserRepository } from "@/repositories/user.repository";
 import { RolesSchema } from "@/typing";
-import { getUserDataByToken, user } from "@/utils";
-import { INestApplication } from "@nestjs/common";
+import { user } from "@/utils";
+import { CallHandler, ExecutionContext, INestApplication, Injectable, NestInterceptor } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
+import { Observable } from "rxjs";
 import * as request from "supertest";
+
+@Injectable()
+class MockAuthInterceptor implements NestInterceptor {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    const request = context.switchToHttp().getRequest();
+    // Add mock user to request object
+    request.user = {
+      register: "123456",
+      name: "Test User",
+      email: "test@example.com",
+      role: "admin"
+    };
+    return next.handle();
+  }
+}
 
 const mockedUser = {
     ...user,
@@ -18,7 +35,20 @@ const userRepository = {
     findByEmail: jest.fn(),
 };
 
-jest.mock("@/utils/functions/getUserDataByToken");
+// Mock the decorators and utils
+jest.mock("@/utils", () => ({
+    ALLOWED_BACKOFFICE_ROLES: ["admin", "owner"],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    AllowRoles: jest.fn(() => (_target: any, _propertyName: string, descriptor: PropertyDescriptor) => {
+        return descriptor;
+    }),
+    user: {
+        register: "123456",
+        name: "Test User",
+        email: "test@example.com",
+        role: "admin"
+    }
+}));
 
 describe("Role - E2E Test - Suite", () => {
     let app: INestApplication;
@@ -37,10 +67,8 @@ describe("Role - E2E Test - Suite", () => {
 
         app = moduleRef.createNestApplication();
 
-        (getUserDataByToken as jest.Mock).mockReturnValue({
-            userData: mockedUser,
-            accessToken: "valid_token",
-        });
+        // Apply the mock auth interceptor globally
+        app.useGlobalInterceptors(new MockAuthInterceptor());
 
         await app.init();
     });

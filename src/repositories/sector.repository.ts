@@ -1,4 +1,4 @@
-import { Sector } from "@/entities";
+import { Sector } from "@/database/entities";
 import { AlterSectorDto } from "@/typing";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";

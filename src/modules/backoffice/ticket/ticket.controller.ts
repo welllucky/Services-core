@@ -1,15 +1,15 @@
-import { UpdateTicketDto } from "@/typing";
+import { TicketService } from "@/modules/shared/ticket";
+import { RequestWithUser, UpdateTicketDto } from "@/typing";
 import { AllowRoles } from "@/utils/decorators";
 import {
     Body,
     Controller,
     Get,
-    Headers,
     Param,
     Put,
-    Query
+    Query,
+    Req
 } from "@nestjs/common";
-import { TicketService } from "./ticket.service";
 
 @Controller("tickets")
 export class TicketController {
@@ -18,55 +18,55 @@ export class TicketController {
     @Get()
     @AllowRoles(["admin", "manager"])
     getAll(
-        @Headers("Authorization") token: string,
+        @Req() req: RequestWithUser,
         @Query("page") page?: number,
         @Query("index") index?: number,
         @Query("isSolver") isSolver?: boolean,
     ) {
-        return this.service.getAll(token, isSolver, { page, index });
+        return this.service.getAll(req.user, isSolver, { page, index });
     }
 
     @Get("search")
     @AllowRoles(["admin", "manager"])
     search(
-        @Headers("Authorization") token: string,
+        @Req() req: RequestWithUser,
         @Query("term") term: string,
     ) {
-        return this.service.search(token, term);
+        return this.service.search(req.user, term);
     }
 
     @Get("/inProgress")
     getInProgress(
-        @Headers("Authorization") token: string,
+        @Req() req: RequestWithUser,
         @Query("page") page?: number,
         @Query("index") index?: number,
     ) {
-        return this.service.findInProgress(token, { page, index });
+        return this.service.findInProgress(req.user, { page, index });
     }
 
     @Get(":id")
     @AllowRoles(["admin", "manager"])
     getById(
-        @Headers("Authorization") token: string,
+        @Req() req: RequestWithUser,
         @Param("id") id: string,
         @Query("isSolver") isSolver?: boolean,
     ) {
-        return this.service.getById(token, id, isSolver);
+        return this.service.getById(req.user, id, isSolver);
     }
 
     @Put(":id")
     @AllowRoles(["admin", "manager"])
     update(
-        @Headers("Authorization") token: string,
+        @Req() req: RequestWithUser,
         @Param("id") id: string,
         @Body() data: UpdateTicketDto,
     ) {
-        return this.service.update(token, id, data);
+        return this.service.update(req.user, id, data);
     }
 
     @Put(":id/resolve")
     @AllowRoles(["admin", "manager"])
-    resolve(@Headers("Authorization") token: string, @Param("id") id: string) {
-        return this.service.resolve(token, id);
+    resolve(@Req() req: RequestWithUser, @Param("id") id: string) {
+        return this.service.resolve(req.user, id);
     }
 }

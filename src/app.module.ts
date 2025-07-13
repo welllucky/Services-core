@@ -1,25 +1,23 @@
-import { entities } from "@/entities";
+import { entities } from "@/database/entities";
+import { subscribers } from "@/database/subscribers";
 import {
+    AccessModule,
     BackofficeModule,
     configLoads,
     CoreModule,
-    FormatResponseMiddleware,
-    guards,
-    LoggerMiddleware,
-    TrackUserMiddleware,
 } from "@/modules";
-import { subscribers } from "@/subscribers";
 import { MiddlewareConsumer, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { ThrottlerModule } from "@nestjs/throttler";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { SentryModule } from "@sentry/nestjs/setup";
 import { AppController } from "./app.controller";
+import { FormatResponseMiddleware, LoggerMiddleware } from "./middlewares";
+import { guards } from "./guards";
 
 @Module({
     controllers: [AppController],
     imports: [
-        SentryModule.forRoot(),
         ConfigModule.forRoot({
             envFilePath: [
                 ".env.local",
@@ -34,6 +32,7 @@ import { AppController } from "./app.controller";
             expandVariables: true,
             ignoreEnvVars: false,
         }),
+        SentryModule.forRoot(),
         TypeOrmModule.forRootAsync({
             useFactory: async (configService: ConfigService) => ({
                 type: "mysql",
@@ -73,6 +72,7 @@ import { AppController } from "./app.controller";
                 },
             ],
         }),
+        AccessModule,
         CoreModule,
         BackofficeModule,
     ],
@@ -83,7 +83,7 @@ export class AppModule {
     configure(consumer: MiddlewareConsumer) {
         consumer
             .apply(
-                TrackUserMiddleware,
+                // TrackUserMiddleware,
                 FormatResponseMiddleware,
                 LoggerMiddleware,
             )

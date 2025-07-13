@@ -1,10 +1,10 @@
 import { Provider } from "@nestjs/common";
 import { APP_GUARD } from "@nestjs/core";
-import { AuthGuard } from "./auth.guard";
+import { JwtAuthGuard } from "./auth.guard";
 import { RoleGuard } from "./role.guard";
 
 const availableGuards = [
-    AuthGuard,
+    JwtAuthGuard,
     RoleGuard,
 ];
 
@@ -12,3 +12,6 @@ export const guards: Provider[] = availableGuards.map((guard) => ({
     provide: APP_GUARD,
     useClass: guard,
 }));
+
+export * from "./auth.guard";
+export * from "./role.guard";

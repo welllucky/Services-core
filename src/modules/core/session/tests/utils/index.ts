@@ -1,4 +1,4 @@
-import { Position, Sector, User } from "@/entities";
+import { Position, Sector, User } from "@/database/entities";
 
 export const credentials = {
     email: "test@example.com",

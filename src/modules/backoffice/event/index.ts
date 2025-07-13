@@ -1,1 +1,1 @@
-export * from "./event.service";
+export * from "@/modules/shared/event";

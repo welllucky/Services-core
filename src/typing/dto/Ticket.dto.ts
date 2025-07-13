@@ -1,4 +1,4 @@
-import { Event } from "@/entities";
+import { Event } from "@/database/entities";
 import { OmitType, PartialType, PickType } from "@nestjs/mapped-types";
 import {
     IsDate,

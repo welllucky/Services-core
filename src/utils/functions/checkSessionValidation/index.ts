@@ -1,4 +1,4 @@
-import { Session } from "@/entities";
+import { Session } from "@/database/entities";
 import { addBreadcrumb } from "@sentry/nestjs";
 
 export const checkSessionValidation = (session: Session) => {

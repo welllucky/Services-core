@@ -1,5 +1,5 @@
 // user.repository.ts
-import { Session } from "@/entities";
+import { Session } from "@/database/entities";
 import { Pagination, SessionStatus } from "@/typing";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -89,12 +89,23 @@ export class SessionRepository {
       {
         id: sessionId,
         user: {
-          id: userId,
+          register: userId,
         },
       },
       {
         ...session,
       },
     );
+  }
+
+  async create(userId: string, expiresAt: Date) {
+    return this.repository.save({
+      createdAt: new Date(),
+      isActive: true,
+      user: {
+        id: userId,
+      },
+      expiresAt,
+    });
   }
 }

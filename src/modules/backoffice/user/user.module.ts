@@ -1,28 +1,23 @@
-import { User } from "@/entities";
 import { UserModel } from "@/models";
 import { UniqueEmailValidator, UniqueRegisterValidator } from "@/utils";
 import { forwardRef, Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { UserRepository } from "../../../repositories/user.repository";
+import { UserModule as SharedUserModule } from "@/modules/shared/user";
 import { PositionModule } from "../position/position.module";
 import { SectorModule } from "../sector/sector.module";
 import { UserController } from "./user.controller";
-import { UserService } from "./user.service";
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([User]),
+        SharedUserModule,
         forwardRef(() => SectorModule),
         forwardRef(() => PositionModule)
     ],
     controllers: [UserController],
     providers: [
-        UserService,
-        UserRepository,
         UniqueRegisterValidator,
         UniqueEmailValidator,
         UserModel
     ],
-    exports: [UserService, UserRepository, UserModel],
+    exports: [UserModel],
 })
 export class UserModule {}

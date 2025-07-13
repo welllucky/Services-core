@@ -1,6 +1,6 @@
-import { Roles } from "@/typing";
+import { Roles, UserWithSession } from "@/typing";
 import { ALLOWED_BACKOFFICE_ROLES, AllowRoles } from "@/utils";
-import { Controller, Get, Headers, Param, Put } from "@nestjs/common";
+import { Controller, Get, Param, Put, Request } from "@nestjs/common";
 import { RoleService } from "./role.service";
 
 @Controller("roles")
@@ -16,10 +16,10 @@ export class RoleController {
     @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     @Put("change/:user/:newRole")
     async changeRole(
-        @Param("user") user: string,
+        @Param("user") userRegister: string,
         @Param("newRole") newRole: Roles,
-        @Headers("Authorization") token: string,
+        @Request() req: { user: UserWithSession },
     ) {
-        return this.service.changeRole(token, user, newRole);
+        return this.service.changeRole(req.user, userRegister, newRole);
     }
 }

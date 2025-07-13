@@ -1,6 +1,6 @@
 import { UserModel } from "@/models/user.model";
 import { UserRepository } from "@/repositories/user.repository";
-import { IResponseFormat, Roles, RolesSchema } from "@/typing";
+import { IResponseFormat, Roles, RolesSchema, UserWithSession } from "@/typing";
 import { ALLOWED_BACKOFFICE_ROLES } from "@/utils";
 import {
     ForbiddenException,
@@ -17,7 +17,7 @@ export class RoleService {
     }
 
     async changeRole(
-        token: string,
+        user: UserWithSession,
         targetUserRegister: string,
         newRole: Roles,
     ): Promise<IResponseFormat<null>> {
@@ -25,7 +25,7 @@ export class RoleService {
         const targetUser = new UserModel(this.userRepository);
 
         await actualUser.init({
-            accessToken: token,
+            register: user.register,
         });
 
         await targetUser.init({

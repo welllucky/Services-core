@@ -1,14 +1,13 @@
-import { User } from "@/entities";
+import { User } from "@/database/entities";
 import { UserRepository } from "@/repositories/user.repository";
 import { IRegisterUser } from "@/typing";
-import { comparePassword, getUserDataByToken } from "@/utils";
+import { comparePassword } from "@/utils";
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { RoleModel } from "./role.model";
 
 interface UserModelConstructorModel {
     register?: string;
     email?: string;
-    accessToken?: string;
 }
 
 @Injectable()
@@ -26,13 +25,12 @@ class UserModel {
     async init({
         register,
         email,
-        accessToken,
     }: UserModelConstructorModel) {
             this.user = null;
 
             let data: User | null = null;
 
-            if (!register && !email && !accessToken) {
+            if (!register && !email) {
                 throw new BadRequestException(
                     "Please sign in on the app to continue",
                 );
@@ -44,16 +42,6 @@ class UserModel {
 
             if (email) {
                 data = await this.repository.findByEmail(email);
-            }
-
-            if (accessToken) {
-                const userByToken = getUserDataByToken(accessToken);
-
-                const outsideData = userByToken.userData;
-
-                data = await this.repository.findByRegister(
-                    outsideData?.register || "",
-                );
             }
 
             if (!data) {

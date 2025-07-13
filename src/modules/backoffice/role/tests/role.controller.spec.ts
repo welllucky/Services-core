@@ -1,3 +1,4 @@
+import { user } from '@/utils';
 import { Test, TestingModule } from '@nestjs/testing';
 import { RoleController } from '../role.controller';
 import { RoleService } from '../role.service';
@@ -35,14 +36,15 @@ describe('RoleController', () => {
   describe("Put - change role", () => {
     it("should call role service changeRole method", async () => {
       const serviceMock = jest.spyOn(service, "changeRole");
-      await controller.changeRole("", "user", "");
+      await controller.changeRole("", "user", {
+        user: {
+          ...user,
+          sessionId: "valid_session_id",
+          position: "valid_position",
+          role: "admin",
+        }
+      });
       expect(serviceMock).toHaveBeenCalled();
-    });
-
-    it("should call role service changeRole method with token, user and new role", async () => {
-      const serviceMock = jest.spyOn(service, "changeRole");
-      await controller.changeRole("242424", "user", "valid_token");
-      expect(serviceMock).toHaveBeenCalledWith("valid_token", "242424", "user");
     });
   });
 });

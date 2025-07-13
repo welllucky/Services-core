@@ -1,4 +1,4 @@
-import { User } from "@/entities";
+import { User } from "@/database/entities";
 
 export const searchUserByRegister = async (register: string) => {
     const userData = await User.findOneByOrFail({

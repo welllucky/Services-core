@@ -7,7 +7,7 @@ import {
     Param,
     Post
 } from "@nestjs/common";
-import { SectorService } from "./sector.service";
+import { SectorService } from "@/modules/shared/sector";
 
 @Controller("sector")
 export class SectorController {

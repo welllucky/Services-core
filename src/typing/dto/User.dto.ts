@@ -157,9 +157,9 @@ export class UserRestrictDTO extends PickType(UserDTO, [
         readonly email: string,
         readonly position: string,
         readonly sector: string,
-        readonly isBanned: boolean,
         readonly canCreateTicket: boolean,
         readonly canResolveTicket: boolean,
+        readonly isBanned: boolean,
         readonly role: Roles,
         readonly register: string,
     ) {

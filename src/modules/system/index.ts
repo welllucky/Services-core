@@ -1,16 +1,15 @@
 import { Module } from "@nestjs/common";
 import { CustomLogger } from "./logger";
 
-export const systemModules = [];
+export const systemModules = [
+    CustomLogger,
+];
 
 @Module({
-    // imports: [RouterModule],
-    providers: [CustomLogger],
-    exports: [CustomLogger],
+    providers: [...systemModules],
+    exports: [...systemModules],
 })
 export class SystemModule {}
 
-export * from "../../guards";
-export * from "../../middlewares";
 export * from "./configs";
 export * from "./logger";

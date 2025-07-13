@@ -1,12 +1,30 @@
-import { User } from "@/entities";
+import { User } from "@/database/entities";
 import { UserRepository } from "@/modules/core/user";
-import { RolesSchema } from "@/typing";
+import { RolesSchema, UserWithSession } from "@/typing";
 import { user } from "@/utils";
-import { getUserDataByToken } from "@/utils/functions/getUserDataByToken";
 import { Test, TestingModule } from "@nestjs/testing";
 import { RoleService } from "../role.service";
 
-jest.mock("@/utils/functions/getUserDataByToken");
+jest.mock("@/utils", () => ({
+    getUserDataByToken: jest.fn().mockReturnValue({
+        register: "123456",
+        name: "Test User",
+        email: "test@example.com",
+        role: "admin"
+    }),
+    AUTH_SECRET_MOCK: "test-secret",
+    ALLOWED_BACKOFFICE_ROLES: ["admin", "owner"],
+    user: {
+        register: "123456",
+        name: "Test User",
+        email: "test@example.com",
+        role: "admin"
+    },
+    AllowRoles: jest.fn(() => jest.fn()),
+    DeniedRoles: jest.fn(() => jest.fn()),
+    IsPublic: jest.fn(() => jest.fn()),
+    comparePassword: jest.fn()
+}));
 
 describe("Role Service - Unit Test - Suite", () => {
     let service: RoleService;
@@ -46,73 +64,71 @@ describe("Role Service - Unit Test - Suite", () => {
 
     describe("Change role Method - Suite", () => {
         it("Should throw error if user not found", async () => {
-            (getUserDataByToken as jest.Mock).mockReturnValue({
-                userData: user,
-                accessToken: "valid_token",
-            });
+            // Mock for the actual user (from token) - should return admin user
+            jest.spyOn(userRepository, "findByRegister").mockResolvedValueOnce({
+                ...user,
+                role: "admin",
+            } as unknown as User);
 
-            jest.spyOn(userRepository, "findByRegister").mockResolvedValue(
-                null,
-            );
-
-            jest.spyOn(userRepository, "findByEmail").mockResolvedValue(null);
+            // Mock for the target user - should return null (user not found)
+            jest.spyOn(userRepository, "findByRegister").mockResolvedValueOnce(null);
 
             await expect(
-                service.changeRole("valid_token", "242424", "admin"),
+                service.changeRole(user as unknown as UserWithSession, "242424", "admin"),
             ).rejects.toThrow("User not found");
         });
 
         it("Should throw error if user is trying to change their own role", async () => {
-            (getUserDataByToken as jest.Mock).mockReturnValue({
-                userData: user,
-                accessToken: "valid_token",
-            });
+            // Mock for the actual user (from token) - should return admin user
+            jest.spyOn(userRepository, "findByRegister").mockResolvedValueOnce({
+                ...user,
+                role: "admin",
+            } as unknown as User);
 
-            jest.spyOn(userRepository, "findByRegister").mockResolvedValue({
+            // Mock for the target user - should return the same user (trying to change own role)
+            jest.spyOn(userRepository, "findByRegister").mockResolvedValueOnce({
                 ...user,
                 role: "admin",
             } as unknown as User);
 
             await expect(
-                service.changeRole("valid_token", user.register, "manager"),
+                service.changeRole(user as unknown as UserWithSession, user.register, "manager"),
             ).rejects.toThrow("You can't change your own role");
         });
 
         it("Should call user repository updateRole method", async () => {
-            (getUserDataByToken as jest.Mock).mockReturnValue({
-                userData: user,
-                accessToken: "valid_token",
-            });
-
+            // Mock for the actual user (from token) - should return admin user
             jest.spyOn(userRepository, "findByRegister").mockResolvedValueOnce({
                 ...user,
                 role: "admin",
             } as unknown as User);
 
+            // Mock for the target user - should return different user
             jest.spyOn(userRepository, "findByRegister").mockResolvedValueOnce({
                 ...user,
+                register: "242424",
                 role: "user",
             } as unknown as User);
 
             const updateRoleMethod = jest
                 .spyOn(userRepository, "updateRole")
                 .mockResolvedValue({ affected: 1, raw: [], generatedMaps: [] });
-            await service.changeRole("valid_token", "242424", "admin");
+
+            await service.changeRole(user as unknown as UserWithSession, "242424", "admin");
             expect(updateRoleMethod).toHaveBeenCalled();
         });
 
         it("Should return a success message", async () => {
-            (getUserDataByToken as jest.Mock).mockReturnValue({
-                userData: user,
-                accessToken: "valid_token",
-            });
-
+            // Mock for the actual user (from token) - should return admin user
             jest.spyOn(userRepository, "findByRegister").mockResolvedValueOnce({
                 ...user,
                 role: "admin",
             } as unknown as User);
+
+            // Mock for the target user - should return different user
             jest.spyOn(userRepository, "findByRegister").mockResolvedValueOnce({
                 ...user,
+                register: "242424",
                 role: "user",
             } as unknown as User);
 
@@ -123,7 +139,7 @@ describe("Role Service - Unit Test - Suite", () => {
             });
 
             const result = await service.changeRole(
-                "valid_token",
+                user as unknown as UserWithSession,
                 "242424",
                 "admin",
             );
@@ -134,13 +150,16 @@ describe("Role Service - Unit Test - Suite", () => {
         });
 
         it("Should throw http exception if role was not updated", async () => {
-            (getUserDataByToken as jest.Mock).mockReturnValue({
-                userData: user,
-                accessToken: "valid_token",
-            });
-
-            jest.spyOn(userRepository, "findByRegister").mockResolvedValue({
+            // Mock for the actual user (from token) - should return admin user
+            jest.spyOn(userRepository, "findByRegister").mockResolvedValueOnce({
                 ...user,
+                role: "admin",
+            } as unknown as User);
+
+            // Mock for the target user - should return different user
+            jest.spyOn(userRepository, "findByRegister").mockResolvedValueOnce({
+                ...user,
+                register: "242424",
                 role: "user",
             } as unknown as User);
 
@@ -151,8 +170,8 @@ describe("Role Service - Unit Test - Suite", () => {
             });
 
             await expect(
-                service.changeRole("valid_token", "242424", "admin"),
-            ).rejects.toThrow("Forbidden");
+                service.changeRole(user as unknown as UserWithSession, "242424", "admin"),
+            ).rejects.toThrow("Error on update user role.");
         });
     });
 });

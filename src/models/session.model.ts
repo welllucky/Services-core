@@ -1,15 +1,12 @@
-import { Session, User } from "@/entities";
+import { Session } from "@/database/entities";
 import { SessionRepository } from "@/repositories/session.repository";
 import { SessionStatus } from "@/typing";
-import { createAccessToken } from "@/utils";
 import { Injectable } from "@nestjs/common";
 import { UserModel } from "./user.model";
 
 @Injectable()
 class SessionModel {
     public id!: string;
-
-    public token!: string;
 
     public expiresAt!: Date;
 
@@ -22,58 +19,6 @@ class SessionModel {
         private readonly user: UserModel,
     ) {
         this.session = new Session();
-    }
-
-    public async createAccessToken({
-        password,
-        daysToExpire = 3,
-    }: {
-        password: string;
-        daysToExpire?: number;
-    }) {
-        this.session = new Session();
-        try {
-            const isPasswordValid = await this.user.authUser(password);
-
-            if (!isPasswordValid) {
-                throw new Error("Invalid password");
-            }
-
-            const userData = this.user.getData();
-
-            const tokenInfo = {
-                id: userData?.id,
-                register: userData?.register,
-                email: userData?.email,
-                name: userData?.name,
-                // lastConnection: userData?.lastConnection,
-                isBanned: userData?.isBanned,
-                canCreateTicket: userData?.canCreateTicket,
-                canResolveTicket: userData?.canResolveTicket,
-                position: userData?.position?.name,
-                sector: userData?.sector?.name,
-                role: userData?.role,
-            };
-
-            const expiresAt = new Date();
-            expiresAt.setDate(expiresAt.getDate() + daysToExpire);
-
-            const accessToken = createAccessToken(
-                tokenInfo,
-                process.env.AUTH_SECRET ?? "",
-                3,
-            );
-
-            this.session.expiresAt = expiresAt;
-            this.session.isActive = true;
-            this.session.user = this.user.getEntity() as User;
-
-            await this.session.save();
-
-            return { accessToken, expiresAt };
-        } catch (error) {
-            throw new Error(`Access Token is not created: ${error}`);
-        }
     }
 
     public async close(sessionId?: string) {

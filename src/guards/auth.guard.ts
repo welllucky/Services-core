@@ -1,49 +1,27 @@
-import { getUserDataByToken, IsPublic, validUserData } from "@/utils";
-import {
-    CanActivate,
-    ExecutionContext,
-    HttpException,
-    HttpStatus,
-    Injectable,
-} from "@nestjs/common";
-import { Reflector } from "@nestjs/core";
-import { Request } from "express";
+import { IsPublic } from '@/utils';
+import { ExecutionContext, Injectable } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
-    constructor(private readonly reflector: Reflector) {}
-    async canActivate(context: ExecutionContext): Promise<boolean> {
-        const isPublic = this.reflector.get<boolean>(
-            IsPublic,
-            context.getHandler(),
-        );
+export class JwtAuthGuard extends AuthGuard('jwt') {
+  constructor(private readonly reflector: Reflector) {
+    super();
+  }
 
-        if (isPublic) {
-            return true;
-        } else {
-            const request = context.switchToHttp().getRequest<Request>();
-            const accessToken = request.headers["authorization"];
+  canActivate(context: ExecutionContext) {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IsPublic, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
 
-            if (!accessToken) {
-                throw new HttpException(
-                    "User not authenticated",
-                    HttpStatus.UNAUTHORIZED,
-                );
-            }
-
-            const { userData: outsideUserData } =
-                getUserDataByToken(accessToken);
-
-            if (!outsideUserData) {
-                throw new HttpException(
-                    "User not authenticated",
-                    HttpStatus.UNAUTHORIZED,
-                );
-            }
-
-            const isDataValid = await validUserData(outsideUserData);
-
-            return isDataValid;
-        }
+    if (isPublic) {
+      return true;
     }
+
+    return super.canActivate(context);
+  }
 }
+
+@Injectable()
+export class LocalAuthGuard extends AuthGuard('local') {}

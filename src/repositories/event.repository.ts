@@ -1,8 +1,8 @@
 import {
-  Event,
-  // Ticket,
-  User
-} from "@/entities";
+    Event,
+    // Ticket,
+    User
+} from "@/database/entities";
 import { IEvent } from "@/typing";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";

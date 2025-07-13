@@ -4,7 +4,7 @@ import {
     Get,
     Param
 } from "@nestjs/common";
-import { PositionService } from "./position.service";
+import { PositionService } from "@/modules/shared/position";
 
 @Controller("position")
 export class PositionController {

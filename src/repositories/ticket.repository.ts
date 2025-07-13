@@ -1,4 +1,4 @@
-import { Ticket, User } from "@/entities";
+import { Ticket, User } from "@/database/entities";
 import { ITicket } from "@/typing";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";

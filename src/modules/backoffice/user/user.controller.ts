@@ -2,7 +2,7 @@ import { CreateUserDTO, UpdateUserDTO } from "@/typing";
 import { AllowRoles, IsPublic } from "@/utils/decorators";
 import { Body, Controller, Get, Param, Post, Put } from "@nestjs/common";
 import { Throttle } from "@nestjs/throttler";
-import { UserService } from "./user.service";
+import { UserService } from "@/modules/shared/user";
 
 @Controller("users")
 export class UserController {

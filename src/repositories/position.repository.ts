@@ -1,4 +1,4 @@
-import { Position } from "@/entities";
+import { Position } from "@/database/entities";
 import { PositionWithoutIdDto, UpdatePositionDto } from "@/typing";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";

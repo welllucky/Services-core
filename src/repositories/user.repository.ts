@@ -1,4 +1,4 @@
-import { User } from "@/entities";
+import { User } from "@/database/entities";
 import { CreateUserDTO, Pagination, Roles, UpdateUserDTO } from "@/typing";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -101,5 +101,11 @@ export class UserRepository {
                 role,
             },
         );
+    }
+
+    async delete(register: string) {
+        return this.repository.delete({
+            register,
+        });
     }
 }
