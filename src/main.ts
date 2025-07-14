@@ -1,4 +1,5 @@
 import { ConfigService } from "@nestjs/config";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { useContainer } from "class-validator";
 import * as express from "express";
 import helmet from "helmet";
@@ -35,6 +36,19 @@ async function startTheService() {
     // app.useGlobalFilters(new HttpExceptionFilter());
 
     useContainer(app.select(AppModule), { fallbackOnErrors: true });
+
+    const documentConfig = new DocumentBuilder()
+        .setTitle("Services API")
+        .setDescription("Services API")
+        .setVersion("1.0")
+        .addBearerAuth()
+        .build();
+
+    const document = SwaggerModule.createDocument(app, documentConfig);
+
+    SwaggerModule.setup("docs", app, document, {
+        customSiteTitle: "Services API - Docs",
+    });
 
     await app.listen(configService.get("PORT") ?? 4000);
 }
