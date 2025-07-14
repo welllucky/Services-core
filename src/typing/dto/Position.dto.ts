@@ -1,18 +1,34 @@
 import { PartialType, PickType } from "@nestjs/mapped-types";
 import { IsString, MaxLength, MinLength } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class PositionDto {
     @IsString({ message: "Id must be a string" })
+    @ApiProperty({
+        description: "Position ID",
+        type: "string",
+        example: "123456",
+    })
     id!: string;
 
     @IsString({ message: "Name must be a string" })
     @MinLength(3, { message: "Name must have a minimum of 3 characters" })
     @MaxLength(128, { message: "Name must have a maximum of 128 characters" })
+    @ApiProperty({
+        description: "Position name",
+        type: "string",
+        example: "Senior Developer",
+    })
     name!: string;
 
     @IsString({ message: "Description must be a string" })
     @MaxLength(128, {
         message: "Description must have a maximum of 128 characters",
+    })
+    @ApiProperty({
+        description: "Position description",
+        type: "string",
+        example: "Senior Developer",
     })
     description!: string;
 }

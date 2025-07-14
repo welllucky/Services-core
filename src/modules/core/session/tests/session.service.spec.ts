@@ -19,8 +19,8 @@ import { UserModel } from "@/models";
 import { SessionService } from "@/modules/shared/session";
 import { UserWithSession } from "@/typing";
 import {
-    AUTH_SECRET_MOCK,
-    user,
+  AUTH_SECRET_MOCK,
+  user,
 } from "@/utils";
 import { Test, TestingModule } from "@nestjs/testing";
 import { SessionRepository } from "../../../../repositories/session.repository";
