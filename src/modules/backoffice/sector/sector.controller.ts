@@ -84,6 +84,7 @@ export class SectorController {
     }
 
     @Get(":id")
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     @ApiOperation({ summary: 'Get sector by ID' })
     @ApiParam({ name: 'id', description: 'Sector ID', type: 'string', example: 'uuid-123' })
     @ApiResponse({
@@ -106,6 +107,7 @@ export class SectorController {
     }
 
     @Get("name/:name")
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     @ApiOperation({ summary: 'Get sector by name' })
     @ApiParam({ name: 'name', description: 'Sector name', type: 'string', example: 'IT' })
     @ApiResponse({
@@ -160,6 +162,7 @@ export class SectorController {
     }
 
     @Get(":id/roles")
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     @ApiOperation({ summary: 'Get positions in sector' })
     @ApiParam({ name: 'id', description: 'Sector ID', type: 'string', example: 'uuid-123' })
     @ApiResponse({

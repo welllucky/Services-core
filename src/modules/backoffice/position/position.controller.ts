@@ -1,4 +1,6 @@
+import { PositionService } from "@/modules/shared/position";
 import { PositionWithoutIdDto, UpdatePositionDto } from "@/typing";
+import { ALLOWED_BACKOFFICE_ROLES } from "@/utils";
 import { AllowRoles } from "@/utils/decorators";
 import {
     Body,
@@ -10,7 +12,6 @@ import {
     Post,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { PositionService } from "@/modules/shared/position";
 
 @ApiTags('Backoffice Position Management')
 @ApiBearerAuth()
@@ -19,7 +20,7 @@ export class PositionController {
     constructor(private readonly position: PositionService) {}
 
     @Get()
-    @AllowRoles(["admin", "manager"])
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     @ApiOperation({ summary: 'Get all positions (Admin/Manager)' })
     @ApiResponse({
         status: 200,
@@ -43,7 +44,7 @@ export class PositionController {
     }
 
     @Post()
-    @AllowRoles(["admin", "manager"])
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     @ApiOperation({ summary: 'Create new position (Admin/Manager)' })
     @ApiBody({
         description: 'Position creation data',
@@ -127,7 +128,7 @@ export class PositionController {
     }
 
     @Patch(":id")
-    @AllowRoles(["admin", "manager"])
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     @ApiOperation({ summary: 'Update position (Admin/Manager)' })
     @ApiParam({ name: 'id', description: 'Position ID', type: 'string', example: 'uuid-123' })
     @ApiBody({
@@ -162,7 +163,7 @@ export class PositionController {
     }
 
     @Delete(":id")
-    @AllowRoles(["admin", "manager"])
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     @ApiOperation({ summary: 'Delete position (Admin/Manager)' })
     @ApiParam({ name: 'id', description: 'Position ID', type: 'string', example: 'uuid-123' })
     @ApiResponse({

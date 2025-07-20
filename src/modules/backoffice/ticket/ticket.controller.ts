@@ -1,5 +1,6 @@
 import { TicketService } from "@/modules/shared/ticket";
 import { RequestWithUser, UpdateTicketDto } from "@/typing";
+import { ALLOWED_BACKOFFICE_ROLES } from "@/utils";
 import { AllowRoles } from "@/utils/decorators";
 import {
     Body,
@@ -19,7 +20,7 @@ export class TicketController {
     constructor(private readonly service: TicketService) {}
 
     @Get()
-    @AllowRoles(["admin", "manager"])
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     @ApiOperation({ summary: 'Get all tickets (Admin/Manager)' })
     @ApiQuery({ name: 'page', required: false, description: 'Page number', type: 'number' })
     @ApiQuery({ name: 'index', required: false, description: 'Page size', type: 'number' })
@@ -60,7 +61,7 @@ export class TicketController {
     }
 
     @Get("search")
-    @AllowRoles(["admin", "manager"])
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     @ApiOperation({ summary: 'Search tickets (Admin/Manager)' })
     @ApiQuery({ name: 'term', description: 'Search term', type: 'string', example: 'bug report' })
     @ApiResponse({
@@ -89,6 +90,7 @@ export class TicketController {
     }
 
     @Get("/inProgress")
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     @ApiOperation({ summary: 'Get tickets in progress' })
     @ApiQuery({ name: 'page', required: false, description: 'Page number', type: 'number' })
     @ApiQuery({ name: 'index', required: false, description: 'Page size', type: 'number' })
@@ -123,7 +125,7 @@ export class TicketController {
     }
 
     @Get(":id")
-    @AllowRoles(["admin", "manager"])
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     @ApiOperation({ summary: 'Get ticket by ID (Admin/Manager)' })
     @ApiParam({ name: 'id', description: 'Ticket ID', type: 'string', example: 'uuid-123' })
     @ApiQuery({ name: 'isSolver', required: false, description: 'Get solver perspective', type: 'boolean' })
@@ -157,7 +159,7 @@ export class TicketController {
     }
 
     @Put(":id")
-    @AllowRoles(["admin", "manager"])
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     @ApiOperation({ summary: 'Update ticket (Admin/Manager)' })
     @ApiParam({ name: 'id', description: 'Ticket ID', type: 'string', example: 'uuid-123' })
     @ApiBody({
@@ -196,7 +198,7 @@ export class TicketController {
     }
 
     @Put(":id/resolve")
-    @AllowRoles(["admin", "manager"])
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     @ApiOperation({ summary: 'Resolve ticket (Admin/Manager)' })
     @ApiParam({ name: 'id', description: 'Ticket ID', type: 'string', example: 'uuid-123' })
     @ApiResponse({

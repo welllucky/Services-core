@@ -1,6 +1,7 @@
 import { UserService } from "@/modules/shared/user";
 import { CreateUserDTO, UpdateUserDTO } from "@/typing";
-import { AllowRoles, IsPublic } from "@/utils/decorators";
+import { ALLOWED_BACKOFFICE_ROLES } from "@/utils";
+import { AllowRoles } from "@/utils/decorators";
 import { Body, Controller, Get, Param, Post, Put } from "@nestjs/common";
 import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiConflictResponse, ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiResponse, ApiTags, ApiTooManyRequestsResponse, ApiUnauthorizedResponse } from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
@@ -11,7 +12,7 @@ export class UserController {
     constructor(private readonly service: UserService) {}
 
     @Get()
-    @AllowRoles(["admin", "manager"])
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     @ApiOperation({ summary: 'Get all users' })
     @ApiBearerAuth()
     @ApiOkResponse({
@@ -38,7 +39,7 @@ export class UserController {
     }
 
     @Get(":register")
-    @AllowRoles(["admin", "manager"])
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     @ApiOperation({ summary: 'Get user by register' })
     @ApiBearerAuth()
     @ApiParam({
@@ -76,7 +77,7 @@ export class UserController {
     }
 
     @Get("/email/:email")
-    @AllowRoles(["admin", "manager"])
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     @ApiOperation({ summary: 'Get user by email' })
     @ApiBearerAuth()
     @ApiParam({
@@ -112,7 +113,7 @@ export class UserController {
         return this.service.findByEmail(email);
     }
 
-    @IsPublic()
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     @Throttle({ default: { limit: 1, ttl: 60000 } })
     @Post()
     @ApiOperation({ summary: 'Create new user' })
@@ -159,6 +160,7 @@ export class UserController {
     }
 
     @Put(":register")
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     @ApiOperation({ summary: 'Update user' })
     @ApiBearerAuth()
     @ApiParam({

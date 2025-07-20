@@ -60,6 +60,7 @@ export class RoleController {
     @ApiResponse({ status: 403, description: 'Forbidden - Cannot change own role or insufficient permissions' })
     @ApiResponse({ status: 404, description: 'User not found' })
     @ApiResponse({ status: 500, description: 'Error on update user role' })
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     async changeRole(
         @Param("user") userRegister: string,
         @Param("newRole") newRole: Roles,
