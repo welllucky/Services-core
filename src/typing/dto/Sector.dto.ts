@@ -1,4 +1,5 @@
 import { PartialType, PickType } from "@nestjs/mapped-types";
+import { ApiProperty } from "@nestjs/swagger";
 import {
     IsArray,
     IsOptional,
@@ -7,7 +8,6 @@ import {
     MinLength,
 } from "class-validator";
 import { PositionDto } from "./Position.dto";
-import { ApiProperty } from "@nestjs/swagger";
 
 export class SectorDto {
     @IsString({ message: "Id must be a string" })
@@ -41,7 +41,7 @@ export class SectorDto {
 
     @IsArray()
     @IsOptional()
-    roles?: PositionDto[];
+    positions?: PositionDto[];
 }
 
 export class SectorWithoutIdDto extends PickType(SectorDto, [
@@ -73,7 +73,7 @@ export class CreateSectorDto extends PickType(SectorDto, [
 export class AlterSectorDto extends PickType(SectorDto, [
     "name",
     "description",
-    "roles",
+    "positions",
 ]) {}
 
 export class UpdateSectorDto extends PartialType(SectorWithoutIdDto) {}

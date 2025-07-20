@@ -1,6 +1,5 @@
 import { Roles } from "@/typing";
 import {
-    BaseEntity,
     Column,
     Entity,
     Index,
@@ -14,7 +13,7 @@ import { Sector } from "./sector.entity";
 import { Session } from "./session.entity";
 
 @Entity({ name: "Users" })
-export class User extends BaseEntity {
+export class User {
     @PrimaryGeneratedColumn("increment")
     public readonly id!: string;
 

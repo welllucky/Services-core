@@ -1,6 +1,5 @@
 import type { Relation } from "typeorm";
 import {
-    BaseEntity,
     Column,
     Entity,
     JoinColumn,
@@ -13,7 +12,7 @@ import { User } from "./user.entity";
 @Entity({
     name: "Events",
 })
-export class Event extends BaseEntity {
+export class Event {
     @PrimaryGeneratedColumn("increment")
     public readonly id!: string;
 

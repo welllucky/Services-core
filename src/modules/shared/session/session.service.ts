@@ -46,8 +46,8 @@ export class SessionService {
             );
 
         const updatedSession = await this.repository.update(
-            sessionData,
             sessionId,
+            sessionData,
             register,
         );
 
@@ -120,10 +120,10 @@ export class SessionService {
         }
 
         const updatedSession = await this.repository.update(
+            sessionId,
             {
                 isActive: false,
             },
-            sessionId,
             session.session?.user.id || "",
         );
 

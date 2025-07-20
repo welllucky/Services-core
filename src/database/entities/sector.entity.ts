@@ -1,15 +1,14 @@
 import {
-    BaseEntity,
     Column,
     Entity,
     JoinTable,
     ManyToMany,
-    PrimaryGeneratedColumn,
+    PrimaryGeneratedColumn
 } from "typeorm";
 import { Position } from "./position.entity";
 
 @Entity({ name: "Sectors" })
-export class Sector extends BaseEntity {
+export class Sector {
     @PrimaryGeneratedColumn()
     public readonly id!: string;
 

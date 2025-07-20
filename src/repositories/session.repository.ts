@@ -84,12 +84,12 @@ export class SessionRepository {
     });
   }
 
-  async update(session: Partial<Session>, sessionId: string, userId: string) {
+  async update(sessionId: string, session: Partial<Session>, userId: string) {
     return this.repository.update(
       {
         id: sessionId,
         user: {
-          register: userId,
+          id: userId,
         },
       },
       {

@@ -1,20 +1,17 @@
 import type { Relation } from "typeorm";
 import {
-    BaseEntity,
     Column,
     Entity,
     JoinColumn,
     ManyToOne,
-    // OneToMany,
     PrimaryGeneratedColumn,
 } from "typeorm";
-// import { Event } from "./event.entity";
 import { User } from "./user.entity";
 
 @Entity({
     name: "Tickets",
 })
-class Ticket extends BaseEntity {
+class Ticket {
     @PrimaryGeneratedColumn("increment")
     public readonly id!: string;
 

@@ -1,6 +1,6 @@
 import { PartialType, PickType } from "@nestjs/mapped-types";
-import { IsString, MaxLength, MinLength } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsString, MaxLength, MinLength } from "class-validator";
 
 export class PositionDto {
     @IsString({ message: "Id must be a string" })

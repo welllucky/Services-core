@@ -13,7 +13,7 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 export class SectorService {
     constructor(
         private readonly repository: SectorRepository,
-        private readonly roleRepository: PositionRepository,
+        private readonly positionRepository: PositionRepository,
     ) {}
 
     async create(
@@ -209,8 +209,8 @@ export class SectorService {
 
         return {
             data: sector.positions?.map(
-                (role) =>
-                    new CreatePositionDto(role.id, role.name, role.description),
+                (position) =>
+                    new CreatePositionDto(position.id, position.name, position.description),
             ),
             title: "Success",
             message: "Positions founded with success.",
@@ -250,8 +250,8 @@ export class SectorService {
 
         return {
             data: sector.positions?.map(
-                (role) =>
-                    new CreatePositionDto(role.id, role.name, role.description),
+                (position) =>
+                    new CreatePositionDto(position.id, position.name, position.description),
             ),
             title: "Success",
             message: "Positions founded with success.",
@@ -330,13 +330,13 @@ export class SectorService {
     }
 
     async addPosition(
-        roleName: string,
+        positionName: string,
         sectorName: string,
     ): Promise<IResponseFormat<SectorDto>> {
         const errors = {
-            role: {
+            position: {
                 title: "Position not informed",
-                message: "It's necessary to inform the role.",
+                message: "It's necessary to inform the position.",
             },
             sector: {
                 title: "Sector id not informed",
@@ -344,8 +344,8 @@ export class SectorService {
             },
         };
 
-        if (!roleName || !sectorName) {
-            const key = !roleName ? "role" : "sector";
+        if (!positionName || !sectorName) {
+            const key = !positionName ? "position" : "sector";
             throw new HttpException(
                 {
                     message: errors[key].message,
@@ -360,10 +360,10 @@ export class SectorService {
 
         const sector = await this.repository.findByName(sectorName);
 
-        const role = await this.roleRepository.findByName(roleName);
+        const position = await this.positionRepository.findByName(positionName);
 
-        if (!sector?.positions || !role) {
-            const key = !sector ? "sector" : "role";
+        if (!sector?.positions || !position) {
+            const key = !sector ? "sector" : "position";
             throw new HttpException(
                 {
                     message: `${key} not found`,
@@ -376,17 +376,21 @@ export class SectorService {
             );
         }
 
-        sector.positions = [...sector.positions, role];
+        const updatedSector = await this.repository.update(sector.id, {
+            positions: [...(sector.positions || []), {
+                name: position.name,
+                description: position.description,
+                id: position.id,
+            }],
+        });
 
-        const updatedSector = await sector.save();
-
-        if (!updatedSector) {
+        if (!updatedSector.affected) {
             throw new HttpException(
                 {
-                    message: "Error on add role.",
+                    message: "Error on add position.",
                     error: {
                         title: "Error",
-                        message: "Error on add role.",
+                        message: "Error on add position.",
                     },
                 },
                 HttpStatus.INTERNAL_SERVER_ERROR,
@@ -395,26 +399,26 @@ export class SectorService {
 
         return {
             title: "Success",
-            message: `${role.name} added to ${sector.name} sector successfully.`,
+            message: `${position.name} added to ${sector.name} sector successfully.`,
         };
     }
 
     async removePosition(
-        roleName: string,
+        positionName: string,
         sectorName: string,
     ): Promise<IResponseFormat<SectorDto>> {
         const errors = {
-            role: {
+            position: {
                 title: "Position not informed",
-                message: "It's necessary to inform the role.",
+                message: "It's necessary to inform the position.",
             },
             sector: {
                 title: "Sector id not informed",
                 message: "It's necessary to inform the sector id.",
             },
         };
-        if (!roleName || !sectorName) {
-            const key = !roleName ? "role" : "sector";
+        if (!positionName || !sectorName) {
+            const key = !positionName ? "position" : "sector";
             throw new HttpException(
                 {
                     message: errors[key].message,
@@ -427,10 +431,10 @@ export class SectorService {
             );
         }
         const sector = await this.repository.findByName(sectorName);
-        const role = await this.roleRepository.findByName(roleName);
+        const position = await this.positionRepository.findByName(positionName);
 
-        if (!sector || !role) {
-            const key = !sector ? "sector" : "role";
+        if (!sector || !position) {
+            const key = !sector ? "sector" : "position";
             throw new HttpException(
                 {
                     message: `${key} not found`,
@@ -442,8 +446,8 @@ export class SectorService {
                 HttpStatus.BAD_REQUEST,
             );
         }
-        const roleIndex = sector.positions?.findIndex((r) => r.id === role.id);
-        if (!roleIndex || roleIndex === -1) {
+        const positionIndex = sector.positions?.findIndex((r) => r.id === position.id);
+        if (!positionIndex || positionIndex === -1) {
             throw new HttpException(
                 {
                     message: "Position not found in sector.",
@@ -455,15 +459,33 @@ export class SectorService {
                 HttpStatus.NOT_FOUND,
             );
         }
-        sector.positions?.splice(roleIndex, 1);
-        const updatedSector = await sector.save();
+
+        sector.positions?.splice(positionIndex, 1);
+
+        if (!sector.positions) {
+            throw new HttpException(
+                {
+                    message: "Error on remove position.",
+                    error: {
+                        title: "Error",
+                        message: "Error on remove position.",
+                    },
+                },
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+
+        const updatedSector = await this.repository.update(sector.id, {
+            positions: [...sector.positions],
+        });
+
         if (!updatedSector) {
             throw new HttpException(
                 {
-                    message: "Error on remove role.",
+                    message: "Error on remove position.",
                     error: {
                         title: "Error",
-                        message: "Error on remove role.",
+                        message: "Error on remove position.",
                     },
                 },
                 HttpStatus.INTERNAL_SERVER_ERROR,
@@ -471,7 +493,7 @@ export class SectorService {
         }
         return {
             title: "Success",
-            message: `${role.name} removed from ${sector.name} sector successfully.`,
+            message: `${position.name} removed from ${sector.name} sector successfully.`,
         };
     }
 

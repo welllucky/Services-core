@@ -32,8 +32,13 @@ class SessionModel {
                 throw new Error("Session not found");
             }
 
-            session.isActive = false;
-            await session.save();
+            await this.repository.update(
+                session.id,
+                {
+                    isActive: false,
+                },
+                session.user.id,
+            );
         } catch (error) {
             throw new Error(`Session not closed: ${error}`);
         }
@@ -46,23 +51,33 @@ class SessionModel {
             throw new Error("User not found");
         }
 
-        this.repository.findAll(userId, "active").then((sessions) => {
-            sessions.forEach(async (session) => {
-                if (session.isActive) {
-                    await this.close(session.id);
-                }
-            });
+        const sessions = await this.repository.findAll(userId, "active");
+
+        sessions.forEach(async (session) => {
+            if (session.isActive) {
+                await this.close(session.id);
+            }
         });
     }
 
-    public async find({status, sessionId}: {status: SessionStatus, sessionId?: string}) {
+    public async find({
+        status,
+        sessionId,
+    }: {
+        status: SessionStatus;
+        sessionId?: string;
+    }) {
         try {
             const register = this.user.Register();
             if (!register) {
                 throw new Error("Register not found");
             }
 
-            const session = await this.repository.find(register, sessionId, status);
+            const session = await this.repository.find(
+                register,
+                sessionId,
+                status,
+            );
 
             this.session = session;
         } catch (error) {
