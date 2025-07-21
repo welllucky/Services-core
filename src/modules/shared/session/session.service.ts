@@ -1,19 +1,19 @@
-import { SessionModel } from "@/models/session.model";
-import { UserModel } from "@/models/user.model";
-import { SessionRepository } from "@/repositories/session.repository";
+import { SessionModel, UserModel } from "@/models";
+import { SessionRepository, UserRepository } from "@/repositories";
 import {
-  IResponseFormat,
-  Pagination,
-  SessionDTO,
-  SessionInfoDto,
-  SessionStatus,
-  UserWithSession
+    IResponseFormat,
+    Pagination,
+    SessionDTO,
+    SessionInfoDto,
+    SessionStatus,
+    UserWithSession
 } from "@/typing";
 import {
-  BadRequestException,
-  HttpException,
-  HttpStatus,
-  Injectable
+    BadRequestException,
+    HttpException,
+    HttpStatus,
+    Injectable,
+    NotFoundException
 } from "@nestjs/common";
 import { response } from "express";
 
@@ -21,7 +21,7 @@ import { response } from "express";
 export class SessionService {
     constructor(
         private readonly repository: SessionRepository,
-        private readonly userModel: UserModel,
+        private readonly userRepository: UserRepository,
     ) {}
 
     async update(
@@ -30,9 +30,18 @@ export class SessionService {
         register: string,
         safe = false,
     ): Promise<IResponseFormat<SessionDTO>> {
-        const session = new SessionModel(this.repository, this.userModel);
+        const user = new UserModel(this.userRepository);
+        await user.init({ register });
 
-        await session.init(sessionId, register);
+        if (!user.exists()) {
+            throw new NotFoundException(
+                "User not found by register, please check the register.",
+                );
+            }
+
+        const session = new SessionModel(this.repository, user);
+
+        await session.init(sessionId);
 
         const isSessionValid = await session.isValid();
 
@@ -47,8 +56,8 @@ export class SessionService {
 
         const updatedSession = await this.repository.update(
             sessionId,
-            sessionData,
             register,
+            sessionData,
         );
 
         if (!updatedSession?.affected) {
@@ -79,9 +88,16 @@ export class SessionService {
     }
 
     async close(user: UserWithSession) {
-        const userId = user.id;
+        const userModel = new UserModel(this.userRepository);
+        await userModel.init({ register: user.register });
 
-        if (!userId) {
+        if (!userModel.exists()) {
+            throw new NotFoundException(
+                "User not found by register, please check the register.",
+                );
+            }
+
+        if (!user.register) {
             throw new HttpException(
                 {
                     title: "User provided is not valid",
@@ -92,25 +108,22 @@ export class SessionService {
             );
         }
 
-        const actualSession = await this.repository.find(
-            userId,
-            undefined,
-            "active",
+        const actualSession = await this.repository.findLastActiveByUserRegister(
+            user.register,
         );
 
         if (!actualSession) {
-            throw new HttpException(
+            throw new BadRequestException(
                 {
                     title: "Session not found",
                     message: "Active session not found",
                 },
-                HttpStatus.BAD_REQUEST,
             );
         }
 
-        const session = new SessionModel(this.repository, this.userModel);
+        const session = new SessionModel(this.repository, userModel);
 
-        await session.init(actualSession.id, userId);
+        await session.init(actualSession.id);
 
         const isSessionValid = await session.isValid();
         const sessionId = session.session?.id;
@@ -121,10 +134,10 @@ export class SessionService {
 
         const updatedSession = await this.repository.update(
             sessionId,
+            user.register,
             {
                 isActive: false,
             },
-            session.session?.user.id || "",
         );
 
         if (!updatedSession?.affected) {
@@ -137,12 +150,11 @@ export class SessionService {
     }
 
     async find(
-        userId: string,
-        sessionId?: string,
+        sessionId: string,
+        user: UserWithSession,
         status: SessionStatus = "active",
-        safe = false,
     ): Promise<Partial<Omit<SessionDTO, "token">>> {
-        if (!userId) {
+        if (!user.register) {
             throw new HttpException(
                 {
                     title: "UserId was not provided",
@@ -153,9 +165,9 @@ export class SessionService {
             );
         }
 
-        const session = await this.repository.find(userId, sessionId, status);
+        const session = await this.repository.find(sessionId, user.register, status);
 
-        if (!session && !safe) {
+        if (!session) {
             throw new HttpException(
                 {
                     title: "Session not found",
@@ -170,7 +182,7 @@ export class SessionService {
             expiresAt: session?.expiresAt,
             id: session?.id,
             isActive: session?.isActive,
-            userId: session?.user?.register,
+            userId: session?.account?.user?.id,
         };
     }
 
@@ -178,7 +190,6 @@ export class SessionService {
         user: UserWithSession,
         pagination?: Pagination,
         status: SessionStatus = "active",
-        safe = false,
     ): Promise<IResponseFormat<SessionInfoDto[]>> {
         if (!user?.register) {
             throw new BadRequestException({
@@ -186,38 +197,14 @@ export class SessionService {
             });
         }
 
-        const actualSession = await this.find(
-            user.register,
-            undefined,
-            "active",
-            true,
-        );
-
-        const { register } = user;
-
-        if (!actualSession?.isActive) {
-            throw new HttpException(
-                "User could not access this resource",
-                !actualSession?.isActive
-                    ? HttpStatus.FORBIDDEN
-                    : HttpStatus.UNAUTHORIZED,
-            );
-        }
-
         const sessions = await this.repository.findAll(
-            register,
+            user.register,
             status,
             pagination,
         );
 
-        if (!sessions?.length && !safe) {
-            throw new HttpException(
-                {
-                    title: "Sessions not found",
-                    message: "Sessions not found",
-                },
-                HttpStatus.NOT_FOUND,
-            );
+        if (!sessions?.length) {
+            throw new NotFoundException("Sessions not found");
         }
 
         return {

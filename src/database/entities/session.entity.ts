@@ -6,7 +6,7 @@ import {
     ManyToOne,
     PrimaryGeneratedColumn
 } from "typeorm";
-import { User } from "./user.entity";
+import { Account } from "./account.entity";
 
 @Entity({
     name: "Sessions",
@@ -15,14 +15,14 @@ class Session {
     @PrimaryGeneratedColumn("increment")
     public readonly id!: string;
 
-    @ManyToOne(() => User, (user) => user.sessions, {
+    @ManyToOne(() => Account, (account) => account.sessions, {
         cascade: ["insert", "update"],
         nullable: false,
         onDelete: "NO ACTION",
         onUpdate: "CASCADE",
     })
     @JoinColumn()
-    public user!: Relation<User>;
+    public account!: Relation<Account>;
 
     @Column("timestamp")
     public expiresAt!: Date;

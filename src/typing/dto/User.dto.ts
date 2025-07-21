@@ -1,17 +1,15 @@
 import { Roles } from "@/typing";
 import { UniqueEmail, UniqueRegister } from "@/utils/decorators";
-import { OmitType, PartialType, PickType } from "@nestjs/mapped-types";
+import { PartialType, PickType } from "@nestjs/mapped-types";
 import { ApiProperty } from "@nestjs/swagger";
 import {
     IsBoolean,
-    IsDate,
     IsEmail,
     IsNotEmpty,
-    IsOptional,
     IsString,
     IsStrongPassword,
     MaxLength,
-    MinLength,
+    MinLength
 } from "class-validator";
 
 export class UserDTO {
@@ -61,72 +59,6 @@ export class UserDTO {
     email!: string;
 
     @ApiProperty({
-        description: "User password",
-        type: "string",
-        example: "password123",
-    })
-    @IsStrongPassword({
-        minLength: 8,
-        minNumbers: 1,
-        minSymbols: 1,
-        minUppercase: 1,
-        minLowercase: 1,
-    })
-    password!: string;
-
-    @ApiProperty({
-        description: "User hash",
-        type: "string",
-        example: "hash123",
-    })
-    @IsString()
-    hash!: string;
-
-    @ApiProperty({
-        description: "User last connection",
-        type: "string",
-        example: "2022-01-01T00:00:00.000Z",
-    })
-    @IsDate({
-        message: "Last connection must be a date",
-    })
-    @IsOptional()
-    lastConnection?: Date | null;
-
-    @ApiProperty({
-        description: "User is banned",
-        type: "boolean",
-        example: false,
-    })
-    @IsBoolean({
-        message: "Is banned must be a boolean",
-    })
-    @IsOptional()
-    isBanned!: boolean;
-
-    @ApiProperty({
-        description: "User can create ticket",
-        type: "boolean",
-        example: true,
-    })
-    @IsBoolean({
-        message: "Can create ticket must be a boolean",
-    })
-    @IsOptional()
-    canCreateTicket!: boolean;
-
-    @ApiProperty({
-        description: "User can resolve ticket",
-        type: "boolean",
-        example: true,
-    })
-    @IsBoolean({
-        message: "Can resolve ticket must be a boolean",
-    })
-    @IsOptional()
-    canResolveTicket!: boolean;
-
-    @ApiProperty({
         description: "User position",
         type: "string",
         example: "Senior Developer",
@@ -151,29 +83,23 @@ export class UserDTO {
         message: "Sector is required",
     })
     sector!: string;
-
-    @ApiProperty({
-        description: "User system role",
-        type: "string",
-        example: "admin",
-    })
-    @IsString({
-        message: "System role must be a string",
-    })
-    @IsNotEmpty({
-        message: "System role is required",
-    })
-    role!: Roles;
 }
 
-export class CreateUserDTO extends OmitType(UserDTO, [
-    "isBanned",
-    "canCreateTicket",
-    "lastConnection",
-    "canResolveTicket",
-    "hash",
-    "role",
-]) {}
+export class CreateUserDTO extends UserDTO {
+    @ApiProperty({
+        description: "User password",
+        type: "string",
+        example: "password123",
+    })
+    @IsStrongPassword({
+        minLength: 8,
+        minNumbers: 1,
+        minSymbols: 1,
+        minUppercase: 1,
+        minLowercase: 1,
+    })
+    password!: string;
+}
 
 export class UpdateUserDTO extends PartialType(CreateUserDTO) {}
 
@@ -182,9 +108,6 @@ export class UserPublicDTO extends PickType(UserDTO, [
     "email",
     "position",
     "sector",
-    "canCreateTicket",
-    "canResolveTicket",
-    "isBanned",
     "register",
 ]) {
     constructor(
@@ -192,17 +115,29 @@ export class UserPublicDTO extends PickType(UserDTO, [
         readonly email: string,
         readonly position: string,
         readonly sector: string,
-        readonly canCreateTicket: boolean,
-        readonly canResolveTicket: boolean,
-        readonly isBanned: boolean,
-        readonly role: Roles,
         readonly register: string,
     ) {
         super();
     }
+
+    @IsString()
+    @IsNotEmpty()
+    role!: Roles;
+
+    @IsBoolean()
+    @IsNotEmpty()
+    isBanned!: boolean;
+
+    @IsBoolean()
+    @IsNotEmpty()
+    canCreateTicket!: boolean;
+
+    @IsBoolean()
+    @IsNotEmpty()
+    canResolveTicket!: boolean;
 }
 
-export class UserRestrictDTO extends PickType(UserDTO, [
+export class UserRestrictDTO extends PickType(UserPublicDTO, [
     "name",
     "email",
     "position",

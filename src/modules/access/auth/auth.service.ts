@@ -1,6 +1,6 @@
 import { SessionRepository, UserRepository } from "@/repositories";
-import { IResponseFormat, IUser, UserWithSession } from "@/typing";
-import { comparePassword } from "@/utils";
+import { IResponseFormat, UserWithSession } from "@/typing";
+import { comparePassword, TIME_TO_EXPIRE_THE_TOKEN } from "@/utils";
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { LoginResponseDto, ProfileResponseDto } from "./dto/login.dto";
@@ -14,7 +14,7 @@ export class AuthService {
     ) {}
 
     async login(user: UserWithSession): Promise<IResponseFormat<LoginResponseDto>> {
-        const expiresAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+        const expiresAt = new Date(Date.now() + TIME_TO_EXPIRE_THE_TOKEN);
 
         const session = await this.sessionRepository.create(user.id, expiresAt);
 
@@ -46,10 +46,8 @@ export class AuthService {
     }
 
     async logout(register: string): Promise<void> {
-        const lastActiveSession = await this.sessionRepository.find(
+        const lastActiveSession = await this.sessionRepository.findLastActiveByUserRegister(
             register,
-            undefined,
-            "active",
         );
 
         if (!lastActiveSession) {
@@ -58,8 +56,8 @@ export class AuthService {
 
         await this.sessionRepository.update(
             lastActiveSession.id,
+            register,
             { isActive: false },
-            lastActiveSession.user.id,
         );
     }
 
@@ -73,7 +71,7 @@ export class AuthService {
             return null;
         }
 
-        const { isValid } = await comparePassword(password, userData.hash);
+        const { isValid } = await comparePassword(password, userData.account.hash);
 
         if (!isValid) {
             throw new BadRequestException("Invalid password");
@@ -86,15 +84,15 @@ export class AuthService {
             name: userData.name,
             position: userData.position?.name ?? "",
             sector: userData.sector?.name ?? "",
-            role: userData.role,
-            isBanned: userData.isBanned,
-            canCreateTicket: userData.canCreateTicket,
-            canResolveTicket: userData.canResolveTicket,
-            id: userData.id,
+            role: userData.account.role,
+            isBanned: userData.account.isBanned,
+            canCreateTicket: userData.account.canCreateTicket,
+            canResolveTicket: userData.account.canResolveTicket,
+            id: userData.account.id,
         };
     }
 
-    async getProfile(user: IUser): Promise<IResponseFormat<ProfileResponseDto>> {
+    async getProfile(user: UserWithSession): Promise<IResponseFormat<ProfileResponseDto>> {
         return {
             data: {
             register: user.register,

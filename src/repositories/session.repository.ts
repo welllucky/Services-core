@@ -12,8 +12,27 @@ export class SessionRepository {
     private readonly repository: Repository<Session>,
   ) {}
 
+  async findLastActiveByUserRegister(register: string): Promise<Session | null> {
+    return this.repository.findOne({
+      where: {
+        account: {
+          user: {
+            register,
+          },
+        },
+        isActive: true,
+      },
+      relations: {
+        account: true,
+      },
+      order: {
+        createdAt: "DESC",
+      },
+    });
+  }
+
   async findAll(
-    userId: string,
+    userRegister: string,
     status: SessionStatus,
     pagination?: Pagination,
   ): Promise<Session[]> {
@@ -26,22 +45,18 @@ export class SessionRepository {
     };
 
     return this.repository.find({
-      where: [
-        {
-          user: {
-            register: userId,
+      where: {
+          account: {
+            user: {
+              register: userRegister,
+            },
           },
           ...whereConditions,
         },
-        {
-          user: {
-            id: userId,
-          },
-          ...whereConditions,
-        },
-      ],
       relations: {
-        user: true,
+        account: {
+          user: true
+        }
       },
       order: {
         createdAt: "DESC",
@@ -52,8 +67,8 @@ export class SessionRepository {
   }
 
   async find(
-    userId: string,
-    sessionId?: string,
+    sessionId: string,
+    register: string,
     status: SessionStatus = "active",
   ): Promise<Session | null> {
     const whereConditions = {
@@ -61,22 +76,19 @@ export class SessionRepository {
       isActive: status === "all" ? undefined : status === "active",
     };
     return this.repository.findOne({
-      where: [
-        {
-          user: {
-            id: userId,
+      where: {
+          id: sessionId,
+          account: {
+            user: {
+              register
+            }
           },
           ...whereConditions,
         },
-        {
-          user: {
-            register: userId,
-          },
-          ...whereConditions,
-        },
-      ],
       relations: {
-        user: true,
+        account: {
+          user: true
+        }
       },
       order: {
         createdAt: "ASC",
@@ -84,12 +96,14 @@ export class SessionRepository {
     });
   }
 
-  async update(sessionId: string, session: Partial<Session>, userId: string) {
+  async update(sessionId: string, register: string, session: Partial<Session>) {
     return this.repository.update(
       {
         id: sessionId,
-        user: {
-          id: userId,
+        account: {
+          user: {
+            register,
+          },
         },
       },
       {
@@ -98,12 +112,12 @@ export class SessionRepository {
     );
   }
 
-  async create(userId: string, expiresAt: Date) {
+  async create(accountId: string, expiresAt: Date) {
     return this.repository.save({
       createdAt: new Date(),
       isActive: true,
-      user: {
-        id: userId,
+      account: {
+        id: accountId
       },
       expiresAt,
     });

@@ -1,5 +1,5 @@
 import { User } from "@/database/entities";
-import { CreateUserDTO, Pagination, Roles, UpdateUserDTO } from "@/typing";
+import { CreateUserDTO, Pagination, UpdateUserDTO } from "@/typing";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -36,6 +36,7 @@ export class UserRepository {
             relations: {
                 position: true,
                 sector: true,
+                account: true,
             },
         });
     }
@@ -46,6 +47,7 @@ export class UserRepository {
             relations: {
                 position: true,
                 sector: true,
+                account: true,
             },
         });
     }
@@ -56,6 +58,7 @@ export class UserRepository {
             relations: {
                 position: true,
                 sector: true,
+                account: true,
             },
         });
     }
@@ -92,19 +95,8 @@ export class UserRepository {
         );
     }
 
-    async updateRole(register: string, role: Roles) {
-        return this.repository.update(
-            {
-                register,
-            },
-            {
-                role,
-            },
-        );
-    }
-
     async delete(register: string) {
-        return this.repository.delete({
+        return this.repository.softDelete({
             register,
         });
     }

@@ -1,15 +1,21 @@
 // Mock UserModel at module level
 const mockUserModel = {
-    init: jest.fn(),
+    init: jest.fn().mockResolvedValue(undefined),
     getData: jest.fn(),
-    exists: jest.fn(),
+    exists: jest.fn().mockReturnValue(true),
     Register: jest.fn(),
     Role: jest.fn(),
     Email: jest.fn(),
 };
 
+const mockSessionModel = {
+    init: jest.fn().mockResolvedValue(undefined),
+    isValid: jest.fn().mockResolvedValue(true),
+    session: { id: "1" },
+};
+
 jest.mock("@/models", () => ({
-    SessionModel: jest.fn(),
+    SessionModel: jest.fn(() => mockSessionModel),
     UserModel: jest.fn(() => mockUserModel),
 }));
 
@@ -26,7 +32,7 @@ import {
 import { Test, TestingModule } from "@nestjs/testing";
 import { mockedSessionData } from "./utils";
 
-describe.skip("Session Service - Unit Test - Suite", () => {
+describe("Session Service - Unit Test - Suite", () => {
     let repository: SessionRepository;
     let service: SessionService;
     const compareMock = jest.fn();
@@ -53,6 +59,7 @@ describe.skip("Session Service - Unit Test - Suite", () => {
                     useValue: {
                         find: jest.fn(),
                         findAll: jest.fn(),
+                        findLastActiveByUserRegister: jest.fn(),
                         update: jest.fn(),
                     },
                 },
@@ -75,7 +82,7 @@ describe.skip("Session Service - Unit Test - Suite", () => {
 
     describe("Find Method - Suite", () => {
         it("should throw an error if userId is not provided", async () => {
-            await expect(service.find("")).rejects.toThrow(
+            await expect(service.find("", { register: "" } as UserWithSession)).rejects.toThrow(
                 "UserId was not provided, please inform the user id.",
             );
         });
@@ -87,7 +94,7 @@ describe.skip("Session Service - Unit Test - Suite", () => {
                     ...mockedSessionData(),
                 });
 
-            await service.find("1");
+            await service.find("1", { register: "1" } as UserWithSession);
 
             expect(findRepositoryMethod).toHaveBeenCalledTimes(1);
         });
@@ -95,35 +102,26 @@ describe.skip("Session Service - Unit Test - Suite", () => {
         it("should throw an error if find repository method returns null", async () => {
             jest.spyOn(repository, "find").mockResolvedValue(null);
 
-            await expect(service.find("1")).rejects.toThrow(
+            await expect(service.find("1", { register: "1" } as UserWithSession)).rejects.toThrow(
                 "Session not found",
             );
         });
 
-        it("should return a empty objet if find repository method returns null and safe property is true", async () => {
-            jest.spyOn(repository, "find").mockResolvedValue(null);
-
-            expect(
-                await service.find("1", undefined, undefined, true),
-            ).toStrictEqual({
-                createdAt: undefined,
-                expiresAt: undefined,
-                id: undefined,
-                isActive: undefined,
-                userId: undefined,
-            });
+        it.skip("should return a empty objet if find repository method returns null and safe property is true", async () => {
+            // This test is no longer valid as the find method no longer has a safe parameter
+            // and always throws when session is not found
         });
 
         it("should return a session by user id", async () => {
             const session = mockedSessionData();
             jest.spyOn(repository, "find").mockResolvedValue(session);
 
-            expect(await service.find("1")).toStrictEqual({
+            expect(await service.find("1", { register: "1" } as UserWithSession)).toStrictEqual({
                 createdAt: session.createdAt,
                 expiresAt: session.expiresAt,
                 id: session.id,
                 isActive: session.isActive,
-                userId: session.user.register,
+                userId: session.account.user.id,
             });
         });
 
@@ -132,11 +130,11 @@ describe.skip("Session Service - Unit Test - Suite", () => {
                 .spyOn(repository, "find")
                 .mockResolvedValue(mockedSessionData());
 
-            await service.find("1");
+            await service.find("1", { register: "1" } as UserWithSession);
 
             expect(findRepositoryMethod).toHaveBeenCalledWith(
                 "1",
-                undefined,
+                "1",
                 "active",
             );
         });
@@ -146,11 +144,11 @@ describe.skip("Session Service - Unit Test - Suite", () => {
                 .spyOn(repository, "find")
                 .mockResolvedValue(mockedSessionData());
 
-            await service.find("1", undefined, "inactive");
+            await service.find("1", { register: "1" } as UserWithSession, "inactive");
 
             expect(findRepositoryMethod).toHaveBeenCalledWith(
                 "1",
-                undefined,
+                "1",
                 "inactive",
             );
         });
@@ -160,11 +158,11 @@ describe.skip("Session Service - Unit Test - Suite", () => {
                 .spyOn(repository, "find")
                 .mockResolvedValue(mockedSessionData());
 
-            await service.find("1", undefined, "all");
+            await service.find("1", { register: "1" } as UserWithSession, "all");
 
             expect(findRepositoryMethod).toHaveBeenCalledWith(
                 "1",
-                undefined,
+                "1",
                 "all",
             );
         });
@@ -174,102 +172,64 @@ describe.skip("Session Service - Unit Test - Suite", () => {
                 .spyOn(repository, "find")
                 .mockResolvedValue(mockedSessionData());
 
-            await service.find("1", "24");
+            await service.find("24", { register: "1" } as UserWithSession);
 
             expect(findRepositoryMethod).toHaveBeenCalledWith(
-                "1",
                 "24",
+                "1",
                 "active",
             );
         });
     });
 
     describe("Find All Method - Suite", () => {
-        it("Should call find service method", async () => {
-            const findMethod = jest
-                .spyOn(service, "find")
-                .mockResolvedValue(mockedSessionData());
+        it("Should call repository findAll method", async () => {
+            const sessionList = [mockedSessionData()];
+            const findAllMethod = jest
+                .spyOn(repository, "findAll")
+                .mockResolvedValue(sessionList);
 
             await service.findAll(
                  {...user } as unknown as UserWithSession,
                 { index: undefined, page: undefined },
                 undefined,
-                true,
             );
 
-            expect(findMethod).toHaveBeenCalledTimes(1);
+            expect(findAllMethod).toHaveBeenCalledWith(
+                user.register,
+                "active",
+                { index: undefined, page: undefined }
+            );
         });
 
-        it("Should throw error if actual session is not found", async () => {
-            jest.spyOn(service, "find").mockResolvedValue({});
+        it("Should throw error if sessions are not found", async () => {
+            jest.spyOn(repository, "findAll").mockResolvedValue([]);
 
             await expect(
                 service.findAll(
                      {...user } as unknown as UserWithSession,
                     { index: undefined, page: undefined },
                     undefined,
-                    true,
                 ),
-            ).rejects.toThrow("User could not access this resource");
+            ).rejects.toThrow("Sessions not found");
         });
 
-        it("Should throw error if actual session is not active", async () => {
-            jest.spyOn(service, "find").mockResolvedValue(
-                mockedSessionData(false),
-            );
-
-            await expect(
-                service.findAll(
-                     {...user } as unknown as UserWithSession,
-                    { index: undefined, page: undefined },
-                    undefined,
-                    true,
-                ),
-            ).rejects.toThrow("User could not access this resource");
-        });
-
-        it("Should throw error if sessions are not found and safe property is false", async () => {
-            jest.spyOn(service, "find").mockResolvedValue(mockedSessionData());
-
-            await expect(service.findAll( {...user } as unknown as UserWithSession)).rejects.toThrow(
-                "Sessions not found",
-            );
-        });
-
-        it("Should return undefined if sessions are not found and safe property is true", async () => {
-            jest.spyOn(service, "find").mockResolvedValue(mockedSessionData());
-
-            expect(
-                await service.findAll(
-                     {...user } as unknown as UserWithSession,
-                    { index: undefined, page: undefined },
-                    undefined,
-                    true,
-                ),
-            ).toStrictEqual({ data: undefined, message: "0 session(s) found" });
-        });
 
         it("Should return sessions", async () => {
             const sessionList = [mockedSessionData()];
-            jest.spyOn(service, "find").mockResolvedValue(mockedSessionData());
-            jest.spyOn(service, "findAll").mockResolvedValue({
-                data: sessionList,
-                message: `${sessionList.length} sessions found`,
-            });
+            jest.spyOn(repository, "findAll").mockResolvedValue(sessionList);
 
-            expect(await service.findAll( {...user } as unknown as UserWithSession)).toStrictEqual({
-                data: sessionList,
-                message: `${sessionList.length} sessions found`,
-            });
+            const result = await service.findAll( {...user } as unknown as UserWithSession);
+
+            expect(result.message).toBe(`${sessionList.length} session(s) found`);
+            expect(result.data).toHaveLength(sessionList.length);
         });
     });
 
     describe("Update Method - Suite", () => {
 
         it("should throw error if session is not valid", async () => {
-            jest.spyOn(repository, "find").mockResolvedValue(
-                mockedSessionData(false),
-            );
+            mockSessionModel.isValid.mockResolvedValueOnce(false);
 
             await expect(service.update({}, "1", "1")).rejects.toThrow(
                 "Session not found or is not valid",
@@ -277,10 +237,6 @@ describe.skip("Session Service - Unit Test - Suite", () => {
         });
 
         it("should throw error if session is not updated", async () => {
-            jest.spyOn(repository, "find").mockResolvedValue(
-                mockedSessionData(),
-            );
-
             jest.spyOn(repository, "update").mockResolvedValue({
                 affected: 0,
                 raw: null,
@@ -293,10 +249,6 @@ describe.skip("Session Service - Unit Test - Suite", () => {
         });
 
         it("should call session repository update method", async () => {
-            jest.spyOn(repository, "find").mockResolvedValue(
-                mockedSessionData(),
-            );
-
             const updateRepositoryMethod = jest
                 .spyOn(repository, "update")
                 .mockResolvedValue({
@@ -307,14 +259,10 @@ describe.skip("Session Service - Unit Test - Suite", () => {
 
             await service.update({}, "24", "1");
 
-            expect(updateRepositoryMethod).toHaveBeenCalledWith({}, "24", "1");
+            expect(updateRepositoryMethod).toHaveBeenCalledWith("24", "1", {});
         });
 
         it("should return a success message", async () => {
-            jest.spyOn(repository, "find").mockResolvedValue(
-                mockedSessionData(),
-            );
-
             jest.spyOn(repository, "update").mockResolvedValue({
                 affected: 1,
                 raw: null,
@@ -331,17 +279,17 @@ describe.skip("Session Service - Unit Test - Suite", () => {
 
     describe("Close Method - Suite", () => {
         it("Should throw error if user id is not provided", async () => {
-            jest.spyOn(repository, "find").mockResolvedValue(null);
+            mockUserModel.exists.mockReturnValueOnce(false);
 
             await expect(
-                service.close( {...user, register: "" } as unknown as UserWithSession,),
+                service.close( {...user, register: "" } as unknown as UserWithSession),
             ).rejects.toThrow(
-                "User not found or not exists, please check the credentials.",
+                "User not found by register, please check the register.",
             );
         });
 
         it("Should throw error if actual session is not found", async () => {
-            jest.spyOn(repository, "find").mockResolvedValue(null);
+            jest.spyOn(repository, "findLastActiveByUserRegister").mockResolvedValue(null);
 
             await expect(service.close( {...user } as unknown as UserWithSession)).rejects.toThrow(
                 "Active session not found",
@@ -350,10 +298,8 @@ describe.skip("Session Service - Unit Test - Suite", () => {
 
         it("Should return a response with status code 204 if session is not valid", async () => {
             const session = mockedSessionData(false);
-            jest.spyOn(repository, "find").mockResolvedValue(session);
-            jest.spyOn(service, "update").mockResolvedValue({
-                message: "Session updated successfully",
-            });
+            jest.spyOn(repository, "findLastActiveByUserRegister").mockResolvedValue(session);
+            mockSessionModel.isValid.mockResolvedValueOnce(false);
 
             await expect(service.close( {...user } as unknown as UserWithSession)).rejects.toThrow(
                 "Session not valid",
@@ -362,13 +308,11 @@ describe.skip("Session Service - Unit Test - Suite", () => {
 
         it("Should throw error if session is not updated", async () => {
             const session = mockedSessionData();
-            jest.spyOn(repository, "find").mockResolvedValue(session);
-            jest.spyOn(service, "update").mockResolvedValue({
-                message: "",
-                error: {
-                    title: "Error",
-                    message: "Occurred an error while updating the session, please try again later",
-                },
+            jest.spyOn(repository, "findLastActiveByUserRegister").mockResolvedValue(session);
+            jest.spyOn(repository, "update").mockResolvedValue({
+                affected: 0,
+                raw: null,
+                generatedMaps: [],
             });
 
             await expect(service.close( {...user } as unknown as UserWithSession)).rejects.toThrow(
@@ -378,7 +322,7 @@ describe.skip("Session Service - Unit Test - Suite", () => {
 
         it("Should return a response with status code 204 if session is updated", async () => {
             const session = mockedSessionData();
-            jest.spyOn(repository, "find").mockResolvedValue(session);
+            jest.spyOn(repository, "findLastActiveByUserRegister").mockResolvedValue(session);
             jest.spyOn(repository, "update").mockResolvedValue({
                 affected: 1,
                 raw: null,

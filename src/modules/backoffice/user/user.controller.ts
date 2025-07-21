@@ -13,7 +13,7 @@ export class UserController {
 
     @Get()
     @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
-    @ApiOperation({ summary: 'Get all users' })
+    @ApiOperation({ summary: `Get all users (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiBearerAuth()
     @ApiOkResponse({
         description: 'List of all users',
@@ -40,7 +40,7 @@ export class UserController {
 
     @Get(":register")
     @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
-    @ApiOperation({ summary: 'Get user by register' })
+    @ApiOperation({ summary: `Get user by register (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiBearerAuth()
     @ApiParam({
         name: 'register',
@@ -78,7 +78,7 @@ export class UserController {
 
     @Get("/email/:email")
     @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
-    @ApiOperation({ summary: 'Get user by email' })
+    @ApiOperation({ summary: `Get user by email (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiBearerAuth()
     @ApiParam({
         name: 'email',
@@ -113,10 +113,10 @@ export class UserController {
         return this.service.findByEmail(email);
     }
 
+    @Post()
     @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     @Throttle({ default: { limit: 1, ttl: 60000 } })
-    @Post()
-    @ApiOperation({ summary: 'Create new user' })
+    @ApiOperation({ summary: `Create new user (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiBody({
         description: 'User creation data',
         schema: {
@@ -161,7 +161,7 @@ export class UserController {
 
     @Put(":register")
     @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
-    @ApiOperation({ summary: 'Update user' })
+    @ApiOperation({ summary: `Update user (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiBearerAuth()
     @ApiParam({
         name: 'register',

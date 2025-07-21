@@ -21,7 +21,7 @@ export class PositionController {
 
     @Get()
     @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
-    @ApiOperation({ summary: 'Get all positions (Admin/Manager)' })
+    @ApiOperation({ summary: `Get all positions (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiResponse({
         status: 200,
         description: 'List of all positions',
@@ -45,7 +45,7 @@ export class PositionController {
 
     @Post()
     @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
-    @ApiOperation({ summary: 'Create new position (Admin/Manager)' })
+    @ApiOperation({ summary: `Create new position (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiBody({
         description: 'Position creation data',
         schema: {
@@ -84,7 +84,8 @@ export class PositionController {
     }
 
     @Get(":id")
-    @ApiOperation({ summary: 'Get position by ID' })
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
+    @ApiOperation({ summary: `Get position by ID (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiParam({ name: 'id', description: 'Position ID', type: 'string', example: 'uuid-123' })
     @ApiResponse({
         status: 200,
@@ -106,7 +107,8 @@ export class PositionController {
     }
 
     @Get("name/:name")
-    @ApiOperation({ summary: 'Get position by name' })
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
+    @ApiOperation({ summary: `Get position by name (${ALLOWED_BACKOFFICE_ROLES.join("/")})`})
     @ApiParam({ name: 'name', description: 'Position name', type: 'string', example: 'Developer' })
     @ApiResponse({
         status: 200,
@@ -129,7 +131,7 @@ export class PositionController {
 
     @Patch(":id")
     @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
-    @ApiOperation({ summary: 'Update position (Admin/Manager)' })
+    @ApiOperation({ summary: `Update position (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiParam({ name: 'id', description: 'Position ID', type: 'string', example: 'uuid-123' })
     @ApiBody({
         description: 'Position update data',
@@ -164,7 +166,7 @@ export class PositionController {
 
     @Delete(":id")
     @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
-    @ApiOperation({ summary: 'Delete position (Admin/Manager)' })
+    @ApiOperation({ summary: `Delete position (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiParam({ name: 'id', description: 'Position ID', type: 'string', example: 'uuid-123' })
     @ApiResponse({
         status: 200,

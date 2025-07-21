@@ -4,15 +4,15 @@ import { Controller, Get, Param, Put, Request } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { RoleService } from "./role.service";
 
-@ApiTags('Role Management')
+@ApiTags('Backoffice Role Management')
 @ApiBearerAuth()
 @Controller("roles")
 export class RoleController {
     constructor(private readonly service: RoleService) {}
 
-    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     @Get()
-    @ApiOperation({ summary: 'Get all available roles' })
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
+    @ApiOperation({ summary: `Get all available roles (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiResponse({
         status: 200,
         description: 'List of available roles',
@@ -31,9 +31,9 @@ export class RoleController {
         return this.service.getRoles();
     }
 
-    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     @Put("change/:user/:newRole")
-    @ApiOperation({ summary: 'Change user role' })
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
+    @ApiOperation({ summary: `Change user role (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiParam({
         name: 'user',
         description: 'User register/ID to change role',
@@ -60,7 +60,6 @@ export class RoleController {
     @ApiResponse({ status: 403, description: 'Forbidden - Cannot change own role or insufficient permissions' })
     @ApiResponse({ status: 404, description: 'User not found' })
     @ApiResponse({ status: 500, description: 'Error on update user role' })
-    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
     async changeRole(
         @Param("user") userRegister: string,
         @Param("newRole") newRole: Roles,

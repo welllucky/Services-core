@@ -21,7 +21,7 @@ export class TicketController {
 
     @Get()
     @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
-    @ApiOperation({ summary: 'Get all tickets (Admin/Manager)' })
+    @ApiOperation({ summary: `Get all tickets (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiQuery({ name: 'page', required: false, description: 'Page number', type: 'number' })
     @ApiQuery({ name: 'index', required: false, description: 'Page size', type: 'number' })
     @ApiQuery({ name: 'isSolver', required: false, description: 'Filter by solver tickets', type: 'boolean' })
@@ -62,7 +62,7 @@ export class TicketController {
 
     @Get("search")
     @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
-    @ApiOperation({ summary: 'Search tickets (Admin/Manager)' })
+    @ApiOperation({ summary: `Search tickets (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiQuery({ name: 'term', description: 'Search term', type: 'string', example: 'bug report' })
     @ApiResponse({
         status: 200,
@@ -91,7 +91,7 @@ export class TicketController {
 
     @Get("/inProgress")
     @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
-    @ApiOperation({ summary: 'Get tickets in progress' })
+    @ApiOperation({ summary: `Get tickets in progress (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiQuery({ name: 'page', required: false, description: 'Page number', type: 'number' })
     @ApiQuery({ name: 'index', required: false, description: 'Page size', type: 'number' })
     @ApiResponse({
@@ -126,7 +126,7 @@ export class TicketController {
 
     @Get(":id")
     @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
-    @ApiOperation({ summary: 'Get ticket by ID (Admin/Manager)' })
+    @ApiOperation({ summary: `Get ticket by ID (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiParam({ name: 'id', description: 'Ticket ID', type: 'string', example: 'uuid-123' })
     @ApiQuery({ name: 'isSolver', required: false, description: 'Get solver perspective', type: 'boolean' })
     @ApiResponse({
@@ -160,7 +160,7 @@ export class TicketController {
 
     @Put(":id")
     @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
-    @ApiOperation({ summary: 'Update ticket (Admin/Manager)' })
+    @ApiOperation({ summary: `Update ticket (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiParam({ name: 'id', description: 'Ticket ID', type: 'string', example: 'uuid-123' })
     @ApiBody({
         description: 'Ticket update data',
@@ -199,7 +199,7 @@ export class TicketController {
 
     @Put(":id/resolve")
     @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
-    @ApiOperation({ summary: 'Resolve ticket (Admin/Manager)' })
+    @ApiOperation({ summary: `Resolve ticket (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiParam({ name: 'id', description: 'Ticket ID', type: 'string', example: 'uuid-123' })
     @ApiResponse({
         status: 200,

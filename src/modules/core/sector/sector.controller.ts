@@ -1,14 +1,11 @@
-import { SectorWithoutIdDto } from "@/typing";
-import { AllowRoles } from "@/utils/decorators";
+import { SectorService } from "@/modules/shared/sector";
+import { IsPublic } from "@/utils";
 import {
-    Body,
     Controller,
     Get,
-    Param,
-    Post
+    Param
 } from "@nestjs/common";
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { SectorService } from "@/modules/shared/sector";
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 @ApiTags('Sector Management')
 @Controller("sector")
@@ -16,9 +13,8 @@ export class SectorController {
     constructor(private readonly sectorService: SectorService) {}
 
     @Get()
-    @AllowRoles(["admin", "manager"])
+    @IsPublic()
     @ApiOperation({ summary: 'Get all sectors' })
-    @ApiBearerAuth()
     @ApiResponse({
         status: 200,
         description: 'List of all sectors',
@@ -40,48 +36,9 @@ export class SectorController {
         return this.sectorService.getAll();
     }
 
-    @Post()
-    @AllowRoles(["admin", "manager"])
-    @ApiOperation({ summary: 'Create new sector' })
-    @ApiBearerAuth()
-    @ApiBody({
-        description: 'Sector creation data',
-        schema: {
-            type: 'object',
-            properties: {
-                name: { type: 'string', example: 'Information Technology' },
-                description: { type: 'string', example: 'IT department sector' }
-            },
-            required: ['name']
-        }
-    })
-    @ApiResponse({
-        status: 201,
-        description: 'Sector created successfully',
-        schema: {
-            type: 'object',
-            properties: {
-                message: { type: 'string', example: 'Sector created successfully' },
-                data: {
-                    type: 'object',
-                    properties: {
-                        id: { type: 'string' },
-                        name: { type: 'string' },
-                        description: { type: 'string' }
-                    }
-                }
-            }
-        }
-    })
-    @ApiResponse({ status: 400, description: 'Bad Request - Invalid data' })
-    @ApiResponse({ status: 401, description: 'Unauthorized' })
-    @ApiResponse({ status: 403, description: 'Forbidden - Admin/Manager only' })
-    @ApiResponse({ status: 409, description: 'Conflict - Sector already exists' })
-    create(@Body() data: SectorWithoutIdDto) {
-        return this.sectorService.create(data);
-    }
 
     @Get(":id")
+    @IsPublic()
     @ApiOperation({ summary: 'Get sector by ID' })
     @ApiParam({ name: 'id', description: 'Sector ID', type: 'string', example: 'uuid-123' })
     @ApiResponse({
@@ -104,6 +61,7 @@ export class SectorController {
     }
 
     @Get("name/:name")
+    @IsPublic()
     @ApiOperation({ summary: 'Get sector by name' })
     @ApiParam({ name: 'name', description: 'Sector name', type: 'string', example: 'IT' })
     @ApiResponse({
@@ -126,6 +84,7 @@ export class SectorController {
     }
 
     @Get(":id/roles")
+    @IsPublic()
     @ApiOperation({ summary: 'Get positions in sector' })
     @ApiParam({ name: 'id', description: 'Sector ID', type: 'string', example: 'uuid-123' })
     @ApiResponse({

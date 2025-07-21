@@ -18,6 +18,7 @@ export async function createAppInstance(
             logger: hasLog
                 ? createLoggerStrategy(applicationEnvironment)
                 : false,
+            snapshot: true,
         },
     );
 

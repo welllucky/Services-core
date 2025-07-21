@@ -1,7 +1,7 @@
 import { UserModel } from "@/models";
 import { UniqueEmailValidator, UniqueRegisterValidator } from "@/utils";
 import { forwardRef, Module } from "@nestjs/common";
-import { UserModule as SharedUserModule } from "@/modules/shared/user";
+import { SharedUserModule } from "@/modules/shared/user";
 import { PositionModule } from "../position/position.module";
 import { SectorModule } from "../sector/sector.module";
 import { UserController } from "./user.controller";

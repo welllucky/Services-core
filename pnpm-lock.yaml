@@ -31,6 +31,9 @@ importers:
       '@nestjs/core':
         specifier: ^10.4.15
         version: 10.4.15(@nestjs/common@11.1.5(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.15)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/devtools-integration':
+        specifier: ^0.2.0
+        version: 0.2.0(@nestjs/common@11.1.5(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.15)
       '@nestjs/jwt':
         specifier: ^11.0.0
         version: 11.0.0(@nestjs/common@11.1.5(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))
@@ -648,6 +651,12 @@ packages:
         optional: true
       '@nestjs/websockets':
         optional: true
+
+  '@nestjs/devtools-integration@0.2.0':
+    resolution: {integrity: sha512-RwQDnCour8l3D8hwu+o61DFehR7740BwRG7Pg7gbFyZJmK8SmynZH3mmeCc0+X8cxOYzr7hO12z0JtIN89//8w==}
+    peerDependencies:
+      '@nestjs/common': '>=10.4.16'
+      '@nestjs/core': ^9.3.7 || ^10.0.0 || ^11.0.0
 
   '@nestjs/jwt@11.0.0':
     resolution: {integrity: sha512-v7YRsW3Xi8HNTsO+jeHSEEqelX37TVWgwt+BcxtkG/OfXJEOs6GZdbdza200d6KqId1pJQZ6UPj1F0M6E+mxaA==}
@@ -4704,6 +4713,15 @@ snapshots:
       uid: 2.0.2
     optionalDependencies:
       '@nestjs/platform-express': 10.4.15(@nestjs/common@11.1.5(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.15)
+    transitivePeerDependencies:
+      - encoding
+
+  '@nestjs/devtools-integration@0.2.0(@nestjs/common@11.1.5(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.15)':
+    dependencies:
+      '@nestjs/common': 11.1.5(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/core': 10.4.15(@nestjs/common@11.1.5(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.15)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      chalk: 4.1.2
+      node-fetch: 2.7.0
     transitivePeerDependencies:
       - encoding
 

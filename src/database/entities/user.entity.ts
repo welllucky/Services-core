@@ -1,16 +1,15 @@
-import { Roles } from "@/typing";
 import {
     Column,
     Entity,
     Index,
     JoinColumn,
     ManyToOne,
-    OneToMany,
-    PrimaryGeneratedColumn,
+    OneToOne,
+    PrimaryGeneratedColumn
 } from "typeorm";
+import { Account } from "./account.entity";
 import { Position } from "./position.entity";
 import { Sector } from "./sector.entity";
-import { Session } from "./session.entity";
 
 @Entity({ name: "Users" })
 export class User {
@@ -32,18 +31,6 @@ export class User {
     @Column({ length: 256 })
     public email!: string;
 
-    @Column({ length: 256, nullable: false })
-    public hash!: string;
-
-    @Column({ default: false })
-    public isBanned!: boolean;
-
-    @Column({ default: true })
-    public canCreateTicket!: boolean;
-
-    @Column({ default: true })
-    public canResolveTicket!: boolean;
-
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     public createdAt!: Date;
 
@@ -52,9 +39,6 @@ export class User {
 
     @Column({ type: "timestamp", nullable: true })
     public deletedAt!: Date | null;
-
-    @Column({ type: "varchar", default: "user" })
-    public role!: Roles;
 
     @ManyToOne(() => Position, (position) => position.id, {
         cascade: ["insert", "update"],
@@ -75,10 +59,10 @@ export class User {
     @JoinColumn()
     public sector!: Sector | null;
 
-    @OneToMany(() => Session, (session) => session.user, {
+    @OneToOne(() => Account, (account) => account.user, {
         cascade: ["insert", "update"],
         onDelete: "NO ACTION",
         onUpdate: "CASCADE",
     })
-    public readonly sessions!: Session[];
+    public readonly account!: Account;
 }

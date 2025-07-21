@@ -1,111 +1,128 @@
 import { LocalAuthGuard } from "@/guards";
 import { RequestWithUser } from "@/typing";
 import { IsPublic } from "@/utils";
-import { Controller, Get, HttpCode, NotImplementedException, Post, Request, UseGuards } from "@nestjs/common";
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import {
+    Controller,
+    Get,
+    HttpCode,
+    NotImplementedException,
+    Post,
+    Request,
+    UseGuards,
+} from "@nestjs/common";
+import {
+    ApiBearerAuth,
+    ApiBody,
+    ApiOperation,
+    ApiResponse,
+    ApiTags,
+} from "@nestjs/swagger";
 import { AuthService } from "./auth.service";
 
-@ApiTags('Authentication')
-@Controller('auth')
+@ApiTags("Authentication")
+@Controller("auth")
 class AuthController {
     constructor(private readonly authService: AuthService) {}
 
-    @ApiOperation({ summary: 'User login' })
+    @Post("login")
+    @IsPublic()
+    @UseGuards(LocalAuthGuard)
+    @ApiOperation({ summary: "User login" })
     @ApiBody({
-        description: 'User credentials',
+        description: "User credentials",
         schema: {
-            type: 'object',
+            type: "object",
             properties: {
-                email: { type: 'string', example: 'user@example.com' },
-                password: { type: 'string', example: 'password123' }
+                email: { type: "string", example: "user@example.com" },
+                password: { type: "string", example: "password123" },
             },
-            required: ['email', 'password']
-        }
+            required: ["email", "password"],
+        },
     })
     @ApiResponse({
         status: 200,
-        description: 'Login successful',
+        description: "Login successful",
         schema: {
-            type: 'object',
+            type: "object",
             properties: {
-                message: { type: 'string', example: 'Login successful' },
+                message: { type: "string", example: "Login successful" },
                 data: {
-                    type: 'object',
+                    type: "object",
                     properties: {
-                        accessToken: { type: 'string' },
+                        accessToken: { type: "string" },
                         user: {
-                            type: 'object',
+                            type: "object",
                             properties: {
-                                register: { type: 'string' },
-                                name: { type: 'string' },
-                                email: { type: 'string' },
-                                role: { type: 'string' }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+                                register: { type: "string" },
+                                name: { type: "string" },
+                                email: { type: "string" },
+                                role: { type: "string" },
+                            },
+                        },
+                    },
+                },
+            },
+        },
     })
-    @ApiResponse({ status: 401, description: 'Invalid credentials' })
-    @IsPublic()
-    @UseGuards(LocalAuthGuard)
-    @Post('login')
+    @ApiResponse({ status: 401, description: "Invalid credentials" })
     async login(@Request() req: RequestWithUser) {
         return this.authService.login(req.user);
     }
 
-    @ApiOperation({ summary: 'Refresh access token' })
-    @ApiResponse({ status: 501, description: 'Not implemented yet' })
-    @Post('refresh')
+    @Post("refresh")
     @HttpCode(501)
+    @ApiOperation({ summary: "Refresh access token" })
+    @ApiResponse({ status: 501, description: "Not implemented yet" })
     async refresh() {
-       throw new NotImplementedException();
+        throw new NotImplementedException();
     }
 
-    @ApiOperation({ summary: 'User logout' })
+    @Post("logout")
+    @ApiOperation({ summary: "User logout" })
     @ApiBearerAuth()
     @ApiResponse({
         status: 200,
-        description: 'Logout successful',
+        description: "Logout successful",
         schema: {
-            type: 'object',
+            type: "object",
             properties: {
-                message: { type: 'string', example: 'Logout successful' }
-            }
-        }
+                message: { type: "string", example: "Logout successful" },
+            },
+        },
     })
-    @ApiResponse({ status: 401, description: 'Unauthorized' })
-    @Post('logout')
+    @ApiResponse({ status: 401, description: "Unauthorized" })
     async logout(@Request() req: RequestWithUser) {
         return this.authService.logout(req.user.register);
     }
 
-    @ApiOperation({ summary: 'Get user profile' })
+    @Get("profile")
+    @ApiOperation({ summary: "Get user profile" })
     @ApiBearerAuth()
     @ApiResponse({
         status: 200,
-        description: 'User profile retrieved successfully',
+        description: "User profile retrieved successfully",
         schema: {
-            type: 'object',
+            type: "object",
             properties: {
-                message: { type: 'string', example: 'Profile retrieved successfully' },
+                message: {
+                    type: "string",
+                    example: "Profile retrieved successfully",
+                },
                 data: {
-                    type: 'object',
+                    type: "object",
                     properties: {
-                        register: { type: 'string' },
-                        name: { type: 'string' },
-                        email: { type: 'string' },
-                        role: { type: 'string' },
-                        position: { type: 'string' },
-                        sector: { type: 'string' }
-                    }
-                }
-            }
-        }
+                        register: { type: "string" },
+                        name: { type: "string" },
+                        email: { type: "string" },
+                        role: { type: "string" },
+                        position: { type: "string" },
+                        sector: { type: "string" },
+                    },
+                },
+            },
+        },
     })
-    @ApiResponse({ status: 401, description: 'Unauthorized' })
-    @Get('profile')
+    @ApiResponse({ status: 401, description: "Unauthorized" })
     async profile(@Request() req: RequestWithUser) {
         return this.authService.getProfile(req.user);
     }

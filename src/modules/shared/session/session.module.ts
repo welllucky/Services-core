@@ -3,12 +3,12 @@ import { SessionModel } from "@/models/session.model";
 import { SessionRepository } from "@/repositories/session.repository";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { UserModule } from "../user/user.module";
+import { SharedUserModule } from "../user/user.module";
 import { SessionService } from "./session.service";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Session]), UserModule],
+    imports: [TypeOrmModule.forFeature([Session]), SharedUserModule],
     providers: [SessionService, SessionRepository, SessionModel],
     exports: [SessionService, SessionRepository, SessionModel],
 })
-export class SessionModule {}
+export class SharedSessionModule {}

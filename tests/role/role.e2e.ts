@@ -1,5 +1,6 @@
 import { RoleController } from "@/modules/backoffice/role/role.controller";
 import { RoleService } from "@/modules/backoffice/role/role.service";
+import { AccountService } from "@/modules/shared/account/account.service";
 import { UserRepository } from "@/repositories/user.repository";
 import { RolesSchema } from "@/typing";
 import { user } from "@/utils";
@@ -35,6 +36,11 @@ const userRepository = {
     findByEmail: jest.fn(),
 };
 
+const accountService = {
+    findByRegister: jest.fn(),
+    updateRole: jest.fn(),
+};
+
 // Mock the decorators and utils
 jest.mock("@/utils", () => ({
     ALLOWED_BACKOFFICE_ROLES: ["admin", "owner"],
@@ -62,6 +68,10 @@ describe("Role - E2E Test - Suite", () => {
                     provide: UserRepository,
                     useValue: userRepository,
                 },
+                {
+                    provide: AccountService,
+                    useValue: accountService,
+                },
             ],
         }).compile();
 
@@ -82,12 +92,17 @@ describe("Role - E2E Test - Suite", () => {
     it("PUT /roles/change/:user/:newRole - should change the role", async () => {
         jest.spyOn(userRepository, "findByRegister").mockReturnValueOnce({
             ...mockedUser,
+            account: { role: "admin" },
         });
         jest.spyOn(userRepository, "findByRegister").mockReturnValueOnce({
             ...mockedUser,
-            role: "user",
+            register: "111111",
+            account: { role: "user" },
         });
-        jest.spyOn(userRepository, "updateRole").mockResolvedValue({
+        jest.spyOn(accountService, "findByRegister").mockResolvedValue({
+            id: "account123",
+        });
+        jest.spyOn(accountService, "updateRole").mockResolvedValue({
             affected: 1,
             raw: [],
             generatedMaps: [],
@@ -105,25 +120,33 @@ describe("Role - E2E Test - Suite", () => {
             });
     });
     it("PUT /roles/change/:user/:newRole - should throw error if user not found", async () => {
+        jest.spyOn(userRepository, "findByRegister").mockResolvedValueOnce({
+            ...mockedUser,
+            account: { role: "admin" },
+        });
         jest.spyOn(userRepository, "findByRegister").mockResolvedValue(null);
 
         return request(app.getHttpServer())
             .put("/roles/change/111111/admin")
             .set("Authorization", "Bearer valid_token")
-            .expect(404)
+            .expect(403)
             .then((res) => {
                 expect(res.body).toEqual({
                     message: "User not found",
-                    error: "Not Found",
-                    statusCode: 404,
+                    error: "Forbidden",
+                    statusCode: 403,
                 });
             });
     });
     it("PUT /roles/change/:user/:newRole - should throw error if role is invalid", async () => {
         jest.spyOn(userRepository, "findByRegister").mockResolvedValue({
             ...mockedUser,
+            account: { role: "admin" },
         });
-        jest.spyOn(userRepository, "updateRole").mockResolvedValue({
+        jest.spyOn(accountService, "findByRegister").mockResolvedValue({
+            id: "account123",
+        });
+        jest.spyOn(accountService, "updateRole").mockResolvedValue({
             affected: 0,
             raw: [],
             generatedMaps: [],
@@ -144,14 +167,18 @@ describe("Role - E2E Test - Suite", () => {
     it("PUT /roles/change/:user/:newRole - should throw error if user is not allowed", async () => {
         jest.spyOn(userRepository, "findByRegister").mockReturnValueOnce({
             ...mockedUser,
-            role: "user",
+            account: { role: "user" },
         });
         jest.spyOn(userRepository, "findByRegister").mockReturnValueOnce({
             ...mockedUser,
+            account: { role: "user" },
             role: "user",
         });
-        jest.spyOn(userRepository, "updateRole").mockResolvedValue({
-            affected: 0,
+        jest.spyOn(accountService, "findByRegister").mockResolvedValue({
+            id: "account123",
+        });
+        jest.spyOn(accountService, "updateRole").mockResolvedValue({
+            affected: 1,
             raw: [],
             generatedMaps: [],
         });
@@ -170,9 +197,13 @@ describe("Role - E2E Test - Suite", () => {
     it("PUT /roles/change/:user/:newRole - should throw error if user is trying to change their own role", async () => {
             jest.spyOn(userRepository, "findByRegister").mockResolvedValue({
                 ...mockedUser,
+                account: { role: "admin" },
             });
-            jest.spyOn(userRepository, "updateRole").mockResolvedValue({
-                affected: 0,
+            jest.spyOn(accountService, "findByRegister").mockResolvedValue({
+                id: "account123",
+            });
+            jest.spyOn(accountService, "updateRole").mockResolvedValue({
+                affected: 1,
                 raw: [],
                 generatedMaps: [],
             });
@@ -193,12 +224,16 @@ describe("Role - E2E Test - Suite", () => {
     it("PUT /roles/change/:user/:newRole - should throw internal error if role update fails", async () => {
         jest.spyOn(userRepository, "findByRegister").mockReturnValueOnce({
             ...mockedUser,
+            account: { role: "admin" },
         });
         jest.spyOn(userRepository, "findByRegister").mockReturnValueOnce({
             ...mockedUser,
-            role: "user",
+            account: { role: "user" },
         });
-        jest.spyOn(userRepository, "updateRole").mockResolvedValue({
+        jest.spyOn(accountService, "findByRegister").mockResolvedValue({
+            id: "account123",
+        });
+        jest.spyOn(accountService, "updateRole").mockResolvedValue({
             affected: 0,
             raw: [],
             generatedMaps: [],

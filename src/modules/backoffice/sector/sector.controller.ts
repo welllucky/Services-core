@@ -1,3 +1,4 @@
+import { SectorService } from "@/modules/shared/sector";
 import { SectorWithoutIdDto, UpdateSectorDto } from "@/typing";
 import { ALLOWED_BACKOFFICE_ROLES } from "@/utils";
 import { AllowRoles } from "@/utils/decorators";
@@ -11,7 +12,6 @@ import {
     Post,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { SectorService } from "@/modules/shared/sector";
 
 @ApiTags('Backoffice Sector Management')
 @ApiBearerAuth()
@@ -21,7 +21,7 @@ export class SectorController {
 
     @Get()
     @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
-    @ApiOperation({ summary: 'Get all sectors (Admin/Manager)' })
+    @ApiOperation({ summary: `Get all sectors (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiResponse({
         status: 200,
         description: 'List of all sectors',
@@ -45,7 +45,7 @@ export class SectorController {
 
     @Post()
     @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
-    @ApiOperation({ summary: 'Create new sector (Admin/Manager)' })
+    @ApiOperation({ summary: `Create new sector (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiBody({
         description: 'Sector creation data',
         schema: {
@@ -84,8 +84,7 @@ export class SectorController {
     }
 
     @Get(":id")
-    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
-    @ApiOperation({ summary: 'Get sector by ID' })
+    @AllowRoles(ALLOWED_BACKOFFICE_ROLES)    @ApiOperation({ summary: `Get sector by ID (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiParam({ name: 'id', description: 'Sector ID', type: 'string', example: 'uuid-123' })
     @ApiResponse({
         status: 200,
@@ -108,7 +107,7 @@ export class SectorController {
 
     @Get("name/:name")
     @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
-    @ApiOperation({ summary: 'Get sector by name' })
+    @ApiOperation({ summary: `Get sector by name (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiParam({ name: 'name', description: 'Sector name', type: 'string', example: 'IT' })
     @ApiResponse({
         status: 200,
@@ -131,7 +130,7 @@ export class SectorController {
 
     @Patch(":id")
     @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
-    @ApiOperation({ summary: 'Update sector (Admin/Manager)' })
+    @ApiOperation({ summary: `Update sector (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiParam({ name: 'id', description: 'Sector ID', type: 'string', example: 'uuid-123' })
     @ApiBody({
         description: 'Sector update data',
@@ -163,7 +162,7 @@ export class SectorController {
 
     @Get(":id/roles")
     @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
-    @ApiOperation({ summary: 'Get positions in sector' })
+    @ApiOperation({ summary: `Get positions in sector (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiParam({ name: 'id', description: 'Sector ID', type: 'string', example: 'uuid-123' })
     @ApiResponse({
         status: 200,
@@ -187,7 +186,7 @@ export class SectorController {
 
     @Delete(":id")
     @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
-    @ApiOperation({ summary: 'Delete sector (Admin/Manager)' })
+    @ApiOperation({ summary: `Delete sector (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiParam({ name: 'id', description: 'Sector ID', type: 'string', example: 'uuid-123' })
     @ApiResponse({
         status: 200,
@@ -208,7 +207,7 @@ export class SectorController {
 
     @Post(":sector/addPosition/:role")
     @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
-    @ApiOperation({ summary: 'Add position to sector (Admin/Manager)' })
+    @ApiOperation({ summary: `Add position to sector (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiParam({ name: 'sector', description: 'Sector name', type: 'string', example: 'IT' })
     @ApiParam({ name: 'role', description: 'Position/Role name', type: 'string', example: 'Developer' })
     @ApiResponse({
@@ -234,7 +233,7 @@ export class SectorController {
 
     @Delete(":sector/removePosition/:role")
     @AllowRoles(ALLOWED_BACKOFFICE_ROLES)
-    @ApiOperation({ summary: 'Remove position from sector (Admin/Manager)' })
+    @ApiOperation({ summary: `Remove position from sector (${ALLOWED_BACKOFFICE_ROLES.join("/")})` })
     @ApiParam({ name: 'sector', description: 'Sector name', type: 'string', example: 'IT' })
     @ApiParam({ name: 'role', description: 'Position/Role name', type: 'string', example: 'Developer' })
     @ApiResponse({
