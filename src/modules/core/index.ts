@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { RouterModule } from "@nestjs/core";
+import { AccountModule } from "./account/account.module";
 import { PositionModule } from "./position/position.module";
 import { SectorModule } from "./sector/sector.module";
 import { SessionModule } from "./session/session.module";
@@ -13,6 +14,7 @@ const coreModules = [
     TicketModule,
     SectorModule,
     PositionModule,
+    AccountModule,
 ];
 
 @Module({

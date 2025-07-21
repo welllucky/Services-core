@@ -1,3 +1,4 @@
+export * from "./Account.dto";
 export * from "./Position.dto";
 export * from "./Sector.dto";
 export * from "./Session.dto";

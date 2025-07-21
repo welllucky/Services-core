@@ -14,6 +14,7 @@ import { SentryModule } from "@sentry/nestjs/setup";
 import { AppController } from "./app.controller";
 import { FormatResponseMiddleware, LoggerMiddleware } from "./middlewares";
 import { guards } from "./guards";
+import { DevtoolsModule } from "@nestjs/devtools-integration";
 
 @Module({
     controllers: [AppController],
@@ -71,6 +72,12 @@ import { guards } from "./guards";
                     limit: 50,
                 },
             ],
+        }),
+        DevtoolsModule.registerAsync({
+            useFactory: async (configService: ConfigService) => ({
+                http: configService.get("NODE_ENV") !== "production",
+            }),
+            inject: [ConfigService],
         }),
         AccessModule,
         CoreModule,

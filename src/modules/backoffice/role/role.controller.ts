@@ -4,7 +4,7 @@ import { Controller, Get, Param, Put, Request } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { RoleService } from "./role.service";
 
-@ApiTags('Role Management')
+@ApiTags('Backoffice Role Management')
 @ApiBearerAuth()
 @Controller("roles")
 export class RoleController {

@@ -9,4 +9,4 @@ import { EventServices } from "./event.service";
     providers: [EventServices, EventRepository],
     exports: [EventServices, EventRepository],
 })
-export class EventModule {}
+export class SharedEventModule {}

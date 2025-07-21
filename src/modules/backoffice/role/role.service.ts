@@ -1,8 +1,9 @@
-import { UserModel } from "@/models/user.model";
+import { AccountService } from "@/modules/shared";
 import { UserRepository } from "@/repositories/user.repository";
 import { IResponseFormat, Roles, RolesSchema, UserWithSession } from "@/typing";
 import { ALLOWED_BACKOFFICE_ROLES } from "@/utils";
 import {
+    BadRequestException,
     ForbiddenException,
     Injectable,
     InternalServerErrorException,
@@ -10,7 +11,9 @@ import {
 
 @Injectable()
 export class RoleService {
-    constructor(private readonly userRepository: UserRepository) {}
+    constructor(private readonly userRepository: UserRepository,
+        private readonly accountService: AccountService
+    ) {}
 
     getRoles() {
         return Object.values(RolesSchema.Values);
@@ -21,31 +24,33 @@ export class RoleService {
         targetUserRegister: string,
         newRole: Roles,
     ): Promise<IResponseFormat<null>> {
-        const actualUser = new UserModel(this.userRepository);
-        const targetUser = new UserModel(this.userRepository);
+        const validationResult = RolesSchema.safeParse(newRole);
+        if (!validationResult.success) {
+            throw new BadRequestException(`'${newRole}' is not a valid role`);
+        }
 
-        await actualUser.init({
-            register: user.register,
-        });
+        const actualUser = await this.userRepository.findByRegister(user.register);
+        const targetUser = await this.userRepository.findByRegister(targetUserRegister);
 
-        await targetUser.init({
-            register: targetUserRegister,
-        });
+        if (!actualUser || !targetUser) {
+            throw new ForbiddenException("User not found");
+        }
 
-        if (!ALLOWED_BACKOFFICE_ROLES.includes(actualUser.Role()?.toString() as Roles)) {
+        if (!ALLOWED_BACKOFFICE_ROLES.includes(actualUser.account.role)) {
             throw new ForbiddenException();
         }
 
-        if (actualUser.Register() === targetUserRegister) {
+        if (actualUser.register === targetUserRegister) {
             throw new ForbiddenException("You can't change your own role");
         }
 
-        targetUser.Role()?.set(newRole);
+        const targetAccount = await this.accountService.findByRegister(targetUserRegister);
 
-        const { affected } = await this.userRepository.updateRole(
-            targetUser.Register() ?? "",
-            newRole,
-        );
+        if (!targetAccount) {
+            throw new ForbiddenException("User not found");
+        }
+
+        const { affected } = await this.accountService.updateRole(targetAccount.id, newRole);
 
         if (affected === 1) {
             return {

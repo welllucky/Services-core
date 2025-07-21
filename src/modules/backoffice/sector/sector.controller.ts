@@ -1,3 +1,4 @@
+import { SectorService } from "@/modules/shared/sector";
 import { SectorWithoutIdDto, UpdateSectorDto } from "@/typing";
 import { ALLOWED_BACKOFFICE_ROLES } from "@/utils";
 import { AllowRoles } from "@/utils/decorators";
@@ -11,7 +12,6 @@ import {
     Post,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { SectorService } from "@/modules/shared/sector";
 
 @ApiTags('Backoffice Sector Management')
 @ApiBearerAuth()

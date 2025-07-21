@@ -1,5 +1,5 @@
 import { forwardRef, Module } from "@nestjs/common";
-import { SectorModule as SharedSectorModule } from "@/modules/shared/sector";
+import { SharedSectorModule } from "@/modules/shared/sector";
 import { PositionModule } from "../position/position.module";
 import { UserModule } from "../user/user.module";
 import { SectorController } from "./sector.controller";

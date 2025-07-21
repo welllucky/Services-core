@@ -23,9 +23,16 @@ class SessionModel {
 
     public async close(sessionId?: string) {
         try {
+
+            const id = sessionId ?? this.session?.id;
+
+            if (!id) {
+                throw new Error("Session not found");
+            }
+
             const session = await this.repository.find(
+                id,
                 this.user.Register() ?? "",
-                sessionId ?? this.session?.id,
             );
 
             if (!session) {
@@ -34,10 +41,10 @@ class SessionModel {
 
             await this.repository.update(
                 session.id,
+                this.user.Register() ?? "",
                 {
                     isActive: false,
                 },
-                session.user.id,
             );
         } catch (error) {
             throw new Error(`Session not closed: ${error}`);
@@ -65,7 +72,7 @@ class SessionModel {
         sessionId,
     }: {
         status: SessionStatus;
-        sessionId?: string;
+        sessionId: string;
     }) {
         try {
             const register = this.user.Register();
@@ -74,8 +81,8 @@ class SessionModel {
             }
 
             const session = await this.repository.find(
-                register,
                 sessionId,
+                register,
                 status,
             );
 
@@ -89,9 +96,9 @@ class SessionModel {
         return this.session?.isActive && this.session.expiresAt > new Date();
     }
 
-    public async init(sessionId: string, userId: string) {
+    public async init(sessionId: string) {
         this.session = null;
-        this.session = await this.repository.find(userId, sessionId);
+        this.session = await this.repository.find(sessionId, this.user.Register() ?? "",);
 
         if (!this.session) {
             throw new Error("Session not found");

@@ -1,12 +1,11 @@
 import { User } from "@/database/entities";
-import { encryptPassword } from "@/utils";
 import {
-    EntitySubscriberInterface,
-    EventSubscriber,
-    InsertEvent,
-    RemoveEvent,
-    SoftRemoveEvent,
-    UpdateEvent,
+  EntitySubscriberInterface,
+  EventSubscriber,
+  InsertEvent,
+  RemoveEvent,
+  SoftRemoveEvent,
+  UpdateEvent,
 } from "typeorm";
 
 @EventSubscriber()
@@ -16,12 +15,7 @@ export class UserSubscriber implements EntitySubscriberInterface<User> {
   }
 
   beforeInsert(event: InsertEvent<User>) {
-    const rootPassword = event.queryRunner.data?.rootPassword;
-
-    const { hashedPassword } = encryptPassword(rootPassword);
-
     if (event.entity) {
-      event.entity.hash = hashedPassword;
       event.entity.createdAt = new Date();
     }
   }

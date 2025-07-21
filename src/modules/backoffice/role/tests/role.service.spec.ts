@@ -1,8 +1,10 @@
 import { User } from "@/database/entities";
-import { UserRepository } from "@/modules/core/user";
+import { AccountService } from "@/modules/shared";
+import { UserRepository } from "@/repositories/user.repository";
 import { RolesSchema, UserWithSession } from "@/typing";
 import { user } from "@/utils";
 import { Test, TestingModule } from "@nestjs/testing";
+import { mockedUser } from "../../session/tests/utils";
 import { RoleService } from "../role.service";
 
 jest.mock("@/utils", () => ({
@@ -29,6 +31,7 @@ jest.mock("@/utils", () => ({
 describe("Role Service - Unit Test - Suite", () => {
     let service: RoleService;
     let userRepository: UserRepository;
+    let accountService: AccountService;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -37,9 +40,15 @@ describe("Role Service - Unit Test - Suite", () => {
                 {
                     provide: UserRepository,
                     useValue: {
-                        updateRole: jest.fn(),
                         findByRegister: jest.fn(),
                         findByEmail: jest.fn(),
+                    },
+                },
+                {
+                    provide: AccountService,
+                    useValue: {
+                        findByRegister: jest.fn(),
+                        updateRole: jest.fn(),
                     },
                 },
             ],
@@ -47,6 +56,7 @@ describe("Role Service - Unit Test - Suite", () => {
 
         service = module.get<RoleService>(RoleService);
         userRepository = module.get<UserRepository>(UserRepository);
+        accountService = module.get<AccountService>(AccountService);
     });
 
     describe("Get Roles Method - Suite", () => {
@@ -82,13 +92,13 @@ describe("Role Service - Unit Test - Suite", () => {
             // Mock for the actual user (from token) - should return admin user
             jest.spyOn(userRepository, "findByRegister").mockResolvedValueOnce({
                 ...user,
-                role: "admin",
+                account: { role: "admin" },
             } as unknown as User);
 
             // Mock for the target user - should return the same user (trying to change own role)
             jest.spyOn(userRepository, "findByRegister").mockResolvedValueOnce({
                 ...user,
-                role: "admin",
+                account: { role: "admin" },
             } as unknown as User);
 
             await expect(
@@ -100,18 +110,33 @@ describe("Role Service - Unit Test - Suite", () => {
             // Mock for the actual user (from token) - should return admin user
             jest.spyOn(userRepository, "findByRegister").mockResolvedValueOnce({
                 ...user,
-                role: "admin",
+                account: { role: "admin" },
             } as unknown as User);
 
             // Mock for the target user - should return different user
             jest.spyOn(userRepository, "findByRegister").mockResolvedValueOnce({
                 ...user,
                 register: "242424",
-                role: "user",
+                account: { role: "user" },
             } as unknown as User);
 
+            // Mock for account lookup
+            jest.spyOn(accountService, "findByRegister").mockResolvedValueOnce({
+                id: "account123",
+                user: mockedUser,
+                hash: "hash",
+                isBanned: false,
+                canCreateTicket: true,
+                canResolveTicket: true,
+                role: "admin" as const,
+                sessions: [],
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                deletedAt: null
+            });
+
             const updateRoleMethod = jest
-                .spyOn(userRepository, "updateRole")
+                .spyOn(accountService, "updateRole")
                 .mockResolvedValue({ affected: 1, raw: [], generatedMaps: [] });
 
             await service.changeRole(user as unknown as UserWithSession, "242424", "admin");
@@ -122,17 +147,32 @@ describe("Role Service - Unit Test - Suite", () => {
             // Mock for the actual user (from token) - should return admin user
             jest.spyOn(userRepository, "findByRegister").mockResolvedValueOnce({
                 ...user,
-                role: "admin",
+                account: { role: "admin" },
             } as unknown as User);
 
             // Mock for the target user - should return different user
             jest.spyOn(userRepository, "findByRegister").mockResolvedValueOnce({
                 ...user,
                 register: "242424",
-                role: "user",
+                account: { role: "user" },
             } as unknown as User);
 
-            jest.spyOn(userRepository, "updateRole").mockResolvedValue({
+            // Mock for account lookup
+            jest.spyOn(accountService, "findByRegister").mockResolvedValueOnce({
+                id: "account123",
+                user: mockedUser,
+                hash: "hash",
+                isBanned: false,
+                canCreateTicket: true,
+                canResolveTicket: true,
+                role: "admin" as const,
+                sessions: [],
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                deletedAt: null
+            });
+
+            jest.spyOn(accountService, "updateRole").mockResolvedValue({
                 affected: 1,
                 raw: [],
                 generatedMaps: [],
@@ -153,17 +193,32 @@ describe("Role Service - Unit Test - Suite", () => {
             // Mock for the actual user (from token) - should return admin user
             jest.spyOn(userRepository, "findByRegister").mockResolvedValueOnce({
                 ...user,
-                role: "admin",
+                account: { role: "admin" },
             } as unknown as User);
 
             // Mock for the target user - should return different user
             jest.spyOn(userRepository, "findByRegister").mockResolvedValueOnce({
                 ...user,
                 register: "242424",
-                role: "user",
+                account: { role: "user" },
             } as unknown as User);
 
-            jest.spyOn(userRepository, "updateRole").mockResolvedValue({
+            // Mock for account lookup
+            jest.spyOn(accountService, "findByRegister").mockResolvedValueOnce({
+                id: "account123",
+                user: mockedUser,
+                hash: "hash",
+                isBanned: false,
+                canCreateTicket: true,
+                canResolveTicket: true,
+                role: "admin" as const,
+                sessions: [],
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                deletedAt: null
+            });
+
+            jest.spyOn(accountService, "updateRole").mockResolvedValue({
                 affected: 0,
                 raw: [],
                 generatedMaps: [],

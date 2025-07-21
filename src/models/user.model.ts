@@ -49,7 +49,7 @@ class UserModel {
             }
 
             this.user = data;
-            this.role = new RoleModel(data.role);
+            this.role = new RoleModel(data.account.role);
             return this.user;
     }
 
@@ -81,15 +81,15 @@ class UserModel {
     }
 
     isBanned() {
-        return this.user?.isBanned;
+        return this.user?.account.isBanned;
     }
 
     canCreateTicket() {
-        return this.user?.canCreateTicket;
+        return this.user?.account.canCreateTicket;
     }
 
     canResolveTicket() {
-        return this.user?.canResolveTicket;
+        return this.user?.account.canResolveTicket;
     }
 
     Email() {
@@ -123,7 +123,7 @@ class UserModel {
     }
 
     authUser(password: string) {
-        return comparePassword(password, this.user?.hash || "");
+        return comparePassword(password, this.user?.account.hash || "");
     }
 
     async createUser(data: IRegisterUser) {
