@@ -10,24 +10,18 @@ import {
 import { encryptPassword } from "@/utils";
 import {
     BadRequestException,
-    forwardRef,
     HttpException,
     HttpStatus,
-    Inject,
     Injectable,
-    InternalServerErrorException,
+    InternalServerErrorException
 } from "@nestjs/common";
-import { PositionService } from "../position/position.service";
-import { SectorService } from "../sector/sector.service";
+import { ValidationService } from "../validation/validation.service";
 
 @Injectable()
 export class AccountService {
     constructor(
         private readonly accountRepository: AccountRepository,
-        @Inject(forwardRef(() => PositionService))
-        private readonly positionService: PositionService,
-        @Inject(forwardRef(() => SectorService))
-        private readonly sectorService: SectorService,
+        private readonly validationService: ValidationService,
     ) {}
 
     async findById(id: string) {
@@ -45,38 +39,10 @@ export class AccountService {
     async create(
         data: CreateUserDTO,
     ): Promise<IResponseFormat<UserRestrictDTO>> {
-        const position = (await this.positionService.getByName(data.position))
-            ?.data;
-        const sector = (await this.sectorService.getByName(data.sector))?.data;
-        const positions = (
-            await this.sectorService.getPositionsByName(data.sector)
-        )?.data;
-
-        const existPositionInSector = Boolean(
-            positions?.find((r) => r.id === position?.id)?.id,
+        const { position, sector } = await this.validationService.validatePositionAndSector(
+            data.position,
+            data.sector
         );
-
-        if (!sector || !position) {
-            throw new HttpException(
-                {
-                    title: "Sector or position not found",
-                    message:
-                        "Sector or position not found, please check the sector and position.",
-                },
-                HttpStatus.BAD_REQUEST,
-            );
-        }
-
-        if (!existPositionInSector) {
-            throw new HttpException(
-                {
-                    title: "Position not found in sector",
-                    message:
-                        "Position not found in sector, please check the position and sector.",
-                },
-                HttpStatus.BAD_REQUEST,
-            );
-        }
 
         const { hashedPassword } = encryptPassword(data.password);
 

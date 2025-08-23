@@ -33,6 +33,17 @@ export class SectorRepository {
         });
     }
 
+    async findWithPositions(id: string) {
+        return this.repository.findOne({
+            where: {
+                id,
+            },
+            relations: {
+                positions: true,
+            },
+        });
+    }
+
     findAll() {
         return this.repository.find();
     }

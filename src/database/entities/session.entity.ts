@@ -1,10 +1,12 @@
 import type { Relation } from "typeorm";
 import {
     Column,
+    CreateDateColumn,
     Entity,
     JoinColumn,
     ManyToOne,
-    PrimaryGeneratedColumn
+    PrimaryGeneratedColumn,
+    UpdateDateColumn
 } from "typeorm";
 import { Account } from "./account.entity";
 
@@ -27,8 +29,11 @@ class Session {
     @Column("timestamp")
     public expiresAt!: Date;
 
-    @Column("timestamp")
+    @CreateDateColumn()
     public createdAt!: Date;
+
+    @UpdateDateColumn()
+    public updatedAt!: Date;
 
     @Column("boolean", {
         default: true,

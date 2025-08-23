@@ -5,55 +5,23 @@ import {
     UpdateUserDTO,
     UserRestrictDTO
 } from "@/typing";
-import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common";
-import { PositionService } from "../position/position.service";
-import { SectorService } from "../sector/sector.service";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { ValidationService } from "../validation/validation.service";
 
 @Injectable()
 export class UserService {
     constructor(
         private readonly userRepository: UserRepository,
-        @Inject(forwardRef(() => PositionService))
-        private readonly positionService: PositionService,
-        @Inject(forwardRef(() => SectorService))
-        private readonly sectorService: SectorService,
+        private readonly validationService: ValidationService,
     ) {}
 
     async create(
         data: CreateUserDTO,
     ): Promise<IResponseFormat<UserRestrictDTO>> {
-        const position = (await this.positionService.getByName(data.position))
-            ?.data;
-        const sector = (await this.sectorService.getByName(data.sector))?.data;
-        const positions = (
-            await this.sectorService.getPositionsByName(data.sector)
-        )?.data;
-
-        const existPositionInSector = positions?.find(
-            (r) => r.id === position?.id,
+        const { position, sector } = await this.validationService.validatePositionAndSector(
+            data.position,
+            data.sector
         );
-
-        if (!sector || !position) {
-            throw new HttpException(
-                {
-                    title: "Sector or position not found",
-                    message:
-                        "Sector or position not found, please check the sector and position.",
-                },
-                HttpStatus.BAD_REQUEST,
-            );
-        }
-
-        if (!existPositionInSector) {
-            throw new HttpException(
-                {
-                    title: "Position not found in sector",
-                    message:
-                        "Position not found in sector, please check the position and sector.",
-                },
-                HttpStatus.BAD_REQUEST,
-            );
-        }
 
         const createdUser = await this.userRepository.create(
             { ...data, position: position.id, sector: sector.id },
@@ -160,29 +128,11 @@ export class UserService {
         let positionData, sectorData;
 
         if (position) {
-            positionData = await this.positionService.findByName(position);
-            if (!positionData) {
-                throw new HttpException(
-                    {
-                        title: "Position not found",
-                        message: `Position "${position}" not found.`,
-                    },
-                    HttpStatus.NOT_FOUND,
-                );
-            }
+            positionData = await this.validationService.validatePosition(position);
         }
 
         if (sector) {
-            sectorData = await this.sectorService.findByName(sector);
-            if (!sectorData) {
-                throw new HttpException(
-                    {
-                        title: "Sector not found",
-                        message: `Sector "${sector}" not found.`,
-                    },
-                    HttpStatus.NOT_FOUND,
-                );
-            }
+            sectorData = await this.validationService.validateSector(sector);
         }
 
         const updatedUser = await this.userRepository.update(register, {

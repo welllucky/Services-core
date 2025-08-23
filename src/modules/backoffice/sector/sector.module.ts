@@ -1,15 +1,9 @@
-import { forwardRef, Module } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { SharedSectorModule } from "@/modules/shared/sector";
-import { PositionModule } from "../position/position.module";
-import { UserModule } from "../user/user.module";
 import { SectorController } from "./sector.controller";
 
 @Module({
-    imports: [
-        SharedSectorModule,
-        forwardRef(() => PositionModule),
-        forwardRef(() => UserModule)
-    ],
+    imports: [SharedSectorModule],
     controllers: [SectorController],
 })
 export class SectorModule {}

@@ -56,7 +56,7 @@ export class AuthService {
 
         await this.sessionRepository.update(
             lastActiveSession.id,
-            register,
+            lastActiveSession.account.id,
             { isActive: false },
         );
     }

@@ -151,10 +151,10 @@ export class SessionService {
 
     async find(
         sessionId: string,
-        user: UserWithSession,
+        register: string,
         status: SessionStatus = "active",
     ): Promise<Partial<Omit<SessionDTO, "token">>> {
-        if (!user.register) {
+        if (!register) {
             throw new HttpException(
                 {
                     title: "UserId was not provided",
@@ -165,7 +165,7 @@ export class SessionService {
             );
         }
 
-        const session = await this.repository.find(sessionId, user.register, status);
+        const session = await this.repository.find(sessionId, register, status);
 
         if (!session) {
             throw new HttpException(

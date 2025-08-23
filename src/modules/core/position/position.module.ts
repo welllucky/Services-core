@@ -1,11 +1,7 @@
-import { forwardRef, Module } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { SharedPositionModule } from "@/modules/shared/position";
-import { UserModule } from "../user/user.module";
 
 @Module({
-    imports: [
-        SharedPositionModule,
-        forwardRef(() => UserModule)
-    ],
+    imports: [SharedPositionModule],
 })
 export class PositionModule {}

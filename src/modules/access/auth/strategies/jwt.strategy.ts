@@ -1,10 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { SessionService } from '@/modules/shared';
+import { IUser, Roles } from '@/typing';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { IUser, Roles } from '@/typing';
 
 export interface JwtPayload {
+  id: string;
+  sessionId: string;
   sub: string;
   register: string;
   name: string;
@@ -21,7 +24,7 @@ export interface JwtPayload {
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(configService: ConfigService) {
+  constructor(configService: ConfigService, private readonly sessionService: SessionService) {
     const secretKey = configService.get<string>('AUTH_SECRET');
     if (!secretKey) {
       throw new Error('AUTH_SECRET is required');
@@ -36,6 +39,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: JwtPayload): Promise<IUser> {
+    const session = await this.sessionService.find(payload.sessionId, payload.register, 'active');
+
+    if (!session) {
+      throw new UnauthorizedException();
+    }
+
     return {
       register: payload.register,
       name: payload.name,

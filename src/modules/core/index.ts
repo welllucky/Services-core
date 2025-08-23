@@ -7,7 +7,6 @@ import { SessionModule } from "./session/session.module";
 import { TicketModule } from "./ticket/ticket.module";
 import { UserModule } from "./user/user.module";
 
-// Create modules without forwardRef for router configuration
 const coreModules = [
     UserModule,
     SessionModule,

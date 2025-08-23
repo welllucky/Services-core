@@ -50,15 +50,7 @@ class AuthController {
                     type: "object",
                     properties: {
                         accessToken: { type: "string" },
-                        user: {
-                            type: "object",
-                            properties: {
-                                register: { type: "string" },
-                                name: { type: "string" },
-                                email: { type: "string" },
-                                role: { type: "string" },
-                            },
-                        },
+                        expiresAt: { type: "date" },
                     },
                 },
             },

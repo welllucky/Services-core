@@ -83,7 +83,7 @@ describe("Session Service - Unit Test - Suite", () => {
 
     describe("Find Method - Suite", () => {
         it("should throw an error if userId is not provided", async () => {
-            await expect(service.find("", {...user, register: ""} as unknown as UserWithSession)).rejects.toThrow(
+            await expect(service.find("", "")).rejects.toThrow(
                 "UserId was not provided, please inform the user id.",
             );
         });
@@ -95,7 +95,7 @@ describe("Session Service - Unit Test - Suite", () => {
                     ...mockedSessionData(),
                 });
 
-            await service.find("1", {...user} as unknown as UserWithSession);
+            await service.find("1", user.register);
 
             expect(findRepositoryMethod).toHaveBeenCalledTimes(1);
         });
@@ -103,7 +103,7 @@ describe("Session Service - Unit Test - Suite", () => {
         it("should throw an error if find repository method returns null", async () => {
             jest.spyOn(repository, "find").mockResolvedValue(null);
 
-            await expect(service.find("1", {...user} as unknown as UserWithSession)).rejects.toThrow(
+            await expect(service.find("1", user.register)).rejects.toThrow(
                 "Session not found",
             );
         });
@@ -117,7 +117,7 @@ describe("Session Service - Unit Test - Suite", () => {
             const session = mockedSessionData();
             jest.spyOn(repository, "find").mockResolvedValue(session);
 
-            expect(await service.find("1", {...user} as unknown as UserWithSession)).toStrictEqual({
+            expect(await service.find("1", user.register)).toStrictEqual({
                 createdAt: session.createdAt,
                 expiresAt: session.expiresAt,
                 id: session.id,
@@ -131,7 +131,7 @@ describe("Session Service - Unit Test - Suite", () => {
                 .spyOn(repository, "find")
                 .mockResolvedValue(mockedSessionData());
 
-            await service.find("1", {...user} as unknown as UserWithSession);
+            await service.find("1", user.register);
 
             expect(findRepositoryMethod).toHaveBeenCalledWith(
                 "1",
@@ -145,7 +145,7 @@ describe("Session Service - Unit Test - Suite", () => {
                 .spyOn(repository, "find")
                 .mockResolvedValue(mockedSessionData());
 
-            await service.find("1", {...user} as unknown as UserWithSession, "inactive");
+            await service.find("1", user.register, "inactive");
 
             expect(findRepositoryMethod).toHaveBeenCalledWith(
                 "1",
@@ -159,7 +159,7 @@ describe("Session Service - Unit Test - Suite", () => {
                 .spyOn(repository, "find")
                 .mockResolvedValue(mockedSessionData());
 
-            await service.find("1", {...user} as unknown as UserWithSession, "all");
+            await service.find("1", user.register, "all");
 
             expect(findRepositoryMethod).toHaveBeenCalledWith(
                 "1",
@@ -173,7 +173,7 @@ describe("Session Service - Unit Test - Suite", () => {
                 .spyOn(repository, "find")
                 .mockResolvedValue(mockedSessionData());
 
-            await service.find("1", {...user} as unknown as UserWithSession);
+            await service.find("1", user.register);
 
             expect(findRepositoryMethod).toHaveBeenCalledWith(
                 "1",

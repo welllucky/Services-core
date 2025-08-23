@@ -96,14 +96,12 @@ export class SessionRepository {
     });
   }
 
-  async update(sessionId: string, register: string, session: Partial<Session>) {
+  async update(sessionId: string, accountId: string, session: Partial<Session>) {
     return this.repository.update(
       {
         id: sessionId,
         account: {
-          user: {
-            register,
-          },
+          id: accountId
         },
       },
       {
@@ -114,7 +112,6 @@ export class SessionRepository {
 
   async create(accountId: string, expiresAt: Date) {
     return this.repository.save({
-      createdAt: new Date(),
       isActive: true,
       account: {
         id: accountId
