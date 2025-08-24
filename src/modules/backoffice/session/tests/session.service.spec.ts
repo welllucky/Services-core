@@ -23,7 +23,8 @@ jest.mock("@/models", () => ({
 import { UserModel } from "@/models";
 
 import { SessionService } from "@/modules/shared/session";
-import { SessionRepository, UserRepository } from "@/repositories";
+import { SessionRepository } from "@/modules/shared/session/session.repository";
+import { UserRepository } from "@/modules/shared/user/user.repository";
 import { UserWithSession } from "@/typing";
 import {
     AUTH_SECRET_MOCK,

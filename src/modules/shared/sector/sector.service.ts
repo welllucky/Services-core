@@ -1,4 +1,3 @@
-import { PositionRepository, SectorRepository } from "@/repositories";
 import {
     CreatePositionDto,
     CreateSectorDto,
@@ -8,6 +7,8 @@ import {
     UpdateSectorDto,
 } from "@/typing";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { PositionRepository } from "../position";
+import { SectorRepository } from "./sector.repository";
 
 @Injectable()
 export class SectorService {

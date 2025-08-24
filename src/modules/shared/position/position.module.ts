@@ -1,5 +1,5 @@
 import { Position } from "@/database/entities";
-import { PositionRepository } from "@/repositories/position.repository";
+import { PositionRepository } from "@/modules/shared/position/position.repository";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { PositionService } from "./position.service";

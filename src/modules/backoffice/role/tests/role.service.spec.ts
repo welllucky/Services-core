@@ -1,6 +1,6 @@
 import { User } from "@/database/entities";
-import { AccountService } from "@/modules/shared";
-import { UserRepository } from "@/repositories/user.repository";
+import { AccountService } from "@/modules/access/account";
+import { UserRepository } from "@/modules/shared/user/user.repository";
 import { RolesSchema, UserWithSession } from "@/typing";
 import { user } from "@/utils";
 import { Test, TestingModule } from "@nestjs/testing";

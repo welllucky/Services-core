@@ -1,5 +1,5 @@
 import { UserModel } from "@/models";
-import { EventRepository } from "@/repositories/event.repository";
+import { EventRepository } from "@/modules/shared/event/event.repository";
 import { IEvent } from "@/typing";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 

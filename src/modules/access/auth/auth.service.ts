@@ -1,4 +1,4 @@
-import { SessionRepository, UserRepository } from "@/repositories";
+import { SessionRepository, UserRepository } from "@/modules/shared";
 import { IResponseFormat, UserWithSession } from "@/typing";
 import { comparePassword, TIME_TO_EXPIRE_THE_TOKEN } from "@/utils";
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";

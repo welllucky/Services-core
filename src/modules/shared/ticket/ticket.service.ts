@@ -1,5 +1,5 @@
 import { UserModel } from "@/models";
-import { TicketRepository } from "@/repositories/ticket.repository";
+import { TicketRepository } from "@/modules/shared/ticket/ticket.repository";
 import {
     CreateTicketDto,
     IResponseFormat,

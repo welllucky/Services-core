@@ -1,5 +1,5 @@
 import { Event } from "@/database/entities";
-import { EventRepository } from "@/repositories/event.repository";
+import { EventRepository } from "@/modules/shared/event/event.repository";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { EventServices } from "./event.service";

@@ -1,6 +1,6 @@
 import { User } from "@/database/entities";
 import { UserModel } from "@/models/user.model";
-import { UserRepository } from "@/repositories/user.repository";
+import { UserRepository } from "@/modules/shared/user/user.repository";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ValidationModule } from "../validation/validation.module";

@@ -1,5 +1,5 @@
 import { Ticket } from "@/database/entities";
-import { TicketRepository } from "@/repositories/ticket.repository";
+import { TicketRepository } from "@/modules/shared/ticket/ticket.repository";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { SharedSectorModule } from "../sector/sector.module";

@@ -1,11 +1,11 @@
-import { AccountService } from "@/modules/shared";
 import { CreateUserDTO } from "@/typing";
 import { IsPublic } from "@/utils";
 import { Body, Controller, Post } from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
+import { AccountService } from "./account.service";
 
-@ApiTags('Account Management')
+@ApiTags('Account')
 @Controller("account")
 export class AccountController {
     constructor(private readonly accountService: AccountService) {}

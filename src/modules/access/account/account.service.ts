@@ -1,4 +1,4 @@
-import { AccountRepository } from "@/repositories";
+import { AccountRepository } from "./account.repository";
 import {
     CreateUserDTO,
     IResponseFormat,
@@ -15,7 +15,7 @@ import {
     Injectable,
     InternalServerErrorException
 } from "@nestjs/common";
-import { ValidationService } from "../validation/validation.service";
+import { ValidationService } from "../../shared/validation/validation.service";
 
 @Injectable()
 export class AccountService {

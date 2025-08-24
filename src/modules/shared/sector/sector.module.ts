@@ -1,8 +1,9 @@
 import { Position, Sector } from "@/database/entities";
-import { PositionRepository, SectorRepository } from "@/repositories";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { SectorRepository } from "./sector.repository";
 import { SectorService } from "./sector.service";
+import { PositionRepository } from "../position";
 
 @Module({
     imports: [

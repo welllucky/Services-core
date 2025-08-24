@@ -1,4 +1,4 @@
-import { PositionRepository } from "@/repositories/position.repository";
+import { PositionRepository } from "@/modules/shared/position/position.repository";
 import {
     CreatePositionDto,
     IResponseFormat,

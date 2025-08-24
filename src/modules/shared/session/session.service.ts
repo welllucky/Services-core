@@ -1,5 +1,4 @@
 import { SessionModel, UserModel } from "@/models";
-import { SessionRepository, UserRepository } from "@/repositories";
 import {
     IResponseFormat,
     Pagination,
@@ -16,6 +15,8 @@ import {
     NotFoundException
 } from "@nestjs/common";
 import { response } from "express";
+import { SessionRepository } from "./session.repository";
+import { UserRepository } from "../user";
 
 @Injectable()
 export class SessionService {

@@ -1,5 +1,5 @@
 import { UserModule } from '@/modules/core/user';
-import { SharedAccountModule } from '@/modules/shared';
+import { AccountModule } from '@/modules/access/account';
 import { Module } from '@nestjs/common';
 import { RoleController } from './role.controller';
 import { RoleService } from './role.service';
@@ -7,7 +7,7 @@ import { RoleService } from './role.service';
 @Module({
   imports: [
     UserModule,
-    SharedAccountModule,
+    AccountModule,
   ],
   controllers: [RoleController],
   providers: [RoleService],

@@ -6,7 +6,7 @@ import { Body, Controller, Get, Param, Post, Put } from "@nestjs/common";
 import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiConflictResponse, ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiResponse, ApiTags, ApiTooManyRequestsResponse, ApiUnauthorizedResponse } from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
 
-@ApiTags('Backoffice User Management')
+@ApiTags('User Management')
 @Controller("users")
 export class UserController {
     constructor(private readonly service: UserService) {}

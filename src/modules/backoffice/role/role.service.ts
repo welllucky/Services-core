@@ -1,5 +1,5 @@
-import { AccountService } from "@/modules/shared";
-import { UserRepository } from "@/repositories/user.repository";
+import { AccountService } from "@/modules/access/account/account.service";
+import { UserRepository } from "@/modules/shared/user/user.repository";
 import { IResponseFormat, Roles, RolesSchema, UserWithSession } from "@/typing";
 import { ALLOWED_BACKOFFICE_ROLES } from "@/utils";
 import {

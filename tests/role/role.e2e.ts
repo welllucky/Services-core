@@ -1,7 +1,7 @@
+import { AccountService } from "@/modules/access/account/account.service";
 import { RoleController } from "@/modules/backoffice/role/role.controller";
 import { RoleService } from "@/modules/backoffice/role/role.service";
-import { AccountService } from "@/modules/shared/account/account.service";
-import { UserRepository } from "@/repositories/user.repository";
+import { UserRepository } from "@/modules/shared/user/user.repository";
 import { RolesSchema } from "@/typing";
 import { user } from "@/utils";
 import { CallHandler, ExecutionContext, INestApplication, Injectable, NestInterceptor } from "@nestjs/common";

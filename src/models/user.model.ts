@@ -1,5 +1,5 @@
 import { User } from "@/database/entities";
-import { UserRepository } from "@/repositories/user.repository";
+import { UserRepository } from "@/modules/shared/user/user.repository";
 import { IRegisterUser } from "@/typing";
 import { comparePassword } from "@/utils";
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";

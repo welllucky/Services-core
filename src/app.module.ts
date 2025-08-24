@@ -46,6 +46,23 @@ import { DevtoolsModule } from "@nestjs/devtools-integration";
                 synchronize: configService.get("HOST_ENV") === "development",
                 entities,
                 subscribers: subscribers,
+                extra: {
+                    connectionLimit: configService.get("DB_CONNECTION_LIMIT", 10),
+                    
+                    // MySQL2 supported keep-alive options
+                    keepAliveInitialDelay: configService.get("DB_KEEP_ALIVE_INITIAL_DELAY", 0),
+                    enableKeepAlive: configService.get("DB_ENABLE_KEEP_ALIVE", "true") === "true",
+                    
+                    // Connection idle timeout (in milliseconds) - this controls connection pool idle timeout
+                    idleTimeout: configService.get("DB_IDLE_TIMEOUT", 28800000),
+                },
+
+                // Connection timeout settings (supported by TypeORM)
+                connectTimeout: configService.get("DB_CONNECT_TIMEOUT", 30000),
+
+                // Enable query timeout
+                enableQueryTimeout: configService.get("DB_ENABLE_QUERY_TIMEOUT", "true") === "true",
+
                 ...(configService.get("DB_CA") && {
                     ssl: {
                         ca: configService.get("DB_CA"),
@@ -90,7 +107,6 @@ export class AppModule {
     configure(consumer: MiddlewareConsumer) {
         consumer
             .apply(
-                // TrackUserMiddleware,
                 FormatResponseMiddleware,
                 LoggerMiddleware,
             )

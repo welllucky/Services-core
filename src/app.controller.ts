@@ -23,7 +23,6 @@ export class AppController {
             }
         }
     })
-    @ApiResponse({ status: 429, description: 'Too Many Requests - Rate limit exceeded' })
     @Throttle({ default: { limit: 20, ttl: 60000 } })
     @Get()
     @IsPublic()

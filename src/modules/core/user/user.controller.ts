@@ -4,7 +4,7 @@ import { AllowRoles } from "@/utils/decorators";
 import { Controller, Get, Param } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 
-@ApiTags('User Management')
+@ApiTags('User')
 @Controller("users")
 export class UserController {
     constructor(private readonly service: UserService) {}

@@ -13,7 +13,7 @@ import {
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 
-@ApiTags('Backoffice Position Management')
+@ApiTags('Position Management')
 @ApiBearerAuth()
 @Controller("position")
 export class PositionController {

@@ -1,19 +1,17 @@
 import { Module } from "@nestjs/common";
 import { RouterModule } from "@nestjs/core";
-import { AccountModule } from "./account/account.module";
 import { PositionModule } from "./position/position.module";
 import { SectorModule } from "./sector/sector.module";
 import { SessionModule } from "./session/session.module";
 import { TicketModule } from "./ticket/ticket.module";
 import { UserModule } from "./user/user.module";
 
-const coreModules = [
+export const coreModules = [
     UserModule,
     SessionModule,
     TicketModule,
     SectorModule,
     PositionModule,
-    AccountModule,
 ];
 
 @Module({

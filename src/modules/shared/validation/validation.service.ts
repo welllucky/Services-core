@@ -1,6 +1,6 @@
-import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
-import { PositionRepository } from "@/repositories/position.repository";
-import { SectorRepository } from "@/repositories/sector.repository";
+import { PositionRepository } from "@/modules/shared/position/position.repository";
+import { SectorRepository } from "@/modules/shared/sector/sector.repository";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 
 @Injectable()
 export class ValidationService {
@@ -47,7 +47,7 @@ export class ValidationService {
 
     async validatePosition(positionName: string) {
         const position = await this.positionRepository.findByName(positionName);
-        
+
         if (!position) {
             throw new HttpException(
                 {
@@ -63,7 +63,7 @@ export class ValidationService {
 
     async validateSector(sectorName: string) {
         const sector = await this.sectorRepository.findByName(sectorName);
-        
+
         if (!sector) {
             throw new HttpException(
                 {
@@ -80,7 +80,7 @@ export class ValidationService {
     async getPositionsBySector(sectorName: string) {
         const sector = await this.validateSector(sectorName);
         const sectorWithPositions = await this.sectorRepository.findWithPositions(sector.id);
-        
+
         return sectorWithPositions?.positions || [];
     }
 }

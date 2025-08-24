@@ -13,7 +13,7 @@ import {
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 
-@ApiTags('Backoffice Sector Management')
+@ApiTags('Sector Management')
 @ApiBearerAuth()
 @Controller("sector")
 export class SectorController {

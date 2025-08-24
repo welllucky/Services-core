@@ -1,5 +1,5 @@
 import { Session } from "@/database/entities";
-import { SessionRepository } from "@/repositories/session.repository";
+import { SessionRepository } from "@/modules/shared/session/session.repository";
 import { SessionStatus } from "@/typing";
 import { Injectable } from "@nestjs/common";
 import { UserModel } from "./user.model";
