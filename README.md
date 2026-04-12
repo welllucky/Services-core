@@ -1,4 +1,4 @@
-![Logo](https://services-buckt-dev.s3.us-east-1.amazonaws.com/public/Services+-+Capa.png)
+![Logo](https://assets.welllucky.com.br/repository-platform/projects/services/Services+-+Capa.png)
 
 # ⛓️‍💥Desburocratizador do gerenciamento de chamados
 
